@@ -128,6 +128,75 @@ bash build_all_conda.sh
 5) **Optional — Kaolin** (only for the model-free setup; version must match your PyTorch/CUDA—see the [Kaolin install docs](https://kaolin.readthedocs.io/en/latest/notes/installation.html)).
 
 
+# Env setup option 3: uv (local)
+
+`uv` is a fast Python package/environment manager (a `pip` + `venv` replacement), but it cannot provide native C++ libraries. So this option is a **hybrid**: use the system package manager (`apt`) for the compiler / Eigen / Boost, and `uv` for everything Python.
+
+1) **Install native C++ build dependencies via `apt`** (replaces conda's `cxx-compiler`, `eigen`, `boost-cpp`):
+
+```bash
+sudo apt update
+sudo apt install -y build-essential libeigen3-dev \
+    libboost-system-dev libboost-program-options-dev
+```
+
+2) **Create the environment and install build tooling with `uv`** (`cmake`, `ninja`, `pybind11` come from PyPI wheels, replacing the conda equivalents):
+
+```bash
+# Install uv if you don't have it yet
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+uv venv --python 3.11 .venv
+source .venv/bin/activate
+
+uv pip install cmake ninja pybind11 setuptools wheel
+```
+
+> **Note:** unlike a conda env, a fresh `uv venv` does **not** ship `setuptools`. It must be installed explicitly, otherwise the `--no-build-isolation` source builds in step 4 fail with `ModuleNotFoundError: No module named 'setuptools'`.
+
+3) **Install PyTorch** with a CUDA build that matches your machine (see the [PyTorch “Get Started”](https://pytorch.org/get-started/locally/) page for the right `--index-url`):
+
+```bash
+uv pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124
+```
+
+4) **Install PyTorch3D and NVDiffRast** (compile from source; needs a full **CUDA Toolkit** for `nvcc`). `--no-build-isolation` is required so the build can see the `torch` you already installed.
+
+> **Prerequisite:** a system CUDA Toolkit whose version **matches the PyTorch CUDA build** (here `cu124` → Toolkit 12.4). Note `nvidia-smi`'s "CUDA Version" is only the *maximum* runtime your driver supports, not an installed toolkit. `uv` cannot provide `nvcc`, so install it system-wide, e.g. via NVIDIA's apt repo:
+>
+> ```bash
+> wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.1-1_all.deb
+> sudo dpkg -i cuda-keyring_1.1-1_all.deb
+> sudo apt-get update && sudo apt-get -y install cuda-toolkit-12-4
+> ```
+
+```bash
+export CUDA_HOME=/usr/local/cuda-12.4   # match your torch CUDA build
+export PATH="$CUDA_HOME/bin:$PATH"
+export LD_LIBRARY_PATH="$CUDA_HOME/lib64:$LD_LIBRARY_PATH"
+export TORCH_CUDA_ARCH_LIST="8.9"       # optional: your GPU arch, speeds up compilation
+uv pip install --no-build-isolation "git+https://github.com/facebookresearch/pytorch3d.git"
+uv pip install --no-build-isolation "git+https://github.com/NVlabs/nvdiffrast.git"
+```
+
+5) **Install remaining Python dependencies** and **build the `mycpp` extension**:
+
+```bash
+uv pip install -r requirements.txt
+bash build_all_uv.sh
+```
+
+`build_all_uv.sh` mirrors `build_all_conda.sh`, but locates Python via `VIRTUAL_ENV` and injects pybind11's CMake dir into `CMAKE_PREFIX_PATH` (Eigen3/Boost are found from the system `apt` install).
+
+6) **Verify the environment** — this checks PyTorch/CUDA, all Python deps, and the compiled `mycpp` extension:
+
+```bash
+python check_env.py
+```
+
+7) **Optional — Kaolin** (only for the model-free setup; version must match your PyTorch/CUDA—see the [Kaolin install docs](https://kaolin.readthedocs.io/en/latest/notes/installation.html)).
+
+
 # Run model-based demo
 The paths have been set in argparse by default. If you need to change the scene, you can pass the args accordingly. By running on the demo data, you should be able to see the robot manipulating the mustard bottle. Pose estimation is conducted on the first frame, then it automatically switches to tracking mode for the rest of the video. The resulting visualizations will be saved to the `debug_dir` specified in the argparse. (Note the first time running could be slower due to online compilation)
 ```

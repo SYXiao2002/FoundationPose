@@ -60,7 +60,7 @@ def main() -> int:
   build_dir = repo_root / "mycpp" / "build"
   so_files = list(build_dir.glob("mycpp*.so"))
   if not so_files:
-    warnings.append(f"No mycpp extension found under {build_dir} (run bash build_all_conda.sh).")
+    warnings.append(f"No mycpp extension found under {build_dir} (run bash build_all_conda.sh, or bash build_all_uv.sh for a uv/venv setup).")
   else:
     print(f"mycpp extension: {so_files[0].name}")
 
