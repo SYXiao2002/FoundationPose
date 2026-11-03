@@ -32,6 +32,7 @@ def main():
   parser.add_argument("--pose-dir", type=Path, required=True, help="FoundationPose ob_in_cam directory")
   parser.add_argument("--mesh-file", type=Path, required=True, help="Same OBJ used for pose estimation")
   parser.add_argument("--output", type=Path, help="Output MP4 (default: <pose-dir>/../pose_video.mp4)")
+  parser.add_argument("--track-vis-dir", type=Path, help="Optionally save the rendered frames as PNGs")
   parser.add_argument("--fps", type=float, help="Output frame rate; default is estimated from nanosecond filenames")
   parser.add_argument("--stride", type=int, default=1, help="Use every Nth RGB/pose frame")
   parser.add_argument("--mask-overlay", action="store_true", help="Tint SAM mask pixels in green")
@@ -43,6 +44,9 @@ def main():
   pose_dir = args.pose_dir.expanduser()
   mesh_file = args.mesh_file.expanduser()
   output = args.output.expanduser() if args.output else pose_dir.parent / "pose_video.mp4"
+  track_vis_dir = args.track_vis_dir.expanduser() if args.track_vis_dir else None
+  if track_vis_dir is not None:
+    track_vis_dir.mkdir(parents=True, exist_ok=True)
 
   color_files = sorted((scene_dir / "rgb").glob("*.png"))[::args.stride]
   if not color_files:
@@ -93,11 +97,13 @@ def main():
       pose = np.loadtxt(pose_file).reshape(4, 4)
       centered_pose = pose @ np.linalg.inv(to_origin)
       image = draw_posed_3d_box(K, image, centered_pose, bbox, line_color=(0, 255, 255), linewidth=2)
-      image = draw_xyz_axis(image, centered_pose, scale=0.04, K=K, thickness=2, is_input_rgb=False)
+      image = draw_xyz_axis(image, pose, scale=0.04, K=K, thickness=2, is_input_rgb=False)
       translation = pose[:3, 3]
       cv2.putText(image, f"frame {index + 1}/{len(valid_frames)}  t=[{translation[0]:.3f}, {translation[1]:.3f}, {translation[2]:.3f}] m",
                   (8, 24), cv2.FONT_HERSHEY_SIMPLEX, 0.55, (255, 255, 255), 2, cv2.LINE_AA)
       writer.write(image)
+      if track_vis_dir is not None and not cv2.imwrite(str(track_vis_dir / color_file.name), image):
+        raise OSError(f"Could not write visualization frame to {track_vis_dir / color_file.name}")
       written += 1
   finally:
     writer.release()

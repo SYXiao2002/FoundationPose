@@ -12,6 +12,20 @@ from datareader import *
 import argparse
 
 
+def infer_video_fps(frame_ids):
+  timestamps = []
+  for frame_id in frame_ids:
+    try:
+      timestamps.append(int(frame_id))
+    except ValueError:
+      continue
+  if len(timestamps) < 2:
+    return 30.0
+  delta = np.diff(np.asarray(timestamps, dtype=np.float64))
+  delta = delta[delta > 0]
+  return float(np.clip(1e9 / np.median(delta), 1.0, 60.0)) if len(delta) else 30.0
+
+
 if __name__=='__main__':
   parser = argparse.ArgumentParser()
   code_dir = os.path.dirname(os.path.realpath(__file__))
@@ -21,6 +35,7 @@ if __name__=='__main__':
   parser.add_argument('--track_refine_iter', type=int, default=2)
   parser.add_argument('--debug', type=int, default=1)
   parser.add_argument('--debug_dir', type=str, default=f'{code_dir}/debug')
+  parser.add_argument('--video_fps', type=float, default=None, help='output video FPS; defaults to the input sequence rate')
   args = parser.parse_args()
 
   set_logging_format()
@@ -42,6 +57,7 @@ if __name__=='__main__':
   logging.info("estimator initialization done")
 
   reader = YcbineoatReader(video_dir=args.test_scene_dir, shorter_side=None, zfar=np.inf)
+  video_writer = None
 
   for i in range(len(reader.color_files)):
     logging.info(f'i:{i}')
@@ -68,7 +84,7 @@ if __name__=='__main__':
     if debug>=1:
       center_pose = pose@np.linalg.inv(to_origin)
       vis = draw_posed_3d_box(reader.K, img=color, ob_in_cam=center_pose, bbox=bbox)
-      vis = draw_xyz_axis(color, ob_in_cam=center_pose, scale=0.1, K=reader.K, thickness=3, transparency=0, is_input_rgb=True)
+      vis = draw_xyz_axis(vis, ob_in_cam=pose, scale=0.1, K=reader.K, thickness=3, transparency=0, is_input_rgb=True)
       if os.environ.get('DISPLAY') or os.environ.get('WAYLAND_DISPLAY'):
         cv2.imshow('1', vis[...,::-1])
         cv2.waitKey(1)
@@ -77,4 +93,17 @@ if __name__=='__main__':
     if debug>=2:
       os.makedirs(f'{debug_dir}/track_vis', exist_ok=True)
       imageio.imwrite(f'{debug_dir}/track_vis/{reader.id_strs[i]}.png', vis)
+      if video_writer is None:
+        video_fps = args.video_fps or infer_video_fps(reader.id_strs)
+        video_path = f'{debug_dir}/pose_video.mp4'
+        video_writer = cv2.VideoWriter(
+            video_path, cv2.VideoWriter_fourcc(*'mp4v'), video_fps,
+            (vis.shape[1], vis.shape[0]))
+        if not video_writer.isOpened():
+          raise RuntimeError(f'Could not open MP4 writer for {video_path}')
+      video_writer.write(vis[...,::-1])
+
+  if video_writer is not None:
+    video_writer.release()
+    logging.info(f'Pose video saved to {debug_dir}/pose_video.mp4')
 
