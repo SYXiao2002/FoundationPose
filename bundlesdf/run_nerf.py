@@ -61,9 +61,13 @@ def run_one_ob(base_dir, cfg, use_refined_mask=False):
     rgb = imageio.imread(color_file)
     depth = cv2.imread(color_file.replace('rgb','depth_enhanced'), -1)/1e3
     if use_refined_mask:
-      mask = cv2.imread(color_file.replace('rgb','mask_refined'), -1)
+      refined_mask_file = color_file.replace('rgb','mask_refined')
+      mask_file = refined_mask_file if os.path.isfile(refined_mask_file) else color_file.replace('rgb','mask')
     else:
-      mask = cv2.imread(color_file.replace('rgb','mask'), -1)
+      mask_file = color_file.replace('rgb','mask')
+    mask = cv2.imread(mask_file, -1)
+    if mask is None:
+      raise FileNotFoundError(f'Reference mask not found: {mask_file}')
     cam_in_ob = np.loadtxt(color_file.replace('rgb','cam_in_ob').replace('.png','.txt')).reshape(4,4)
     rgbs.append(rgb)
     depths.append(depth)

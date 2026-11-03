@@ -203,6 +203,23 @@ The paths have been set in argparse by default. If you need to change the scene,
 python run_demo.py
 ```
 
+## Record RGB-D data with MobileSAM masks
+
+`record_dataset.py` records aligned Orbbec colour/depth frames in the directory format expected by `run_demo.py`. It prompts MobileSAM (the same MobileSAM package and checkpoint used by the offline grasp tools) with an object box selected on the first frame, then saves a binary mask for each recorded RGB-D pair. The Orbbec/MobileSAM environment is separate from the FoundationPose inference environment; pass `--sam-model` if the checkpoint is stored elsewhere.
+
+```bash
+/home/yixiaoshen/Repo/chaung_wei_2_jiao_fu/.venv/bin/python record_dataset.py \
+  --object eu-plug --data-dir '/home/yixiaoshen/Repo/FoundationPose/demo_data' --serial 'CV2856D0002E' --fps 30 --record-fps 30 --duration 300
+
+source .venv/bin/activate
+python run_demo.py \
+  --mesh_file "$PWD/demo_data/eu-plug/TexturedMeshSimplified.obj" \
+  --test_scene_dir "$PWD/demo_data/<timestamp>_eu-plug" \
+  --debug 0 --debug_dir "$PWD/debug/eu-plug"
+```
+
+The preview starts paused. Select the target in the first frame, press `SPACE`/`r` to start or pause, and press `b` to select a new box. Press `q` to finish. For headless recording, supply `--bbox x1 y1 x2 y2 --no-preview`; coordinates are in the colour image. Saved depth PNGs are `uint16` millimetres, and `cam_K.txt` matches the saved aligned colour resolution.
+
 
 <img src="assets/demo.jpg" width="50%">
 
