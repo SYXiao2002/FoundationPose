@@ -216,6 +216,11 @@ python run_demo.py \
   --mesh_file "$PWD/demo_data/eu-plug-mesh/TexturedMeshSimplified.obj" \
   --test_scene_dir "$PWD/demo_data/<timestamp>_eu-plug" \
   --debug 2 --debug_dir "$PWD/debug/eu-plug"
+
+python visualize_pose_3d.py \
+  --debug-dir debug/eu-plug-12 \
+  --mesh-file demo_data/eu-plug-mesh/TexturedMeshSimplified.obj \
+  --crop-padding 0.05
 ```
 
 The preview starts paused. Select the target in the first frame, press `SPACE`/`r` to start or pause, and press `b` to select a new box. Press `q` to finish. For headless recording, supply `--bbox x1 y1 x2 y2 --no-preview`; coordinates are in the colour image. Saved depth PNGs are `uint16` millimetres, and `cam_K.txt` matches the saved aligned colour resolution.

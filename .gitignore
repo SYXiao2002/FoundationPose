@@ -156,4 +156,6 @@ data/
 logs/
 !BundleTrack/XMem/inference/data
 run_used.yml
-Log/OrbbecSDK.log.txt
+Log
+results
+*.DS_Store

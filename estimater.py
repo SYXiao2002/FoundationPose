@@ -39,6 +39,8 @@ class FoundationPose:
       self.refiner = PoseRefinePredictor()
 
     self.pose_last = None   # Used for tracking; per the centered mesh
+    self.scores = None
+    self.best_score = None
 
 
   def reset_object(self, model_pts, model_normals, symmetry_tfs=None, mesh=None):
@@ -162,6 +164,8 @@ class FoundationPose:
     '''
     set_seed(0)
     logging.info('Welcome')
+    self.scores = None
+    self.best_score = None
 
     if self.glctx is None:
       if glctx is None:
@@ -236,6 +240,7 @@ class FoundationPose:
 
     self.poses = poses
     self.scores = scores
+    self.best_score = scores[0]
 
     return best_pose.data.cpu().numpy()
 

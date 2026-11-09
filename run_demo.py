@@ -10,6 +10,8 @@
 from estimater import *
 from datareader import *
 import argparse
+import json
+from video_utils import H264VideoWriter
 
 
 def infer_video_fps(frame_ids):
@@ -58,6 +60,7 @@ if __name__=='__main__':
 
   reader = YcbineoatReader(video_dir=args.test_scene_dir, shorter_side=None, zfar=np.inf)
   video_writer = None
+  register_score = None
 
   for i in range(len(reader.color_files)):
     logging.info(f'i:{i}')
@@ -66,6 +69,20 @@ if __name__=='__main__':
     if i==0:
       mask = reader.get_mask(0).astype(bool)
       pose = est.register(K=reader.K, rgb=color, depth=depth, ob_mask=mask, iteration=args.est_refine_iter)
+      if est.best_score is not None:
+        register_score = float(est.best_score.detach().cpu().item())
+        score_record = {
+            'frame_id': reader.id_strs[i],
+            'score': register_score,
+            'score_type': 'raw scorer logit with pairwise selection offset',
+        }
+        score_path = f'{debug_dir}/register_score.json'
+        with open(score_path, 'w', encoding='utf-8') as f:
+          json.dump(score_record, f, indent=2)
+          f.write('\n')
+        logging.info(f"register best pose score: {register_score:.6f} (saved to {score_path})")
+      else:
+        logging.warning('register returned no scorer result; score was not recorded')
 
       if debug>=3:
         m = mesh.copy()
@@ -85,6 +102,17 @@ if __name__=='__main__':
       center_pose = pose@np.linalg.inv(to_origin)
       vis = draw_posed_3d_box(reader.K, img=color, ob_in_cam=center_pose, bbox=bbox)
       vis = draw_xyz_axis(vis, ob_in_cam=pose, scale=0.1, K=reader.K, thickness=3, transparency=0, is_input_rgb=True)
+      if i==0 and register_score is not None:
+        vis = cv_draw_text(
+            vis,
+            text=f'Register score: {register_score:.3f}',
+            uv_top_left=(10, 10),
+            color=(255, 255, 255),
+            fontScale=0.7,
+            thickness=2,
+            outline_color=(0, 0, 0),
+        )
+        imageio.imwrite(f'{debug_dir}/register_vis.png', vis)
       if os.environ.get('DISPLAY') or os.environ.get('WAYLAND_DISPLAY'):
         cv2.imshow('1', vis[...,::-1])
         cv2.waitKey(1)
@@ -96,11 +124,8 @@ if __name__=='__main__':
       if video_writer is None:
         video_fps = args.video_fps or infer_video_fps(reader.id_strs)
         video_path = f'{debug_dir}/pose_video.mp4'
-        video_writer = cv2.VideoWriter(
-            video_path, cv2.VideoWriter_fourcc(*'mp4v'), video_fps,
-            (vis.shape[1], vis.shape[0]))
-        if not video_writer.isOpened():
-          raise RuntimeError(f'Could not open MP4 writer for {video_path}')
+        video_writer = H264VideoWriter(
+            video_path, video_fps, (vis.shape[1], vis.shape[0]))
       video_writer.write(vis[...,::-1])
 
   if video_writer is not None:

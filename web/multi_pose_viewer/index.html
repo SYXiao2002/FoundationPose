@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f7f4">
+  <title>Multi-instance pose review</title>
+  <link rel="stylesheet" href="/style.css">
+  <script defer src="/plotly.js"></script>
+  <script defer src="/viewer.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand-mark" aria-hidden="true">FP</div>
+    <div class="heading-block">
+      <h1>Pose 检查</h1>
+      <div class="scene-meta"><span id="scene-name">加载场景中</span><span class="meta-dot">/</span><span>第一帧</span><span class="meta-dot">/</span><span id="frame-id">--</span></div>
+    </div>
+    <div class="top-status"><span id="point-count">-- 个点</span><span class="status-divider"></span><span id="selection-count">已选 0 个</span></div>
+  </header>
+
+  <main class="workspace">
+    <aside class="sidebar">
+      <section class="mask-section" aria-labelledby="mask-title">
+        <div class="section-title"><h2 id="mask-title">实例 Mask / ID</h2><button id="expand-mask" type="button">放大</button></div>
+        <div class="mask-frame"><img id="mask-preview" src="/api/mask.jpg" alt="第一帧 RGB 图、实例 mask 和 ID"><canvas id="mask-selection" aria-label="点击或拖框选择实例"></canvas></div>
+        <div class="legend-note"><span class="legend-mark"></span><span>点击 / 拖框选择 · Shift 追加 · 编号对应 instanceID</span></div>
+      </section>
+
+      <section class="instances-section" aria-labelledby="instances-title">
+        <div class="section-title"><h2 id="instances-title">选择 Instance</h2><span id="instance-total">--</span></div>
+        <div class="selection-actions">
+          <button id="select-all" type="button">全选</button>
+          <button id="clear-selection" type="button">清空</button>
+          <button id="invert-selection" type="button">反选</button>
+        </div>
+        <div id="instance-list" class="instance-list" role="group" aria-label="Choose instances"></div>
+      </section>
+    </aside>
+
+    <section class="viewer-area" aria-label="3D pose scene">
+      <div class="viewer-toolbar">
+        <div class="view-title"><h2>RGB-D 点云</h2><span class="unit-label">相机坐标 · 米</span></div>
+        <div class="view-controls">
+          <label class="switch-control"><input id="show-axes" type="checkbox" checked><span>坐标系</span></label>
+          <label class="switch-control"><input id="show-model" type="checkbox"><span>OBJ</span></label>
+          <label class="slider-control" for="model-opacity"><span>OBJ 不透明度</span><input id="model-opacity" type="range" min="0" max="100" value="48"><output id="opacity-value">48%</output></label>
+          <label class="slider-control axis-control" for="axis-size"><span>坐标轴长</span><input id="axis-size" type="range" min="5" max="100" value="25"><output id="axis-size-value">25 mm</output></label>
+        </div>
+      </div>
+      <div class="scene-options">
+        <label class="switch-control"><input id="crop-cloud" type="checkbox" checked><span>物体附近点云</span></label>
+        <label class="switch-control"><input id="show-cloud" type="checkbox" checked><span>显示点云</span></label>
+        <label class="slider-control" for="point-size"><span>点大小</span><input id="point-size" type="range" min="1" max="5" step="0.25" value="2"><output id="point-size-value">2 px</output></label>
+        <button id="reset-view" type="button">正视</button><button id="side-view" type="button">侧视</button><button id="focus-selection" type="button">聚焦所选</button>
+        <span class="interaction-hint">左键旋转 · 右键平移 · 滚轮缩放</span>
+      </div>
+      <div id="scene-plot" role="img" aria-label="Interactive RGB point cloud with selected instance poses"></div>
+      <div class="scene-footer">
+        <div class="axis-key"><span><i class="axis-x"></i>X</span><span><i class="axis-y"></i>Y</span><span><i class="axis-z"></i>Z</span></div>
+        <div id="pose-readout" class="pose-readout">勾选或在 Mask 图上框选实例，显示对应的 pose。</div>
+      </div>
+    </section>
+  </main>
+  <dialog id="mask-dialog">
+    <div class="dialog-toolbar"><strong>实例 Mask / ID</strong><span>点击切换 · 拖框选择 · Shift 追加</span><button id="close-mask" type="button">关闭</button></div>
+    <div class="mask-frame"><canvas id="large-mask" aria-label="放大的实例图，支持点击和拖框选择"></canvas></div>
+  </dialog>
+  <div id="error-banner" class="error-banner" hidden></div>
+</body>
+</html>

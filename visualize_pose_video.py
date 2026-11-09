@@ -10,6 +10,7 @@ import numpy as np
 import trimesh
 
 from Utils import draw_posed_3d_box, draw_xyz_axis
+from video_utils import H264VideoWriter
 
 
 def infer_fps(frame_stems):
@@ -73,9 +74,7 @@ def main():
     raise OSError(f"Could not read {valid_frames[0][0]}")
   height, width = first.shape[:2]
   output.parent.mkdir(parents=True, exist_ok=True)
-  writer = cv2.VideoWriter(str(output), cv2.VideoWriter_fourcc(*"mp4v"), fps, (width, height))
-  if not writer.isOpened():
-    raise RuntimeError(f"Could not open MP4 writer for {output}")
+  writer = H264VideoWriter(output, fps, (width, height))
 
   written = 0
   try:

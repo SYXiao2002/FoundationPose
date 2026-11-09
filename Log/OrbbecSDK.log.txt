@@ -1669,3 +1669,911 @@
 [11/03 17:37:22.033089][info][2718741][ObLibuvcDevicePort.cpp:87] uvc_close done.
 [11/03 17:37:22.033094][info][2718741][ObLibuvcDevicePort.cpp:88] ~ObLibuvcDevicePort done
 [11/03 17:37:22.035071][warning][2718971][Pipeline.cpp:324] [CV2856D0002E] Output frameset queue is full, drop oldest frameset! [**18 logs in 8466ms, last: 17:37:15.225289**]
+[11/04 08:58:49.751842][info][2751578][HostTimestampProvider.cpp:36] Update clock type to: realtime(0)
+[11/04 08:58:50.076809][info][2751578][LinuxUsbPal.cpp:334] Create PollingDeviceWatcher!
+[11/04 08:58:50.076820][info][2751578][DeviceManager.cpp:25] Current found device(s): (4)
+[11/04 08:58:50.076821][info][2751578][DeviceManager.cpp:34] 	- Name: Gemini 305, PID: 0x0840, SN/ID: CV2856D0008H, Connection: USB3.2
+[11/04 08:58:50.076822][info][2751578][DeviceManager.cpp:34] 	- Name: Gemini 305, PID: 0x0840, SN/ID: CV2856D0002E, Connection: USB3.2
+[11/04 08:58:50.076822][info][2751578][DeviceManager.cpp:34] 	- Name: Gemini 335L, PID: 0x0804, SN/ID: CP28563000CV, Connection: USB3.2
+[11/04 08:58:50.076822][info][2751578][DeviceManager.cpp:34] 	- Name: Gemini 335L, PID: 0x0804, SN/ID: CP28563000CK, Connection: USB3.2
+[11/04 08:58:50.076823][info][2751578][DeviceManager.cpp:463] Enable net device enumeration: true
+[11/04 08:58:51.079635][info][2751578][DeviceManager.cpp:25] Current device(s) list: (4)
+[11/04 08:58:51.079646][info][2751578][DeviceManager.cpp:34] 	- Name: Gemini 305, PID: 0x0840, SN/ID: CV2856D0008H, Connection: USB3.2
+[11/04 08:58:51.079646][info][2751578][DeviceManager.cpp:34] 	- Name: Gemini 305, PID: 0x0840, SN/ID: CV2856D0002E, Connection: USB3.2
+[11/04 08:58:51.079647][info][2751578][DeviceManager.cpp:34] 	- Name: Gemini 335L, PID: 0x0804, SN/ID: CP28563000CV, Connection: USB3.2
+[11/04 08:58:51.079647][info][2751578][DeviceManager.cpp:34] 	- Name: Gemini 335L, PID: 0x0804, SN/ID: CP28563000CK, Connection: USB3.2
+[11/04 08:58:51.080401][info][2751578][G305Device.cpp:616] UVCAutoRebootOnFault=true for device: Gemini 305
+[11/04 08:58:51.086354][info][2751578][DeviceBase.cpp:742] key: AppSlot,value:1
+[11/04 08:58:51.086357][info][2751578][DeviceBase.cpp:742] key: HwType,value:S1
+[11/04 08:58:51.086358][info][2751578][DeviceBase.cpp:742] key: HwVer,value:V1.3
+[11/04 08:58:51.086358][info][2751578][DeviceBase.cpp:742] key: IspFwVer,value:20260424
+[11/04 08:58:51.086359][info][2751578][DeviceBase.cpp:742] key: IspNeedVer,value:20250920
+[11/04 08:58:51.086359][info][2751578][DeviceBase.cpp:742] key: PresetVer,value:0.0.9
+[11/04 08:58:51.276356][info][2751578][DeviceManager.cpp:200] Device created successfully! Name: Gemini 305, PID: 0x0840, SN/ID: CV2856D0002E FW: 1.0.70
+[11/04 08:58:51.276404][info][2751578][Pipeline.cpp:54] [CV2856D0002E] Pipeline created with device: {name: Gemini 305, sn: CV2856D0002E}, @0x5FC6E7EEDE90
+[11/04 08:58:53.259890][info][2751578][Pipeline.cpp:228] [CV2856D0002E] Check and set config done!
+[11/04 08:58:53.261062][info][2751578][Pipeline.cpp:266] [CV2856D0002E] Try to start streams!
+[11/04 08:58:53.261071][info][2751578][VideoSensor.cpp:61] [CV2856D0002E] Try to start stream: {type: Color, format: MJPG, width: 640, height: 480, fps: 30}
+[11/04 08:58:53.261079][info][2751578][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STOPPED to STARTING@Color
+[11/04 08:58:53.261080][info][2751578][VideoSensor.cpp:130] [CV2856D0002E] Start backend stream: {type: Color, format: MJPG, width: 640, height: 480, fps: 30}
+[11/04 08:58:53.262926][info][2751578][VideoSensor.cpp:61] [CV2856D0002E] Try to start stream: {type: Depth, format: Y16, width: 848, height: 530, fps: 30}
+[11/04 08:58:53.265895][info][2751578][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STOPPED to STARTING@Depth
+[11/04 08:58:53.265909][info][2751578][VideoSensor.cpp:130] [CV2856D0002E] Start backend stream: {type: Depth, format: Z16, width: 848, height: 530, fps: 30}
+[11/04 08:58:53.266980][info][2751578][Pipeline.cpp:293] [CV2856D0002E] Start streams done!
+[11/04 08:58:53.266981][info][2751578][Pipeline.cpp:250] [CV2856D0002E] Pipeline start done!
+[11/04 08:58:53.781529][info][2751684][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STARTING to STREAMING@Depth
+[11/04 08:58:53.846361][info][2751682][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STARTING to STREAMING@Color
+[11/04 08:58:53.846532][warning][2751578][Align.cpp:166] No other frame or align profile or to profile found!
+[11/04 08:58:53.846561][warning][2751578][Align.cpp:166] No other frame or align profile or to profile found!
+[11/04 08:58:54.714309][warning][2751686][Pipeline.cpp:324] [CV2856D0002E] Output frameset queue is full, drop oldest frameset!
+[11/04 08:58:57.747627][warning][2751711][Pipeline.cpp:324] [CV2856D0002E] Output frameset queue is full, drop oldest frameset! [**80 logs in 3033ms, last: 08:58:57.378668**]
+[11/04 08:58:58.810827][info][2751684][VideoSensor.cpp:180] [CV2856D0002E] Depth backend frame callback, frameRate=30.224697fps
+[11/04 08:58:58.811033][info][2751686][SensorBase.cpp:405] [CV2856D0002E] Depth Streaming... frameRate=30.248756fps
+[11/04 08:58:58.876223][info][2751682][VideoSensor.cpp:180] [CV2856D0002E] Color backend frame callback, frameRate=30.218687fps
+[11/04 08:58:58.876295][info][2751688][SensorBase.cpp:405] [CV2856D0002E] Color Streaming... frameRate=30.224697fps
+[11/04 08:59:03.840352][info][2751684][VideoSensor.cpp:180] [CV2856D0002E] Depth backend frame callback, frameRate=30.025850fps
+[11/04 08:59:03.840667][info][2751686][SensorBase.cpp:405] [CV2856D0002E] Depth Streaming... frameRate=30.025850fps
+[11/04 08:59:03.905722][info][2751682][VideoSensor.cpp:180] [CV2856D0002E] Color backend frame callback, frameRate=30.025850fps
+[11/04 08:59:03.905805][info][2751688][SensorBase.cpp:405] [CV2856D0002E] Color Streaming... frameRate=30.025850fps
+[11/04 08:59:04.611359][warning][2751735][Pipeline.cpp:324] [CV2856D0002E] Output frameset queue is full, drop oldest frameset! [**26 logs in 6863ms, last: 08:59:01.009307**]
+[11/04 08:59:05.479298][info][2751578][Pipeline.cpp:367] [CV2856D0002E] Try to stop pipeline!
+[11/04 08:59:05.479307][info][2751578][Pipeline.cpp:343] [CV2856D0002E] Try to stop streams!
+[11/04 08:59:05.479317][info][2751578][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STREAMING to STOPPING@Depth
+[11/04 08:59:05.490597][info][2751578][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STOPPING to STOPPED@Depth
+[11/04 08:59:05.490695][info][2751578][Pipeline.cpp:357] [CV2856D0002E] Sensor stream stopped, sensorType=Depth
+[11/04 08:59:05.490705][info][2751578][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STREAMING to STOPPING@Color
+[11/04 08:59:05.510536][info][2751578][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STOPPING to STOPPED@Color
+[11/04 08:59:05.510692][info][2751578][Pipeline.cpp:357] [CV2856D0002E] Sensor stream stopped, sensorType=Color
+[11/04 08:59:05.510693][info][2751578][Pipeline.cpp:363] [CV2856D0002E] Stop streams done!
+[11/04 08:59:05.530546][info][2751578][Pipeline.cpp:393] [CV2856D0002E] Stop pipeline done!
+[11/04 08:59:05.531796][info][2751578][Pipeline.cpp:65] [CV2856D0002E] Pipeline destroyed! @0x5FC6E7EEDE90
+[11/04 08:59:05.531871][info][2751578][SensorBase.cpp:53] [CV2856D0002E] SensorBase is destroyed
+[11/04 08:59:05.532705][info][2751578][ObLibuvcDevicePort.cpp:87] uvc_close done.
+[11/04 08:59:05.532707][info][2751578][ObLibuvcDevicePort.cpp:88] ~ObLibuvcDevicePort done
+[11/04 08:59:05.532789][info][2751578][SensorBase.cpp:53] [CV2856D0002E] SensorBase is destroyed
+[11/04 08:59:05.540148][info][2751578][ObLibuvcDevicePort.cpp:87] uvc_close done.
+[11/04 08:59:05.540151][info][2751578][ObLibuvcDevicePort.cpp:88] ~ObLibuvcDevicePort done
+[11/04 09:10:42.159053][info][2752466][HostTimestampProvider.cpp:36] Update clock type to: realtime(0)
+[11/04 09:10:42.483990][info][2752466][LinuxUsbPal.cpp:334] Create PollingDeviceWatcher!
+[11/04 09:10:42.483999][info][2752466][DeviceManager.cpp:25] Current found device(s): (4)
+[11/04 09:10:42.484000][info][2752466][DeviceManager.cpp:34] 	- Name: Gemini 305, PID: 0x0840, SN/ID: CV2856D0008H, Connection: USB3.2
+[11/04 09:10:42.484000][info][2752466][DeviceManager.cpp:34] 	- Name: Gemini 305, PID: 0x0840, SN/ID: CV2856D0002E, Connection: USB3.2
+[11/04 09:10:42.484000][info][2752466][DeviceManager.cpp:34] 	- Name: Gemini 335L, PID: 0x0804, SN/ID: CP28563000CV, Connection: USB3.2
+[11/04 09:10:42.484001][info][2752466][DeviceManager.cpp:34] 	- Name: Gemini 335L, PID: 0x0804, SN/ID: CP28563000CK, Connection: USB3.2
+[11/04 09:10:42.484002][info][2752466][DeviceManager.cpp:463] Enable net device enumeration: true
+[11/04 09:10:43.487820][info][2752466][DeviceManager.cpp:25] Current device(s) list: (4)
+[11/04 09:10:43.487857][info][2752466][DeviceManager.cpp:34] 	- Name: Gemini 305, PID: 0x0840, SN/ID: CV2856D0008H, Connection: USB3.2
+[11/04 09:10:43.487858][info][2752466][DeviceManager.cpp:34] 	- Name: Gemini 305, PID: 0x0840, SN/ID: CV2856D0002E, Connection: USB3.2
+[11/04 09:10:43.487858][info][2752466][DeviceManager.cpp:34] 	- Name: Gemini 335L, PID: 0x0804, SN/ID: CP28563000CV, Connection: USB3.2
+[11/04 09:10:43.487858][info][2752466][DeviceManager.cpp:34] 	- Name: Gemini 335L, PID: 0x0804, SN/ID: CP28563000CK, Connection: USB3.2
+[11/04 09:10:43.488591][info][2752466][G305Device.cpp:616] UVCAutoRebootOnFault=true for device: Gemini 305
+[11/04 09:10:43.494552][info][2752466][DeviceBase.cpp:742] key: AppSlot,value:1
+[11/04 09:10:43.494555][info][2752466][DeviceBase.cpp:742] key: HwType,value:S1
+[11/04 09:10:43.494555][info][2752466][DeviceBase.cpp:742] key: HwVer,value:V1.3
+[11/04 09:10:43.494556][info][2752466][DeviceBase.cpp:742] key: IspFwVer,value:20260424
+[11/04 09:10:43.494556][info][2752466][DeviceBase.cpp:742] key: IspNeedVer,value:20250920
+[11/04 09:10:43.494556][info][2752466][DeviceBase.cpp:742] key: PresetVer,value:0.0.9
+[11/04 09:10:43.683814][info][2752466][DeviceManager.cpp:200] Device created successfully! Name: Gemini 305, PID: 0x0840, SN/ID: CV2856D0002E FW: 1.0.70
+[11/04 09:10:43.683874][info][2752466][Pipeline.cpp:54] [CV2856D0002E] Pipeline created with device: {name: Gemini 305, sn: CV2856D0002E}, @0x6290E1193E90
+[11/04 09:10:45.746297][info][2752466][Pipeline.cpp:228] [CV2856D0002E] Check and set config done!
+[11/04 09:10:45.747770][info][2752466][Pipeline.cpp:266] [CV2856D0002E] Try to start streams!
+[11/04 09:10:45.747781][info][2752466][VideoSensor.cpp:61] [CV2856D0002E] Try to start stream: {type: Color, format: MJPG, width: 640, height: 480, fps: 30}
+[11/04 09:10:45.747789][info][2752466][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STOPPED to STARTING@Color
+[11/04 09:10:45.747791][info][2752466][VideoSensor.cpp:130] [CV2856D0002E] Start backend stream: {type: Color, format: MJPG, width: 640, height: 480, fps: 30}
+[11/04 09:10:45.749382][info][2752466][VideoSensor.cpp:61] [CV2856D0002E] Try to start stream: {type: Depth, format: Y16, width: 848, height: 530, fps: 30}
+[11/04 09:10:45.752173][info][2752466][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STOPPED to STARTING@Depth
+[11/04 09:10:45.752176][info][2752466][VideoSensor.cpp:130] [CV2856D0002E] Start backend stream: {type: Depth, format: Z16, width: 848, height: 530, fps: 30}
+[11/04 09:10:45.753171][info][2752466][Pipeline.cpp:293] [CV2856D0002E] Start streams done!
+[11/04 09:10:45.753172][info][2752466][Pipeline.cpp:250] [CV2856D0002E] Pipeline start done!
+[11/04 09:10:46.267820][info][2752569][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STARTING to STREAMING@Depth
+[11/04 09:10:46.332624][info][2752567][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STARTING to STREAMING@Color
+[11/04 09:10:46.332763][warning][2752466][Align.cpp:166] No other frame or align profile or to profile found!
+[11/04 09:10:46.332796][warning][2752466][Align.cpp:166] No other frame or align profile or to profile found!
+[11/04 09:10:47.200502][warning][2752572][Pipeline.cpp:324] [CV2856D0002E] Output frameset queue is full, drop oldest frameset!
+[11/04 09:10:50.231291][warning][2752572][Pipeline.cpp:324] [CV2856D0002E] Output frameset queue is full, drop oldest frameset! [**91 logs in 3030ms**]
+[11/04 09:10:51.296968][info][2752569][VideoSensor.cpp:180] [CV2856D0002E] Depth backend frame callback, frameRate=30.224697fps
+[11/04 09:10:51.297187][info][2752572][SensorBase.cpp:405] [CV2856D0002E] Depth Streaming... frameRate=30.254776fps
+[11/04 09:10:51.362396][info][2752567][VideoSensor.cpp:180] [CV2856D0002E] Color backend frame callback, frameRate=30.224697fps
+[11/04 09:10:51.362485][info][2752576][SensorBase.cpp:405] [CV2856D0002E] Color Streaming... frameRate=30.224697fps
+[11/04 09:10:56.260122][warning][2752572][Pipeline.cpp:324] [CV2856D0002E] Output frameset queue is full, drop oldest frameset! [**181 logs in 6028ms**]
+[11/04 09:10:56.326622][info][2752569][VideoSensor.cpp:180] [CV2856D0002E] Depth backend frame callback, frameRate=30.025850fps
+[11/04 09:10:56.326822][info][2752572][SensorBase.cpp:405] [CV2856D0002E] Depth Streaming... frameRate=30.019880fps
+[11/04 09:10:56.391936][info][2752567][VideoSensor.cpp:180] [CV2856D0002E] Color backend frame callback, frameRate=30.019880fps
+[11/04 09:10:56.391977][info][2752576][SensorBase.cpp:405] [CV2856D0002E] Color Streaming... frameRate=30.019880fps
+[11/04 09:10:57.691074][warning][2752567][VideoSensor.cpp:214] [CV2856D0002E] This frame will be dropped because jpg format verification failure! @Color
+[11/04 09:11:01.356113][info][2752569][VideoSensor.cpp:180] [CV2856D0002E] Depth backend frame callback, frameRate=30.019880fps
+[11/04 09:11:01.356324][info][2752572][SensorBase.cpp:405] [CV2856D0002E] Depth Streaming... frameRate=30.025850fps
+[11/04 09:11:01.421601][info][2752567][VideoSensor.cpp:180] [CV2856D0002E] Color backend frame callback, frameRate=30.025850fps
+[11/04 09:11:01.421638][info][2752576][SensorBase.cpp:405] [CV2856D0002E] Color Streaming... frameRate=29.628159fps
+[11/04 09:11:03.322536][warning][2752664][VideoSensor.cpp:214] [CV2856D0002E] This frame will be dropped because jpg format verification failure! @Color [**1 logs in 5631ms, last: 09:11:00.322321**]
+[11/04 09:11:06.385685][info][2752569][VideoSensor.cpp:180] [CV2856D0002E] Depth backend frame callback, frameRate=30.025850fps
+[11/04 09:11:06.385917][info][2752572][SensorBase.cpp:405] [CV2856D0002E] Depth Streaming... frameRate=30.025850fps
+[11/04 09:11:06.451229][info][2752567][VideoSensor.cpp:180] [CV2856D0002E] Color backend frame callback, frameRate=30.019880fps
+[11/04 09:11:06.451307][info][2752576][SensorBase.cpp:405] [CV2856D0002E] Color Streaming... frameRate=29.821072fps
+[11/04 09:11:07.386166][warning][2752679][VideoSensor.cpp:214] [CV2856D0002E] This frame will be dropped because jpg format verification failure! @Color [**1 logs in 4063ms, last: 09:11:04.385999**]
+[11/04 09:11:08.284466][warning][2752572][Pipeline.cpp:324] [CV2856D0002E] Output frameset queue is full, drop oldest frameset! [**361 logs in 12024ms**]
+[11/04 09:11:08.778206][info][2752466][Pipeline.cpp:367] [CV2856D0002E] Try to stop pipeline!
+[11/04 09:11:08.778212][info][2752466][Pipeline.cpp:343] [CV2856D0002E] Try to stop streams!
+[11/04 09:11:08.778226][info][2752466][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STREAMING to STOPPING@Depth
+[11/04 09:11:08.792653][info][2752466][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STOPPING to STOPPED@Depth
+[11/04 09:11:08.792717][info][2752466][Pipeline.cpp:357] [CV2856D0002E] Sensor stream stopped, sensorType=Depth
+[11/04 09:11:08.792722][info][2752466][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STREAMING to STOPPING@Color
+[11/04 09:11:08.812663][info][2752466][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STOPPING to STOPPED@Color
+[11/04 09:11:08.812748][info][2752466][Pipeline.cpp:357] [CV2856D0002E] Sensor stream stopped, sensorType=Color
+[11/04 09:11:08.812749][info][2752466][Pipeline.cpp:363] [CV2856D0002E] Stop streams done!
+[11/04 09:11:08.832677][info][2752466][Pipeline.cpp:393] [CV2856D0002E] Stop pipeline done!
+[11/04 09:11:08.889380][info][2752466][Pipeline.cpp:65] [CV2856D0002E] Pipeline destroyed! @0x6290E1193E90
+[11/04 09:11:08.889445][info][2752466][SensorBase.cpp:53] [CV2856D0002E] SensorBase is destroyed
+[11/04 09:11:08.890210][info][2752466][ObLibuvcDevicePort.cpp:87] uvc_close done.
+[11/04 09:11:08.890212][info][2752466][ObLibuvcDevicePort.cpp:88] ~ObLibuvcDevicePort done
+[11/04 09:11:08.890291][info][2752466][SensorBase.cpp:53] [CV2856D0002E] SensorBase is destroyed
+[11/04 09:11:08.897726][info][2752466][ObLibuvcDevicePort.cpp:87] uvc_close done.
+[11/04 09:11:08.897729][info][2752466][ObLibuvcDevicePort.cpp:88] ~ObLibuvcDevicePort done
+[11/04 09:11:08.899687][warning][2752697][Pipeline.cpp:324] [CV2856D0002E] Output frameset queue is full, drop oldest frameset! [**14 logs in 615ms, last: 09:11:08.750680**]
+[11/04 09:11:10.238389][info][2752725][HostTimestampProvider.cpp:36] Update clock type to: realtime(0)
+[11/04 09:11:10.241089][info][2752725][LinuxUsbPal.cpp:334] Create PollingDeviceWatcher!
+[11/04 09:11:10.241096][info][2752725][DeviceManager.cpp:25] Current found device(s): (4)
+[11/04 09:11:10.241097][info][2752725][DeviceManager.cpp:34] 	- Name: Gemini 305, PID: 0x0840, SN/ID: CV2856D0008H, Connection: USB3.2
+[11/04 09:11:10.241097][info][2752725][DeviceManager.cpp:34] 	- Name: Gemini 305, PID: 0x0840, SN/ID: CV2856D0002E, Connection: USB3.2
+[11/04 09:11:10.241098][info][2752725][DeviceManager.cpp:34] 	- Name: Gemini 335L, PID: 0x0804, SN/ID: CP28563000CV, Connection: USB3.2
+[11/04 09:11:10.241098][info][2752725][DeviceManager.cpp:34] 	- Name: Gemini 335L, PID: 0x0804, SN/ID: CP28563000CK, Connection: USB3.2
+[11/04 09:11:10.241099][info][2752725][DeviceManager.cpp:463] Enable net device enumeration: true
+[11/04 09:11:11.244679][info][2752725][DeviceManager.cpp:25] Current device(s) list: (4)
+[11/04 09:11:11.244690][info][2752725][DeviceManager.cpp:34] 	- Name: Gemini 305, PID: 0x0840, SN/ID: CV2856D0008H, Connection: USB3.2
+[11/04 09:11:11.244691][info][2752725][DeviceManager.cpp:34] 	- Name: Gemini 305, PID: 0x0840, SN/ID: CV2856D0002E, Connection: USB3.2
+[11/04 09:11:11.244692][info][2752725][DeviceManager.cpp:34] 	- Name: Gemini 335L, PID: 0x0804, SN/ID: CP28563000CV, Connection: USB3.2
+[11/04 09:11:11.244692][info][2752725][DeviceManager.cpp:34] 	- Name: Gemini 335L, PID: 0x0804, SN/ID: CP28563000CK, Connection: USB3.2
+[11/04 09:11:11.245432][info][2752725][G305Device.cpp:616] UVCAutoRebootOnFault=true for device: Gemini 305
+[11/04 09:11:11.251408][info][2752725][DeviceBase.cpp:742] key: AppSlot,value:1
+[11/04 09:11:11.251411][info][2752725][DeviceBase.cpp:742] key: HwType,value:S1
+[11/04 09:11:11.251412][info][2752725][DeviceBase.cpp:742] key: HwVer,value:V1.3
+[11/04 09:11:11.251412][info][2752725][DeviceBase.cpp:742] key: IspFwVer,value:20260424
+[11/04 09:11:11.251413][info][2752725][DeviceBase.cpp:742] key: IspNeedVer,value:20250920
+[11/04 09:11:11.251413][info][2752725][DeviceBase.cpp:742] key: PresetVer,value:0.0.9
+[11/04 09:11:11.442007][info][2752725][DeviceManager.cpp:200] Device created successfully! Name: Gemini 305, PID: 0x0840, SN/ID: CV2856D0002E FW: 1.0.70
+[11/04 09:11:11.442066][info][2752725][Pipeline.cpp:54] [CV2856D0002E] Pipeline created with device: {name: Gemini 305, sn: CV2856D0002E}, @0x55F496A3BE90
+[11/04 09:11:13.494051][info][2752725][Pipeline.cpp:228] [CV2856D0002E] Check and set config done!
+[11/04 09:11:13.495342][info][2752725][Pipeline.cpp:266] [CV2856D0002E] Try to start streams!
+[11/04 09:11:13.495352][info][2752725][VideoSensor.cpp:61] [CV2856D0002E] Try to start stream: {type: Color, format: MJPG, width: 640, height: 480, fps: 30}
+[11/04 09:11:13.495359][info][2752725][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STOPPED to STARTING@Color
+[11/04 09:11:13.495362][info][2752725][VideoSensor.cpp:130] [CV2856D0002E] Start backend stream: {type: Color, format: MJPG, width: 640, height: 480, fps: 30}
+[11/04 09:11:13.497177][info][2752725][VideoSensor.cpp:61] [CV2856D0002E] Try to start stream: {type: Depth, format: Y16, width: 848, height: 530, fps: 30}
+[11/04 09:11:13.500238][info][2752725][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STOPPED to STARTING@Depth
+[11/04 09:11:13.500242][info][2752725][VideoSensor.cpp:130] [CV2856D0002E] Start backend stream: {type: Depth, format: Z16, width: 848, height: 530, fps: 30}
+[11/04 09:11:13.501233][info][2752725][Pipeline.cpp:293] [CV2856D0002E] Start streams done!
+[11/04 09:11:13.501234][info][2752725][Pipeline.cpp:250] [CV2856D0002E] Pipeline start done!
+[11/04 09:11:14.015641][info][2752812][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STARTING to STREAMING@Depth
+[11/04 09:11:14.080423][info][2752810][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STARTING to STREAMING@Color
+[11/04 09:11:14.080583][warning][2752725][Align.cpp:166] No other frame or align profile or to profile found!
+[11/04 09:11:14.080611][warning][2752725][Align.cpp:166] No other frame or align profile or to profile found!
+[11/04 09:11:14.948366][warning][2752815][Pipeline.cpp:324] [CV2856D0002E] Output frameset queue is full, drop oldest frameset!
+[11/04 09:11:17.979078][warning][2752815][Pipeline.cpp:324] [CV2856D0002E] Output frameset queue is full, drop oldest frameset! [**91 logs in 3030ms**]
+[11/04 09:11:19.044788][info][2752812][VideoSensor.cpp:180] [CV2856D0002E] Depth backend frame callback, frameRate=30.230709fps
+[11/04 09:11:19.044980][info][2752815][SensorBase.cpp:405] [CV2856D0002E] Depth Streaming... frameRate=30.254776fps
+[11/04 09:11:19.110244][info][2752810][VideoSensor.cpp:180] [CV2856D0002E] Color backend frame callback, frameRate=30.218687fps
+[11/04 09:11:19.110280][info][2752817][SensorBase.cpp:405] [CV2856D0002E] Color Streaming... frameRate=30.224697fps
+[11/04 09:11:24.012602][warning][2752865][Pipeline.cpp:324] [CV2856D0002E] Output frameset queue is full, drop oldest frameset! [**87 logs in 6033ms, last: 09:11:22.775598**]
+[11/04 09:11:24.074433][info][2752812][VideoSensor.cpp:180] [CV2856D0002E] Depth backend frame callback, frameRate=30.019880fps
+[11/04 09:11:24.074623][info][2752815][SensorBase.cpp:405] [CV2856D0002E] Depth Streaming... frameRate=30.025850fps
+[11/04 09:11:24.139872][info][2752810][VideoSensor.cpp:180] [CV2856D0002E] Color backend frame callback, frameRate=30.025850fps
+[11/04 09:11:24.139951][info][2752817][SensorBase.cpp:405] [CV2856D0002E] Color Streaming... frameRate=30.025850fps
+[11/04 09:11:24.880931][info][2752725][Pipeline.cpp:367] [CV2856D0002E] Try to stop pipeline!
+[11/04 09:11:24.880936][info][2752725][Pipeline.cpp:343] [CV2856D0002E] Try to stop streams!
+[11/04 09:11:24.880946][info][2752725][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STREAMING to STOPPING@Depth
+[11/04 09:11:24.901598][info][2752725][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STOPPING to STOPPED@Depth
+[11/04 09:11:24.901739][info][2752725][Pipeline.cpp:357] [CV2856D0002E] Sensor stream stopped, sensorType=Depth
+[11/04 09:11:24.901743][info][2752725][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STREAMING to STOPPING@Color
+[11/04 09:11:24.921590][info][2752725][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STOPPING to STOPPED@Color
+[11/04 09:11:24.921682][info][2752725][Pipeline.cpp:357] [CV2856D0002E] Sensor stream stopped, sensorType=Color
+[11/04 09:11:24.921683][info][2752725][Pipeline.cpp:363] [CV2856D0002E] Stop streams done!
+[11/04 09:11:24.941670][info][2752725][Pipeline.cpp:393] [CV2856D0002E] Stop pipeline done!
+[11/04 09:11:24.942562][info][2752725][Pipeline.cpp:65] [CV2856D0002E] Pipeline destroyed! @0x55F496A3BE90
+[11/04 09:11:24.942638][info][2752725][SensorBase.cpp:53] [CV2856D0002E] SensorBase is destroyed
+[11/04 09:11:24.943744][info][2752725][ObLibuvcDevicePort.cpp:87] uvc_close done.
+[11/04 09:11:24.943744][info][2752725][ObLibuvcDevicePort.cpp:88] ~ObLibuvcDevicePort done
+[11/04 09:11:24.943820][info][2752725][SensorBase.cpp:53] [CV2856D0002E] SensorBase is destroyed
+[11/04 09:11:24.951299][info][2752725][ObLibuvcDevicePort.cpp:87] uvc_close done.
+[11/04 09:11:24.951303][info][2752725][ObLibuvcDevicePort.cpp:88] ~ObLibuvcDevicePort done
+[11/04 09:12:56.440513][info][2753208][HostTimestampProvider.cpp:36] Update clock type to: realtime(0)
+[11/04 09:12:56.767915][info][2753208][LinuxUsbPal.cpp:334] Create PollingDeviceWatcher!
+[11/04 09:12:56.767924][info][2753208][DeviceManager.cpp:25] Current found device(s): (4)
+[11/04 09:12:56.767925][info][2753208][DeviceManager.cpp:34] 	- Name: Gemini 305, PID: 0x0840, SN/ID: CV2856D0008H, Connection: USB3.2
+[11/04 09:12:56.767925][info][2753208][DeviceManager.cpp:34] 	- Name: Gemini 305, PID: 0x0840, SN/ID: CV2856D0002E, Connection: USB3.2
+[11/04 09:12:56.767925][info][2753208][DeviceManager.cpp:34] 	- Name: Gemini 335L, PID: 0x0804, SN/ID: CP28563000CV, Connection: USB3.2
+[11/04 09:12:56.767926][info][2753208][DeviceManager.cpp:34] 	- Name: Gemini 335L, PID: 0x0804, SN/ID: CP28563000CK, Connection: USB3.2
+[11/04 09:12:56.767927][info][2753208][DeviceManager.cpp:463] Enable net device enumeration: true
+[11/04 09:12:57.770587][info][2753208][DeviceManager.cpp:25] Current device(s) list: (4)
+[11/04 09:12:57.770598][info][2753208][DeviceManager.cpp:34] 	- Name: Gemini 305, PID: 0x0840, SN/ID: CV2856D0008H, Connection: USB3.2
+[11/04 09:12:57.770598][info][2753208][DeviceManager.cpp:34] 	- Name: Gemini 305, PID: 0x0840, SN/ID: CV2856D0002E, Connection: USB3.2
+[11/04 09:12:57.770599][info][2753208][DeviceManager.cpp:34] 	- Name: Gemini 335L, PID: 0x0804, SN/ID: CP28563000CV, Connection: USB3.2
+[11/04 09:12:57.770599][info][2753208][DeviceManager.cpp:34] 	- Name: Gemini 335L, PID: 0x0804, SN/ID: CP28563000CK, Connection: USB3.2
+[11/04 09:12:57.771360][info][2753208][G305Device.cpp:616] UVCAutoRebootOnFault=true for device: Gemini 305
+[11/04 09:12:57.777451][info][2753208][DeviceBase.cpp:742] key: AppSlot,value:1
+[11/04 09:12:57.777454][info][2753208][DeviceBase.cpp:742] key: HwType,value:S1
+[11/04 09:12:57.777455][info][2753208][DeviceBase.cpp:742] key: HwVer,value:V1.3
+[11/04 09:12:57.777456][info][2753208][DeviceBase.cpp:742] key: IspFwVer,value:20260424
+[11/04 09:12:57.777456][info][2753208][DeviceBase.cpp:742] key: IspNeedVer,value:20250920
+[11/04 09:12:57.777457][info][2753208][DeviceBase.cpp:742] key: PresetVer,value:0.0.9
+[11/04 09:12:57.966604][info][2753208][DeviceManager.cpp:200] Device created successfully! Name: Gemini 305, PID: 0x0840, SN/ID: CV2856D0002E FW: 1.0.70
+[11/04 09:12:57.966648][info][2753208][Pipeline.cpp:54] [CV2856D0002E] Pipeline created with device: {name: Gemini 305, sn: CV2856D0002E}, @0x5E351B5B4E90
+[11/04 09:12:59.925330][info][2753208][Pipeline.cpp:228] [CV2856D0002E] Check and set config done!
+[11/04 09:12:59.926679][info][2753208][Pipeline.cpp:266] [CV2856D0002E] Try to start streams!
+[11/04 09:12:59.926689][info][2753208][VideoSensor.cpp:61] [CV2856D0002E] Try to start stream: {type: Color, format: MJPG, width: 640, height: 480, fps: 30}
+[11/04 09:12:59.926697][info][2753208][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STOPPED to STARTING@Color
+[11/04 09:12:59.926699][info][2753208][VideoSensor.cpp:130] [CV2856D0002E] Start backend stream: {type: Color, format: MJPG, width: 640, height: 480, fps: 30}
+[11/04 09:12:59.928317][info][2753208][VideoSensor.cpp:61] [CV2856D0002E] Try to start stream: {type: Depth, format: Y16, width: 848, height: 530, fps: 30}
+[11/04 09:12:59.931094][info][2753208][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STOPPED to STARTING@Depth
+[11/04 09:12:59.931098][info][2753208][VideoSensor.cpp:130] [CV2856D0002E] Start backend stream: {type: Depth, format: Z16, width: 848, height: 530, fps: 30}
+[11/04 09:12:59.931906][info][2753208][Pipeline.cpp:293] [CV2856D0002E] Start streams done!
+[11/04 09:12:59.931907][info][2753208][Pipeline.cpp:250] [CV2856D0002E] Pipeline start done!
+[11/04 09:13:00.446530][info][2753314][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STARTING to STREAMING@Depth
+[11/04 09:13:00.511420][info][2753312][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STARTING to STREAMING@Color
+[11/04 09:13:00.511597][warning][2753208][Align.cpp:166] No other frame or align profile or to profile found!
+[11/04 09:13:00.511635][warning][2753208][Align.cpp:166] No other frame or align profile or to profile found!
+[11/04 09:13:01.379198][warning][2753316][Pipeline.cpp:324] [CV2856D0002E] Output frameset queue is full, drop oldest frameset!
+[11/04 09:13:04.410007][warning][2753316][Pipeline.cpp:324] [CV2856D0002E] Output frameset queue is full, drop oldest frameset! [**91 logs in 3030ms**]
+[11/04 09:13:05.475767][info][2753314][VideoSensor.cpp:180] [CV2856D0002E] Depth backend frame callback, frameRate=30.224697fps
+[11/04 09:13:05.475922][info][2753316][SensorBase.cpp:405] [CV2856D0002E] Depth Streaming... frameRate=30.248756fps
+[11/04 09:13:05.541142][info][2753312][VideoSensor.cpp:180] [CV2856D0002E] Color backend frame callback, frameRate=30.218687fps
+[11/04 09:13:05.541222][info][2753318][SensorBase.cpp:405] [CV2856D0002E] Color Streaming... frameRate=30.224697fps
+[11/04 09:13:10.443574][warning][2753367][Pipeline.cpp:324] [CV2856D0002E] Output frameset queue is full, drop oldest frameset! [**138 logs in 6033ms, last: 09:13:10.405627**]
+[11/04 09:13:10.505380][info][2753314][VideoSensor.cpp:180] [CV2856D0002E] Depth backend frame callback, frameRate=30.025850fps
+[11/04 09:13:10.505656][info][2753316][SensorBase.cpp:405] [CV2856D0002E] Depth Streaming... frameRate=30.025850fps
+[11/04 09:13:10.570760][info][2753312][VideoSensor.cpp:180] [CV2856D0002E] Color backend frame callback, frameRate=30.025850fps
+[11/04 09:13:10.570843][info][2753318][SensorBase.cpp:405] [CV2856D0002E] Color Streaming... frameRate=30.025850fps
+[11/04 09:13:15.534907][info][2753314][VideoSensor.cpp:180] [CV2856D0002E] Depth backend frame callback, frameRate=30.025850fps
+[11/04 09:13:15.535067][info][2753316][SensorBase.cpp:405] [CV2856D0002E] Depth Streaming... frameRate=30.025850fps
+[11/04 09:13:15.600309][info][2753312][VideoSensor.cpp:180] [CV2856D0002E] Color backend frame callback, frameRate=30.019880fps
+[11/04 09:13:15.600347][info][2753318][SensorBase.cpp:405] [CV2856D0002E] Color Streaming... frameRate=30.019880fps
+[11/04 09:13:20.564459][info][2753314][VideoSensor.cpp:180] [CV2856D0002E] Depth backend frame callback, frameRate=30.019880fps
+[11/04 09:13:20.564599][info][2753316][SensorBase.cpp:405] [CV2856D0002E] Depth Streaming... frameRate=30.019880fps
+[11/04 09:13:20.629842][info][2753312][VideoSensor.cpp:180] [CV2856D0002E] Color backend frame callback, frameRate=30.025850fps
+[11/04 09:13:20.629869][info][2753318][SensorBase.cpp:405] [CV2856D0002E] Color Streaming... frameRate=30.025850fps
+[11/04 09:13:22.505775][warning][2753394][Pipeline.cpp:324] [CV2856D0002E] Output frameset queue is full, drop oldest frameset! [**10 logs in 12062ms, last: 09:13:11.438161**]
+[11/04 09:13:25.594031][info][2753314][VideoSensor.cpp:180] [CV2856D0002E] Depth backend frame callback, frameRate=30.025850fps
+[11/04 09:13:25.594193][info][2753316][SensorBase.cpp:405] [CV2856D0002E] Depth Streaming... frameRate=30.025850fps
+[11/04 09:13:25.659435][info][2753312][VideoSensor.cpp:180] [CV2856D0002E] Color backend frame callback, frameRate=30.025850fps
+[11/04 09:13:25.659469][info][2753318][SensorBase.cpp:405] [CV2856D0002E] Color Streaming... frameRate=30.025850fps
+[11/04 09:13:30.623648][info][2753314][VideoSensor.cpp:180] [CV2856D0002E] Depth backend frame callback, frameRate=30.025850fps
+[11/04 09:13:30.623852][info][2753316][SensorBase.cpp:405] [CV2856D0002E] Depth Streaming... frameRate=30.019880fps
+[11/04 09:13:30.689046][info][2753312][VideoSensor.cpp:180] [CV2856D0002E] Color backend frame callback, frameRate=30.019880fps
+[11/04 09:13:30.689121][info][2753318][SensorBase.cpp:405] [CV2856D0002E] Color Streaming... frameRate=30.019880fps
+[11/04 09:13:35.653261][info][2753314][VideoSensor.cpp:180] [CV2856D0002E] Depth backend frame callback, frameRate=30.019880fps
+[11/04 09:13:35.653500][info][2753316][SensorBase.cpp:405] [CV2856D0002E] Depth Streaming... frameRate=30.025850fps
+[11/04 09:13:35.718627][info][2753312][VideoSensor.cpp:180] [CV2856D0002E] Color backend frame callback, frameRate=30.025850fps
+[11/04 09:13:35.718656][info][2753318][SensorBase.cpp:405] [CV2856D0002E] Color Streaming... frameRate=30.025850fps
+[11/04 09:13:38.092677][info][2753208][Pipeline.cpp:367] [CV2856D0002E] Try to stop pipeline!
+[11/04 09:13:38.092687][info][2753208][Pipeline.cpp:343] [CV2856D0002E] Try to stop streams!
+[11/04 09:13:38.092701][info][2753208][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STREAMING to STOPPING@Depth
+[11/04 09:13:38.119510][info][2753208][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STOPPING to STOPPED@Depth
+[11/04 09:13:38.119585][info][2753208][Pipeline.cpp:357] [CV2856D0002E] Sensor stream stopped, sensorType=Depth
+[11/04 09:13:38.119590][info][2753208][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STREAMING to STOPPING@Color
+[11/04 09:13:38.139385][info][2753208][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STOPPING to STOPPED@Color
+[11/04 09:13:38.139471][info][2753208][Pipeline.cpp:357] [CV2856D0002E] Sensor stream stopped, sensorType=Color
+[11/04 09:13:38.139472][info][2753208][Pipeline.cpp:363] [CV2856D0002E] Stop streams done!
+[11/04 09:13:38.159519][info][2753208][Pipeline.cpp:393] [CV2856D0002E] Stop pipeline done!
+[11/04 09:13:38.160424][info][2753208][Pipeline.cpp:65] [CV2856D0002E] Pipeline destroyed! @0x5E351B5B4E90
+[11/04 09:13:38.160489][info][2753208][SensorBase.cpp:53] [CV2856D0002E] SensorBase is destroyed
+[11/04 09:13:38.161319][info][2753208][ObLibuvcDevicePort.cpp:87] uvc_close done.
+[11/04 09:13:38.161319][info][2753208][ObLibuvcDevicePort.cpp:88] ~ObLibuvcDevicePort done
+[11/04 09:13:38.161406][info][2753208][SensorBase.cpp:53] [CV2856D0002E] SensorBase is destroyed
+[11/04 09:13:38.168786][info][2753208][ObLibuvcDevicePort.cpp:87] uvc_close done.
+[11/04 09:13:38.168790][info][2753208][ObLibuvcDevicePort.cpp:88] ~ObLibuvcDevicePort done
+[11/06 18:18:06.169055][info][3463861][HostTimestampProvider.cpp:36] Update clock type to: realtime(0)
+[11/06 18:18:06.493662][info][3463861][LinuxUsbPal.cpp:334] Create PollingDeviceWatcher!
+[11/06 18:18:06.493675][info][3463861][DeviceManager.cpp:25] Current found device(s): (4)
+[11/06 18:18:06.493676][info][3463861][DeviceManager.cpp:34] 	- Name: Gemini 305, PID: 0x0840, SN/ID: CV2856D0008H, Connection: USB3.2
+[11/06 18:18:06.493677][info][3463861][DeviceManager.cpp:34] 	- Name: Gemini 305, PID: 0x0840, SN/ID: CV2856D0002E, Connection: USB3.2
+[11/06 18:18:06.493677][info][3463861][DeviceManager.cpp:34] 	- Name: Gemini 335L, PID: 0x0804, SN/ID: CP28563000CV, Connection: USB3.2
+[11/06 18:18:06.493678][info][3463861][DeviceManager.cpp:34] 	- Name: Gemini 335L, PID: 0x0804, SN/ID: CP28563000CK, Connection: USB3.2
+[11/06 18:18:06.493679][info][3463861][DeviceManager.cpp:463] Enable net device enumeration: true
+[11/06 18:18:07.496728][info][3463861][DeviceManager.cpp:25] Current device(s) list: (4)
+[11/06 18:18:07.496742][info][3463861][DeviceManager.cpp:34] 	- Name: Gemini 305, PID: 0x0840, SN/ID: CV2856D0008H, Connection: USB3.2
+[11/06 18:18:07.496743][info][3463861][DeviceManager.cpp:34] 	- Name: Gemini 305, PID: 0x0840, SN/ID: CV2856D0002E, Connection: USB3.2
+[11/06 18:18:07.496743][info][3463861][DeviceManager.cpp:34] 	- Name: Gemini 335L, PID: 0x0804, SN/ID: CP28563000CV, Connection: USB3.2
+[11/06 18:18:07.496744][info][3463861][DeviceManager.cpp:34] 	- Name: Gemini 335L, PID: 0x0804, SN/ID: CP28563000CK, Connection: USB3.2
+[11/06 18:18:07.497678][info][3463861][G305Device.cpp:616] UVCAutoRebootOnFault=true for device: Gemini 305
+[11/06 18:18:07.503711][info][3463861][DeviceBase.cpp:742] key: AppSlot,value:1
+[11/06 18:18:07.503714][info][3463861][DeviceBase.cpp:742] key: HwType,value:S1
+[11/06 18:18:07.503715][info][3463861][DeviceBase.cpp:742] key: HwVer,value:V1.3
+[11/06 18:18:07.503715][info][3463861][DeviceBase.cpp:742] key: IspFwVer,value:20260424
+[11/06 18:18:07.503716][info][3463861][DeviceBase.cpp:742] key: IspNeedVer,value:20250920
+[11/06 18:18:07.503716][info][3463861][DeviceBase.cpp:742] key: PresetVer,value:0.0.9
+[11/06 18:18:07.692665][info][3463861][DeviceManager.cpp:200] Device created successfully! Name: Gemini 305, PID: 0x0840, SN/ID: CV2856D0002E FW: 1.0.70
+[11/06 18:18:07.692708][info][3463861][Pipeline.cpp:54] [CV2856D0002E] Pipeline created with device: {name: Gemini 305, sn: CV2856D0002E}, @0x634588546510
+[11/06 18:18:09.838845][info][3463861][Pipeline.cpp:228] [CV2856D0002E] Check and set config done!
+[11/06 18:18:09.840201][info][3463861][Pipeline.cpp:266] [CV2856D0002E] Try to start streams!
+[11/06 18:18:09.840216][info][3463861][VideoSensor.cpp:61] [CV2856D0002E] Try to start stream: {type: Color, format: MJPG, width: 640, height: 480, fps: 30}
+[11/06 18:18:09.840224][info][3463861][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STOPPED to STARTING@Color
+[11/06 18:18:09.840226][info][3463861][VideoSensor.cpp:130] [CV2856D0002E] Start backend stream: {type: Color, format: MJPG, width: 640, height: 480, fps: 30}
+[11/06 18:18:09.841672][info][3463861][VideoSensor.cpp:61] [CV2856D0002E] Try to start stream: {type: Depth, format: Y16, width: 848, height: 530, fps: 30}
+[11/06 18:18:09.844516][info][3463861][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STOPPED to STARTING@Depth
+[11/06 18:18:09.844519][info][3463861][VideoSensor.cpp:130] [CV2856D0002E] Start backend stream: {type: Depth, format: Z16, width: 848, height: 530, fps: 30}
+[11/06 18:18:09.845396][info][3463861][Pipeline.cpp:293] [CV2856D0002E] Start streams done!
+[11/06 18:18:09.845397][info][3463861][Pipeline.cpp:250] [CV2856D0002E] Pipeline start done!
+[11/06 18:18:10.411011][info][3463961][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STARTING to STREAMING@Depth
+[11/06 18:18:10.475724][info][3463959][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STARTING to STREAMING@Color
+[11/06 18:18:10.475886][warning][3463861][Align.cpp:166] No other frame or align profile or to profile found!
+[11/06 18:18:10.475915][warning][3463861][Align.cpp:166] No other frame or align profile or to profile found!
+[11/06 18:18:11.343756][warning][3463965][Pipeline.cpp:324] [CV2856D0002E] Output frameset queue is full, drop oldest frameset!
+[11/06 18:18:14.374421][warning][3463965][Pipeline.cpp:324] [CV2856D0002E] Output frameset queue is full, drop oldest frameset! [**91 logs in 3030ms**]
+[11/06 18:18:15.440188][info][3463961][VideoSensor.cpp:180] [CV2856D0002E] Depth backend frame callback, frameRate=30.230709fps
+[11/06 18:18:15.440339][info][3463965][SensorBase.cpp:405] [CV2856D0002E] Depth Streaming... frameRate=30.248756fps
+[11/06 18:18:15.505564][info][3463959][VideoSensor.cpp:180] [CV2856D0002E] Color backend frame callback, frameRate=30.218687fps
+[11/06 18:18:15.505615][info][3463967][SensorBase.cpp:405] [CV2856D0002E] Color Streaming... frameRate=30.218687fps
+[11/06 18:18:20.403493][warning][3463965][Pipeline.cpp:324] [CV2856D0002E] Output frameset queue is full, drop oldest frameset! [**181 logs in 6029ms**]
+[11/06 18:18:20.469892][info][3463961][VideoSensor.cpp:180] [CV2856D0002E] Depth backend frame callback, frameRate=30.019880fps
+[11/06 18:18:20.470098][info][3463965][SensorBase.cpp:405] [CV2856D0002E] Depth Streaming... frameRate=30.025850fps
+[11/06 18:18:20.535217][info][3463959][VideoSensor.cpp:180] [CV2856D0002E] Color backend frame callback, frameRate=30.025850fps
+[11/06 18:18:20.535262][info][3463967][SensorBase.cpp:405] [CV2856D0002E] Color Streaming... frameRate=30.025850fps
+[11/06 18:18:25.499512][info][3463961][VideoSensor.cpp:180] [CV2856D0002E] Depth backend frame callback, frameRate=30.025850fps
+[11/06 18:18:25.499667][info][3463965][SensorBase.cpp:405] [CV2856D0002E] Depth Streaming... frameRate=30.025850fps
+[11/06 18:18:25.564878][info][3463959][VideoSensor.cpp:180] [CV2856D0002E] Color backend frame callback, frameRate=30.019880fps
+[11/06 18:18:25.564925][info][3463967][SensorBase.cpp:405] [CV2856D0002E] Color Streaming... frameRate=30.019880fps
+[11/06 18:18:30.529199][info][3463961][VideoSensor.cpp:180] [CV2856D0002E] Depth backend frame callback, frameRate=30.019880fps
+[11/06 18:18:30.529352][info][3463965][SensorBase.cpp:405] [CV2856D0002E] Depth Streaming... frameRate=30.019880fps
+[11/06 18:18:30.594548][info][3463959][VideoSensor.cpp:180] [CV2856D0002E] Color backend frame callback, frameRate=30.025850fps
+[11/06 18:18:30.594589][info][3463967][SensorBase.cpp:405] [CV2856D0002E] Color Streaming... frameRate=30.025850fps
+[11/06 18:18:32.436845][warning][3464035][Pipeline.cpp:324] [CV2856D0002E] Output frameset queue is full, drop oldest frameset! [**36 logs in 12033ms, last: 18:18:24.034167**]
+[11/06 18:18:35.558861][info][3463961][VideoSensor.cpp:180] [CV2856D0002E] Depth backend frame callback, frameRate=30.025850fps
+[11/06 18:18:35.559009][info][3463965][SensorBase.cpp:405] [CV2856D0002E] Depth Streaming... frameRate=30.025850fps
+[11/06 18:18:35.624218][info][3463959][VideoSensor.cpp:180] [CV2856D0002E] Color backend frame callback, frameRate=30.025850fps
+[11/06 18:18:35.624258][info][3463967][SensorBase.cpp:405] [CV2856D0002E] Color Streaming... frameRate=30.025850fps
+[11/06 18:18:36.838908][info][3463861][Pipeline.cpp:367] [CV2856D0002E] Try to stop pipeline!
+[11/06 18:18:36.838916][info][3463861][Pipeline.cpp:343] [CV2856D0002E] Try to stop streams!
+[11/06 18:18:36.838927][info][3463861][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STREAMING to STOPPING@Depth
+[11/06 18:18:36.850289][info][3463861][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STOPPING to STOPPED@Depth
+[11/06 18:18:36.850358][info][3463861][Pipeline.cpp:357] [CV2856D0002E] Sensor stream stopped, sensorType=Depth
+[11/06 18:18:36.850362][info][3463861][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STREAMING to STOPPING@Color
+[11/06 18:18:36.870277][info][3463861][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STOPPING to STOPPED@Color
+[11/06 18:18:36.870327][info][3463861][Pipeline.cpp:357] [CV2856D0002E] Sensor stream stopped, sensorType=Color
+[11/06 18:18:36.870328][info][3463861][Pipeline.cpp:363] [CV2856D0002E] Stop streams done!
+[11/06 18:18:36.890275][info][3463861][Pipeline.cpp:393] [CV2856D0002E] Stop pipeline done!
+[11/06 18:18:36.970348][info][3463861][Pipeline.cpp:65] [CV2856D0002E] Pipeline destroyed! @0x634588546510
+[11/06 18:18:36.970420][info][3463861][SensorBase.cpp:53] [CV2856D0002E] SensorBase is destroyed
+[11/06 18:18:36.971238][info][3463861][ObLibuvcDevicePort.cpp:87] uvc_close done.
+[11/06 18:18:36.971238][info][3463861][ObLibuvcDevicePort.cpp:88] ~ObLibuvcDevicePort done
+[11/06 18:18:36.971318][info][3463861][SensorBase.cpp:53] [CV2856D0002E] SensorBase is destroyed
+[11/06 18:18:36.977452][info][3463861][ObLibuvcDevicePort.cpp:87] uvc_close done.
+[11/06 18:18:36.977455][info][3463861][ObLibuvcDevicePort.cpp:88] ~ObLibuvcDevicePort done
+[11/06 18:18:36.980026][warning][3464084][Pipeline.cpp:324] [CV2856D0002E] Output frameset queue is full, drop oldest frameset! [**106 logs in 4543ms, last: 18:18:36.824774**]
+[11/06 18:18:52.903649][info][3464166][HostTimestampProvider.cpp:36] Update clock type to: realtime(0)
+[11/06 18:18:53.230561][info][3464166][LinuxUsbPal.cpp:334] Create PollingDeviceWatcher!
+[11/06 18:18:53.230575][info][3464166][DeviceManager.cpp:25] Current found device(s): (4)
+[11/06 18:18:53.230576][info][3464166][DeviceManager.cpp:34] 	- Name: Gemini 305, PID: 0x0840, SN/ID: CV2856D0008H, Connection: USB3.2
+[11/06 18:18:53.230576][info][3464166][DeviceManager.cpp:34] 	- Name: Gemini 305, PID: 0x0840, SN/ID: CV2856D0002E, Connection: USB3.2
+[11/06 18:18:53.230576][info][3464166][DeviceManager.cpp:34] 	- Name: Gemini 335L, PID: 0x0804, SN/ID: CP28563000CV, Connection: USB3.2
+[11/06 18:18:53.230577][info][3464166][DeviceManager.cpp:34] 	- Name: Gemini 335L, PID: 0x0804, SN/ID: CP28563000CK, Connection: USB3.2
+[11/06 18:18:53.230578][info][3464166][DeviceManager.cpp:463] Enable net device enumeration: true
+[11/06 18:18:54.233495][info][3464166][DeviceManager.cpp:25] Current device(s) list: (4)
+[11/06 18:18:54.233504][info][3464166][DeviceManager.cpp:34] 	- Name: Gemini 305, PID: 0x0840, SN/ID: CV2856D0008H, Connection: USB3.2
+[11/06 18:18:54.233504][info][3464166][DeviceManager.cpp:34] 	- Name: Gemini 305, PID: 0x0840, SN/ID: CV2856D0002E, Connection: USB3.2
+[11/06 18:18:54.233505][info][3464166][DeviceManager.cpp:34] 	- Name: Gemini 335L, PID: 0x0804, SN/ID: CP28563000CV, Connection: USB3.2
+[11/06 18:18:54.233505][info][3464166][DeviceManager.cpp:34] 	- Name: Gemini 335L, PID: 0x0804, SN/ID: CP28563000CK, Connection: USB3.2
+[11/06 18:18:54.234291][info][3464166][G305Device.cpp:616] UVCAutoRebootOnFault=true for device: Gemini 305
+[11/06 18:18:54.240360][info][3464166][DeviceBase.cpp:742] key: AppSlot,value:1
+[11/06 18:18:54.240365][info][3464166][DeviceBase.cpp:742] key: HwType,value:S1
+[11/06 18:18:54.240365][info][3464166][DeviceBase.cpp:742] key: HwVer,value:V1.3
+[11/06 18:18:54.240366][info][3464166][DeviceBase.cpp:742] key: IspFwVer,value:20260424
+[11/06 18:18:54.240366][info][3464166][DeviceBase.cpp:742] key: IspNeedVer,value:20250920
+[11/06 18:18:54.240366][info][3464166][DeviceBase.cpp:742] key: PresetVer,value:0.0.9
+[11/06 18:18:54.428793][info][3464166][DeviceManager.cpp:200] Device created successfully! Name: Gemini 305, PID: 0x0840, SN/ID: CV2856D0002E FW: 1.0.70
+[11/06 18:18:54.428845][info][3464166][Pipeline.cpp:54] [CV2856D0002E] Pipeline created with device: {name: Gemini 305, sn: CV2856D0002E}, @0x61FF74894540
+[11/06 18:18:56.515030][info][3464166][Pipeline.cpp:228] [CV2856D0002E] Check and set config done!
+[11/06 18:18:56.516209][info][3464166][Pipeline.cpp:266] [CV2856D0002E] Try to start streams!
+[11/06 18:18:56.516220][info][3464166][VideoSensor.cpp:61] [CV2856D0002E] Try to start stream: {type: Color, format: MJPG, width: 640, height: 480, fps: 30}
+[11/06 18:18:56.516229][info][3464166][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STOPPED to STARTING@Color
+[11/06 18:18:56.516231][info][3464166][VideoSensor.cpp:130] [CV2856D0002E] Start backend stream: {type: Color, format: MJPG, width: 640, height: 480, fps: 30}
+[11/06 18:18:56.517713][info][3464166][VideoSensor.cpp:61] [CV2856D0002E] Try to start stream: {type: Depth, format: Y16, width: 848, height: 530, fps: 30}
+[11/06 18:18:56.520593][info][3464166][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STOPPED to STARTING@Depth
+[11/06 18:18:56.520597][info][3464166][VideoSensor.cpp:130] [CV2856D0002E] Start backend stream: {type: Depth, format: Z16, width: 848, height: 530, fps: 30}
+[11/06 18:18:56.521389][info][3464166][Pipeline.cpp:293] [CV2856D0002E] Start streams done!
+[11/06 18:18:56.521390][info][3464166][Pipeline.cpp:250] [CV2856D0002E] Pipeline start done!
+[11/06 18:18:57.036488][info][3464260][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STARTING to STREAMING@Depth
+[11/06 18:18:57.101323][info][3464258][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STARTING to STREAMING@Color
+[11/06 18:18:57.101491][warning][3464166][Align.cpp:166] No other frame or align profile or to profile found!
+[11/06 18:18:57.101522][warning][3464166][Align.cpp:166] No other frame or align profile or to profile found!
+[11/06 18:18:57.969248][warning][3464262][Pipeline.cpp:324] [CV2856D0002E] Output frameset queue is full, drop oldest frameset!
+[11/06 18:19:01.000077][warning][3464262][Pipeline.cpp:324] [CV2856D0002E] Output frameset queue is full, drop oldest frameset! [**91 logs in 3030ms**]
+[11/06 18:19:01.230885][info][3464166][Pipeline.cpp:367] [CV2856D0002E] Try to stop pipeline!
+[11/06 18:19:01.230891][info][3464166][Pipeline.cpp:343] [CV2856D0002E] Try to stop streams!
+[11/06 18:19:01.230903][info][3464166][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STREAMING to STOPPING@Depth
+[11/06 18:19:01.246559][info][3464166][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STOPPING to STOPPED@Depth
+[11/06 18:19:01.246615][info][3464166][Pipeline.cpp:357] [CV2856D0002E] Sensor stream stopped, sensorType=Depth
+[11/06 18:19:01.246622][info][3464166][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STREAMING to STOPPING@Color
+[11/06 18:19:01.266557][info][3464166][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STOPPING to STOPPED@Color
+[11/06 18:19:01.266613][info][3464166][Pipeline.cpp:357] [CV2856D0002E] Sensor stream stopped, sensorType=Color
+[11/06 18:19:01.266614][info][3464166][Pipeline.cpp:363] [CV2856D0002E] Stop streams done!
+[11/06 18:19:01.286554][info][3464166][Pipeline.cpp:393] [CV2856D0002E] Stop pipeline done!
+[11/06 18:19:01.345837][info][3464166][Pipeline.cpp:65] [CV2856D0002E] Pipeline destroyed! @0x61FF74894540
+[11/06 18:19:01.345901][info][3464166][SensorBase.cpp:53] [CV2856D0002E] SensorBase is destroyed
+[11/06 18:19:01.346685][info][3464166][ObLibuvcDevicePort.cpp:87] uvc_close done.
+[11/06 18:19:01.346689][info][3464166][ObLibuvcDevicePort.cpp:88] ~ObLibuvcDevicePort done
+[11/06 18:19:01.346780][info][3464166][SensorBase.cpp:53] [CV2856D0002E] SensorBase is destroyed
+[11/06 18:19:01.352890][info][3464166][ObLibuvcDevicePort.cpp:87] uvc_close done.
+[11/06 18:19:01.352894][info][3464166][ObLibuvcDevicePort.cpp:88] ~ObLibuvcDevicePort done
+[11/06 18:19:01.354556][warning][3464304][Pipeline.cpp:324] [CV2856D0002E] Output frameset queue is full, drop oldest frameset! [**6 logs in 354ms, last: 18:19:01.199872**]
+[11/06 18:19:03.107995][info][3464334][HostTimestampProvider.cpp:36] Update clock type to: realtime(0)
+[11/06 18:19:03.111047][info][3464334][LinuxUsbPal.cpp:334] Create PollingDeviceWatcher!
+[11/06 18:19:03.111053][info][3464334][DeviceManager.cpp:25] Current found device(s): (4)
+[11/06 18:19:03.111054][info][3464334][DeviceManager.cpp:34] 	- Name: Gemini 305, PID: 0x0840, SN/ID: CV2856D0008H, Connection: USB3.2
+[11/06 18:19:03.111055][info][3464334][DeviceManager.cpp:34] 	- Name: Gemini 305, PID: 0x0840, SN/ID: CV2856D0002E, Connection: USB3.2
+[11/06 18:19:03.111055][info][3464334][DeviceManager.cpp:34] 	- Name: Gemini 335L, PID: 0x0804, SN/ID: CP28563000CV, Connection: USB3.2
+[11/06 18:19:03.111055][info][3464334][DeviceManager.cpp:34] 	- Name: Gemini 335L, PID: 0x0804, SN/ID: CP28563000CK, Connection: USB3.2
+[11/06 18:19:03.111056][info][3464334][DeviceManager.cpp:463] Enable net device enumeration: true
+[11/06 18:19:04.113797][info][3464334][DeviceManager.cpp:25] Current device(s) list: (4)
+[11/06 18:19:04.113806][info][3464334][DeviceManager.cpp:34] 	- Name: Gemini 305, PID: 0x0840, SN/ID: CV2856D0008H, Connection: USB3.2
+[11/06 18:19:04.113807][info][3464334][DeviceManager.cpp:34] 	- Name: Gemini 305, PID: 0x0840, SN/ID: CV2856D0002E, Connection: USB3.2
+[11/06 18:19:04.113807][info][3464334][DeviceManager.cpp:34] 	- Name: Gemini 335L, PID: 0x0804, SN/ID: CP28563000CV, Connection: USB3.2
+[11/06 18:19:04.113808][info][3464334][DeviceManager.cpp:34] 	- Name: Gemini 335L, PID: 0x0804, SN/ID: CP28563000CK, Connection: USB3.2
+[11/06 18:19:04.114768][info][3464334][G305Device.cpp:616] UVCAutoRebootOnFault=true for device: Gemini 305
+[11/06 18:19:04.120774][info][3464334][DeviceBase.cpp:742] key: AppSlot,value:1
+[11/06 18:19:04.120778][info][3464334][DeviceBase.cpp:742] key: HwType,value:S1
+[11/06 18:19:04.120778][info][3464334][DeviceBase.cpp:742] key: HwVer,value:V1.3
+[11/06 18:19:04.120779][info][3464334][DeviceBase.cpp:742] key: IspFwVer,value:20260424
+[11/06 18:19:04.120779][info][3464334][DeviceBase.cpp:742] key: IspNeedVer,value:20250920
+[11/06 18:19:04.120780][info][3464334][DeviceBase.cpp:742] key: PresetVer,value:0.0.9
+[11/06 18:19:04.309123][info][3464334][DeviceManager.cpp:200] Device created successfully! Name: Gemini 305, PID: 0x0840, SN/ID: CV2856D0002E FW: 1.0.70
+[11/06 18:19:04.309168][info][3464334][Pipeline.cpp:54] [CV2856D0002E] Pipeline created with device: {name: Gemini 305, sn: CV2856D0002E}, @0x5D7B1730A510
+[11/06 18:19:06.380602][info][3464334][Pipeline.cpp:228] [CV2856D0002E] Check and set config done!
+[11/06 18:19:06.381819][info][3464334][Pipeline.cpp:266] [CV2856D0002E] Try to start streams!
+[11/06 18:19:06.381855][info][3464334][VideoSensor.cpp:61] [CV2856D0002E] Try to start stream: {type: Color, format: MJPG, width: 640, height: 480, fps: 30}
+[11/06 18:19:06.381881][info][3464334][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STOPPED to STARTING@Color
+[11/06 18:19:06.381890][info][3464334][VideoSensor.cpp:130] [CV2856D0002E] Start backend stream: {type: Color, format: MJPG, width: 640, height: 480, fps: 30}
+[11/06 18:19:06.383335][info][3464334][VideoSensor.cpp:61] [CV2856D0002E] Try to start stream: {type: Depth, format: Y16, width: 848, height: 530, fps: 30}
+[11/06 18:19:06.386247][info][3464334][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STOPPED to STARTING@Depth
+[11/06 18:19:06.386253][info][3464334][VideoSensor.cpp:130] [CV2856D0002E] Start backend stream: {type: Depth, format: Z16, width: 848, height: 530, fps: 30}
+[11/06 18:19:06.387133][info][3464334][Pipeline.cpp:293] [CV2856D0002E] Start streams done!
+[11/06 18:19:06.387134][info][3464334][Pipeline.cpp:250] [CV2856D0002E] Pipeline start done!
+[11/06 18:19:06.901644][info][3464416][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STARTING to STREAMING@Depth
+[11/06 18:19:06.966464][info][3464414][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STARTING to STREAMING@Color
+[11/06 18:19:06.966609][warning][3464334][Align.cpp:166] No other frame or align profile or to profile found!
+[11/06 18:19:06.966639][warning][3464334][Align.cpp:166] No other frame or align profile or to profile found!
+[11/06 18:19:07.834328][warning][3464425][Pipeline.cpp:324] [CV2856D0002E] Output frameset queue is full, drop oldest frameset!
+[11/06 18:19:10.865216][warning][3464425][Pipeline.cpp:324] [CV2856D0002E] Output frameset queue is full, drop oldest frameset! [**91 logs in 3030ms**]
+[11/06 18:19:11.930905][info][3464416][VideoSensor.cpp:180] [CV2856D0002E] Depth backend frame callback, frameRate=30.224697fps
+[11/06 18:19:11.931069][info][3464425][SensorBase.cpp:405] [CV2856D0002E] Depth Streaming... frameRate=30.248756fps
+[11/06 18:19:11.996254][info][3464414][VideoSensor.cpp:180] [CV2856D0002E] Color backend frame callback, frameRate=30.224697fps
+[11/06 18:19:11.996295][info][3464427][SensorBase.cpp:405] [CV2856D0002E] Color Streaming... frameRate=30.224697fps
+[11/06 18:19:16.898681][warning][3464467][Pipeline.cpp:324] [CV2856D0002E] Output frameset queue is full, drop oldest frameset! [**178 logs in 6033ms, last: 18:19:16.794136**]
+[11/06 18:19:16.960592][info][3464416][VideoSensor.cpp:180] [CV2856D0002E] Depth backend frame callback, frameRate=30.025850fps
+[11/06 18:19:16.960768][info][3464425][SensorBase.cpp:405] [CV2856D0002E] Depth Streaming... frameRate=30.025850fps
+[11/06 18:19:17.025927][info][3464414][VideoSensor.cpp:180] [CV2856D0002E] Color backend frame callback, frameRate=30.025850fps
+[11/06 18:19:17.025975][info][3464427][SensorBase.cpp:405] [CV2856D0002E] Color Streaming... frameRate=30.025850fps
+[11/06 18:19:21.990228][info][3464416][VideoSensor.cpp:180] [CV2856D0002E] Depth backend frame callback, frameRate=30.025850fps
+[11/06 18:19:21.990391][info][3464425][SensorBase.cpp:405] [CV2856D0002E] Depth Streaming... frameRate=30.019880fps
+[11/06 18:19:22.055612][info][3464414][VideoSensor.cpp:180] [CV2856D0002E] Color backend frame callback, frameRate=30.019880fps
+[11/06 18:19:22.055688][info][3464427][SensorBase.cpp:405] [CV2856D0002E] Color Streaming... frameRate=30.019880fps
+[11/06 18:19:27.019889][info][3464416][VideoSensor.cpp:180] [CV2856D0002E] Depth backend frame callback, frameRate=30.019880fps
+[11/06 18:19:27.020082][info][3464425][SensorBase.cpp:405] [CV2856D0002E] Depth Streaming... frameRate=30.025850fps
+[11/06 18:19:27.085265][info][3464414][VideoSensor.cpp:180] [CV2856D0002E] Color backend frame callback, frameRate=30.025850fps
+[11/06 18:19:27.085309][info][3464427][SensorBase.cpp:405] [CV2856D0002E] Color Streaming... frameRate=30.025850fps
+[11/06 18:19:30.493041][warning][3464538][Pipeline.cpp:324] [CV2856D0002E] Output frameset queue is full, drop oldest frameset! [**154 logs in 13594ms, last: 18:19:26.920020**]
+[11/06 18:19:32.049585][info][3464416][VideoSensor.cpp:180] [CV2856D0002E] Depth backend frame callback, frameRate=30.025850fps
+[11/06 18:19:32.049778][info][3464425][SensorBase.cpp:405] [CV2856D0002E] Depth Streaming... frameRate=30.025850fps
+[11/06 18:19:32.114907][info][3464414][VideoSensor.cpp:180] [CV2856D0002E] Color backend frame callback, frameRate=30.025850fps
+[11/06 18:19:32.114945][info][3464427][SensorBase.cpp:405] [CV2856D0002E] Color Streaming... frameRate=30.025850fps
+[11/06 18:19:33.787868][info][3464334][Pipeline.cpp:367] [CV2856D0002E] Try to stop pipeline!
+[11/06 18:19:33.787877][info][3464334][Pipeline.cpp:343] [CV2856D0002E] Try to stop streams!
+[11/06 18:19:33.787889][info][3464334][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STREAMING to STOPPING@Depth
+[11/06 18:19:33.810988][info][3464334][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STOPPING to STOPPED@Depth
+[11/06 18:19:33.811059][info][3464334][Pipeline.cpp:357] [CV2856D0002E] Sensor stream stopped, sensorType=Depth
+[11/06 18:19:33.811065][info][3464334][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STREAMING to STOPPING@Color
+[11/06 18:19:33.830976][info][3464334][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STOPPING to STOPPED@Color
+[11/06 18:19:33.831024][info][3464334][Pipeline.cpp:357] [CV2856D0002E] Sensor stream stopped, sensorType=Color
+[11/06 18:19:33.831025][info][3464334][Pipeline.cpp:363] [CV2856D0002E] Stop streams done!
+[11/06 18:19:33.850992][info][3464334][Pipeline.cpp:393] [CV2856D0002E] Stop pipeline done!
+[11/06 18:19:33.851959][info][3464334][Pipeline.cpp:65] [CV2856D0002E] Pipeline destroyed! @0x5D7B1730A510
+[11/06 18:19:33.852029][info][3464334][SensorBase.cpp:53] [CV2856D0002E] SensorBase is destroyed
+[11/06 18:19:33.852845][info][3464334][ObLibuvcDevicePort.cpp:87] uvc_close done.
+[11/06 18:19:33.852848][info][3464334][ObLibuvcDevicePort.cpp:88] ~ObLibuvcDevicePort done
+[11/06 18:19:33.852944][info][3464334][SensorBase.cpp:53] [CV2856D0002E] SensorBase is destroyed
+[11/06 18:19:33.859331][info][3464334][ObLibuvcDevicePort.cpp:87] uvc_close done.
+[11/06 18:19:33.859335][info][3464334][ObLibuvcDevicePort.cpp:88] ~ObLibuvcDevicePort done
+[11/06 18:19:35.958130][info][3464631][HostTimestampProvider.cpp:36] Update clock type to: realtime(0)
+[11/06 18:19:35.960945][info][3464631][LinuxUsbPal.cpp:334] Create PollingDeviceWatcher!
+[11/06 18:19:35.960951][info][3464631][DeviceManager.cpp:25] Current found device(s): (4)
+[11/06 18:19:35.960952][info][3464631][DeviceManager.cpp:34] 	- Name: Gemini 305, PID: 0x0840, SN/ID: CV2856D0008H, Connection: USB3.2
+[11/06 18:19:35.960953][info][3464631][DeviceManager.cpp:34] 	- Name: Gemini 305, PID: 0x0840, SN/ID: CV2856D0002E, Connection: USB3.2
+[11/06 18:19:35.960953][info][3464631][DeviceManager.cpp:34] 	- Name: Gemini 335L, PID: 0x0804, SN/ID: CP28563000CV, Connection: USB3.2
+[11/06 18:19:35.960953][info][3464631][DeviceManager.cpp:34] 	- Name: Gemini 335L, PID: 0x0804, SN/ID: CP28563000CK, Connection: USB3.2
+[11/06 18:19:35.960954][info][3464631][DeviceManager.cpp:463] Enable net device enumeration: true
+[11/06 18:19:36.963896][info][3464631][DeviceManager.cpp:25] Current device(s) list: (4)
+[11/06 18:19:36.963906][info][3464631][DeviceManager.cpp:34] 	- Name: Gemini 305, PID: 0x0840, SN/ID: CV2856D0008H, Connection: USB3.2
+[11/06 18:19:36.963907][info][3464631][DeviceManager.cpp:34] 	- Name: Gemini 305, PID: 0x0840, SN/ID: CV2856D0002E, Connection: USB3.2
+[11/06 18:19:36.963908][info][3464631][DeviceManager.cpp:34] 	- Name: Gemini 335L, PID: 0x0804, SN/ID: CP28563000CV, Connection: USB3.2
+[11/06 18:19:36.963908][info][3464631][DeviceManager.cpp:34] 	- Name: Gemini 335L, PID: 0x0804, SN/ID: CP28563000CK, Connection: USB3.2
+[11/06 18:19:36.964828][info][3464631][G305Device.cpp:616] UVCAutoRebootOnFault=true for device: Gemini 305
+[11/06 18:19:36.970849][info][3464631][DeviceBase.cpp:742] key: AppSlot,value:1
+[11/06 18:19:36.970852][info][3464631][DeviceBase.cpp:742] key: HwType,value:S1
+[11/06 18:19:36.970852][info][3464631][DeviceBase.cpp:742] key: HwVer,value:V1.3
+[11/06 18:19:36.970853][info][3464631][DeviceBase.cpp:742] key: IspFwVer,value:20260424
+[11/06 18:19:36.970853][info][3464631][DeviceBase.cpp:742] key: IspNeedVer,value:20250920
+[11/06 18:19:36.970854][info][3464631][DeviceBase.cpp:742] key: PresetVer,value:0.0.9
+[11/06 18:19:37.160004][info][3464631][DeviceManager.cpp:200] Device created successfully! Name: Gemini 305, PID: 0x0840, SN/ID: CV2856D0002E FW: 1.0.70
+[11/06 18:19:37.160055][info][3464631][Pipeline.cpp:54] [CV2856D0002E] Pipeline created with device: {name: Gemini 305, sn: CV2856D0002E}, @0x63464E38B510
+[11/06 18:19:39.334541][info][3464631][Pipeline.cpp:228] [CV2856D0002E] Check and set config done!
+[11/06 18:19:39.335750][info][3464631][Pipeline.cpp:266] [CV2856D0002E] Try to start streams!
+[11/06 18:19:39.335762][info][3464631][VideoSensor.cpp:61] [CV2856D0002E] Try to start stream: {type: Color, format: MJPG, width: 640, height: 480, fps: 30}
+[11/06 18:19:39.335770][info][3464631][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STOPPED to STARTING@Color
+[11/06 18:19:39.335772][info][3464631][VideoSensor.cpp:130] [CV2856D0002E] Start backend stream: {type: Color, format: MJPG, width: 640, height: 480, fps: 30}
+[11/06 18:19:39.337177][info][3464631][VideoSensor.cpp:61] [CV2856D0002E] Try to start stream: {type: Depth, format: Y16, width: 848, height: 530, fps: 30}
+[11/06 18:19:39.340155][info][3464631][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STOPPED to STARTING@Depth
+[11/06 18:19:39.340170][info][3464631][VideoSensor.cpp:130] [CV2856D0002E] Start backend stream: {type: Depth, format: Z16, width: 848, height: 530, fps: 30}
+[11/06 18:19:39.341073][info][3464631][Pipeline.cpp:293] [CV2856D0002E] Start streams done!
+[11/06 18:19:39.341074][info][3464631][Pipeline.cpp:250] [CV2856D0002E] Pipeline start done!
+[11/06 18:19:39.856035][info][3464727][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STARTING to STREAMING@Depth
+[11/06 18:19:39.920868][info][3464725][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STARTING to STREAMING@Color
+[11/06 18:19:39.921057][warning][3464631][Align.cpp:166] No other frame or align profile or to profile found!
+[11/06 18:19:39.921098][warning][3464631][Align.cpp:166] No other frame or align profile or to profile found!
+[11/06 18:19:40.788622][warning][3464731][Pipeline.cpp:324] [CV2856D0002E] Output frameset queue is full, drop oldest frameset!
+[11/06 18:19:43.819619][warning][3464731][Pipeline.cpp:324] [CV2856D0002E] Output frameset queue is full, drop oldest frameset! [**91 logs in 3030ms**]
+[11/06 18:19:44.885343][info][3464727][VideoSensor.cpp:180] [CV2856D0002E] Depth backend frame callback, frameRate=30.224697fps
+[11/06 18:19:44.885542][info][3464731][SensorBase.cpp:405] [CV2856D0002E] Depth Streaming... frameRate=30.248756fps
+[11/06 18:19:44.950675][info][3464725][VideoSensor.cpp:180] [CV2856D0002E] Color backend frame callback, frameRate=30.224697fps
+[11/06 18:19:44.950728][info][3464733][SensorBase.cpp:405] [CV2856D0002E] Color Streaming... frameRate=30.224697fps
+[11/06 18:19:49.848530][warning][3464731][Pipeline.cpp:324] [CV2856D0002E] Output frameset queue is full, drop oldest frameset! [**181 logs in 6028ms**]
+[11/06 18:19:49.915107][info][3464727][VideoSensor.cpp:180] [CV2856D0002E] Depth backend frame callback, frameRate=30.025850fps
+[11/06 18:19:49.915274][info][3464731][SensorBase.cpp:405] [CV2856D0002E] Depth Streaming... frameRate=30.019880fps
+[11/06 18:19:49.980330][info][3464725][VideoSensor.cpp:180] [CV2856D0002E] Color backend frame callback, frameRate=30.019880fps
+[11/06 18:19:49.980374][info][3464733][SensorBase.cpp:405] [CV2856D0002E] Color Streaming... frameRate=30.019880fps
+[11/06 18:19:54.944640][info][3464727][VideoSensor.cpp:180] [CV2856D0002E] Depth backend frame callback, frameRate=30.019880fps
+[11/06 18:19:54.944791][info][3464731][SensorBase.cpp:405] [CV2856D0002E] Depth Streaming... frameRate=30.025850fps
+[11/06 18:19:55.009988][info][3464725][VideoSensor.cpp:180] [CV2856D0002E] Color backend frame callback, frameRate=30.025850fps
+[11/06 18:19:55.010029][info][3464733][SensorBase.cpp:405] [CV2856D0002E] Color Streaming... frameRate=30.025850fps
+[11/06 18:19:59.974293][info][3464727][VideoSensor.cpp:180] [CV2856D0002E] Depth backend frame callback, frameRate=30.025850fps
+[11/06 18:19:59.974476][info][3464731][SensorBase.cpp:405] [CV2856D0002E] Depth Streaming... frameRate=30.025850fps
+[11/06 18:20:00.039645][info][3464725][VideoSensor.cpp:180] [CV2856D0002E] Color backend frame callback, frameRate=30.025850fps
+[11/06 18:20:00.039699][info][3464733][SensorBase.cpp:405] [CV2856D0002E] Color Streaming... frameRate=30.025850fps
+[11/06 18:20:01.873020][warning][3464731][Pipeline.cpp:324] [CV2856D0002E] Output frameset queue is full, drop oldest frameset! [**361 logs in 12024ms**]
+[11/06 18:20:04.959590][info][3464631][Pipeline.cpp:367] [CV2856D0002E] Try to stop pipeline!
+[11/06 18:20:04.959599][info][3464631][Pipeline.cpp:343] [CV2856D0002E] Try to stop streams!
+[11/06 18:20:04.959612][info][3464631][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STREAMING to STOPPING@Depth
+[11/06 18:20:04.987362][info][3464631][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STOPPING to STOPPED@Depth
+[11/06 18:20:04.987426][info][3464631][Pipeline.cpp:357] [CV2856D0002E] Sensor stream stopped, sensorType=Depth
+[11/06 18:20:04.987431][info][3464631][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STREAMING to STOPPING@Color
+[11/06 18:20:05.007466][info][3464631][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STOPPING to STOPPED@Color
+[11/06 18:20:05.007525][info][3464631][Pipeline.cpp:357] [CV2856D0002E] Sensor stream stopped, sensorType=Color
+[11/06 18:20:05.007526][info][3464631][Pipeline.cpp:363] [CV2856D0002E] Stop streams done!
+[11/06 18:20:05.027360][info][3464631][Pipeline.cpp:393] [CV2856D0002E] Stop pipeline done!
+[11/06 18:20:05.086562][info][3464631][Pipeline.cpp:65] [CV2856D0002E] Pipeline destroyed! @0x63464E38B510
+[11/06 18:20:05.086630][info][3464631][SensorBase.cpp:53] [CV2856D0002E] SensorBase is destroyed
+[11/06 18:20:05.087733][info][3464631][ObLibuvcDevicePort.cpp:87] uvc_close done.
+[11/06 18:20:05.087736][info][3464631][ObLibuvcDevicePort.cpp:88] ~ObLibuvcDevicePort done
+[11/06 18:20:05.087819][info][3464631][SensorBase.cpp:53] [CV2856D0002E] SensorBase is destroyed
+[11/06 18:20:05.093990][info][3464631][ObLibuvcDevicePort.cpp:87] uvc_close done.
+[11/06 18:20:05.093994][info][3464631][ObLibuvcDevicePort.cpp:88] ~ObLibuvcDevicePort done
+[11/06 18:20:06.001670][warning][3465043][Pipeline.cpp:324] [CV2856D0002E] Output frameset queue is full, drop oldest frameset! [**48 logs in 4128ms, last: 18:20:04.937536**]
+[11/06 18:20:38.574337][info][3465112][HostTimestampProvider.cpp:36] Update clock type to: realtime(0)
+[11/06 18:20:38.900012][info][3465112][LinuxUsbPal.cpp:334] Create PollingDeviceWatcher!
+[11/06 18:20:38.900023][info][3465112][DeviceManager.cpp:25] Current found device(s): (4)
+[11/06 18:20:38.900025][info][3465112][DeviceManager.cpp:34] 	- Name: Gemini 305, PID: 0x0840, SN/ID: CV2856D0008H, Connection: USB3.2
+[11/06 18:20:38.900026][info][3465112][DeviceManager.cpp:34] 	- Name: Gemini 305, PID: 0x0840, SN/ID: CV2856D0002E, Connection: USB3.2
+[11/06 18:20:38.900027][info][3465112][DeviceManager.cpp:34] 	- Name: Gemini 335L, PID: 0x0804, SN/ID: CP28563000CV, Connection: USB3.2
+[11/06 18:20:38.900028][info][3465112][DeviceManager.cpp:34] 	- Name: Gemini 335L, PID: 0x0804, SN/ID: CP28563000CK, Connection: USB3.2
+[11/06 18:20:38.900029][info][3465112][DeviceManager.cpp:463] Enable net device enumeration: true
+[11/06 18:20:39.902962][info][3465112][DeviceManager.cpp:25] Current device(s) list: (4)
+[11/06 18:20:39.902973][info][3465112][DeviceManager.cpp:34] 	- Name: Gemini 305, PID: 0x0840, SN/ID: CV2856D0008H, Connection: USB3.2
+[11/06 18:20:39.902974][info][3465112][DeviceManager.cpp:34] 	- Name: Gemini 305, PID: 0x0840, SN/ID: CV2856D0002E, Connection: USB3.2
+[11/06 18:20:39.902975][info][3465112][DeviceManager.cpp:34] 	- Name: Gemini 335L, PID: 0x0804, SN/ID: CP28563000CV, Connection: USB3.2
+[11/06 18:20:39.902975][info][3465112][DeviceManager.cpp:34] 	- Name: Gemini 335L, PID: 0x0804, SN/ID: CP28563000CK, Connection: USB3.2
+[11/06 18:20:39.903753][info][3465112][G305Device.cpp:616] UVCAutoRebootOnFault=true for device: Gemini 305
+[11/06 18:20:39.909732][info][3465112][DeviceBase.cpp:742] key: AppSlot,value:1
+[11/06 18:20:39.909735][info][3465112][DeviceBase.cpp:742] key: HwType,value:S1
+[11/06 18:20:39.909736][info][3465112][DeviceBase.cpp:742] key: HwVer,value:V1.3
+[11/06 18:20:39.909736][info][3465112][DeviceBase.cpp:742] key: IspFwVer,value:20260424
+[11/06 18:20:39.909737][info][3465112][DeviceBase.cpp:742] key: IspNeedVer,value:20250920
+[11/06 18:20:39.909737][info][3465112][DeviceBase.cpp:742] key: PresetVer,value:0.0.9
+[11/06 18:20:40.098160][info][3465112][DeviceManager.cpp:200] Device created successfully! Name: Gemini 305, PID: 0x0840, SN/ID: CV2856D0002E FW: 1.0.70
+[11/06 18:20:40.098206][info][3465112][Pipeline.cpp:54] [CV2856D0002E] Pipeline created with device: {name: Gemini 305, sn: CV2856D0002E}, @0x5721BFF59980
+[11/06 18:20:42.205704][info][3465112][Pipeline.cpp:228] [CV2856D0002E] Check and set config done!
+[11/06 18:20:42.206968][info][3465112][Pipeline.cpp:266] [CV2856D0002E] Try to start streams!
+[11/06 18:20:42.206985][info][3465112][VideoSensor.cpp:61] [CV2856D0002E] Try to start stream: {type: Color, format: MJPG, width: 640, height: 480, fps: 30}
+[11/06 18:20:42.206992][info][3465112][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STOPPED to STARTING@Color
+[11/06 18:20:42.206994][info][3465112][VideoSensor.cpp:130] [CV2856D0002E] Start backend stream: {type: Color, format: MJPG, width: 640, height: 480, fps: 30}
+[11/06 18:20:42.208478][info][3465112][VideoSensor.cpp:61] [CV2856D0002E] Try to start stream: {type: Depth, format: Y16, width: 848, height: 530, fps: 30}
+[11/06 18:20:42.211317][info][3465112][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STOPPED to STARTING@Depth
+[11/06 18:20:42.211320][info][3465112][VideoSensor.cpp:130] [CV2856D0002E] Start backend stream: {type: Depth, format: Z16, width: 848, height: 530, fps: 30}
+[11/06 18:20:42.212108][info][3465112][Pipeline.cpp:293] [CV2856D0002E] Start streams done!
+[11/06 18:20:42.212109][info][3465112][Pipeline.cpp:250] [CV2856D0002E] Pipeline start done!
+[11/06 18:20:42.726937][info][3465213][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STARTING to STREAMING@Depth
+[11/06 18:20:42.791779][info][3465211][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STARTING to STREAMING@Color
+[11/06 18:20:42.791931][warning][3465112][Align.cpp:166] No other frame or align profile or to profile found!
+[11/06 18:20:42.791959][warning][3465112][Align.cpp:166] No other frame or align profile or to profile found!
+[11/06 18:20:43.659755][warning][3465217][Pipeline.cpp:324] [CV2856D0002E] Output frameset queue is full, drop oldest frameset!
+[11/06 18:20:46.690541][warning][3465217][Pipeline.cpp:324] [CV2856D0002E] Output frameset queue is full, drop oldest frameset! [**91 logs in 3030ms**]
+[11/06 18:20:47.756225][info][3465213][VideoSensor.cpp:180] [CV2856D0002E] Depth backend frame callback, frameRate=30.224697fps
+[11/06 18:20:47.756372][info][3465217][SensorBase.cpp:405] [CV2856D0002E] Depth Streaming... frameRate=30.254776fps
+[11/06 18:20:47.821592][info][3465211][VideoSensor.cpp:180] [CV2856D0002E] Color backend frame callback, frameRate=30.224697fps
+[11/06 18:20:47.821637][info][3465219][SensorBase.cpp:405] [CV2856D0002E] Color Streaming... frameRate=30.218687fps
+[11/06 18:20:52.723939][warning][3465260][Pipeline.cpp:324] [CV2856D0002E] Output frameset queue is full, drop oldest frameset! [**106 logs in 6033ms, last: 18:20:52.652842**]
+[11/06 18:20:52.785885][info][3465213][VideoSensor.cpp:180] [CV2856D0002E] Depth backend frame callback, frameRate=30.025850fps
+[11/06 18:20:52.786076][info][3465217][SensorBase.cpp:405] [CV2856D0002E] Depth Streaming... frameRate=30.019880fps
+[11/06 18:20:52.851231][info][3465211][VideoSensor.cpp:180] [CV2856D0002E] Color backend frame callback, frameRate=30.019880fps
+[11/06 18:20:52.851272][info][3465219][SensorBase.cpp:405] [CV2856D0002E] Color Streaming... frameRate=30.025850fps
+[11/06 18:20:56.456973][info][3465112][Pipeline.cpp:367] [CV2856D0002E] Try to stop pipeline!
+[11/06 18:20:56.456981][info][3465112][Pipeline.cpp:343] [CV2856D0002E] Try to stop streams!
+[11/06 18:20:56.456991][info][3465112][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STREAMING to STOPPING@Depth
+[11/06 18:20:56.470124][info][3465112][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STOPPING to STOPPED@Depth
+[11/06 18:20:56.470167][info][3465112][Pipeline.cpp:357] [CV2856D0002E] Sensor stream stopped, sensorType=Depth
+[11/06 18:20:56.470173][info][3465112][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STREAMING to STOPPING@Color
+[11/06 18:20:56.490111][info][3465112][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STOPPING to STOPPED@Color
+[11/06 18:20:56.490173][info][3465112][Pipeline.cpp:357] [CV2856D0002E] Sensor stream stopped, sensorType=Color
+[11/06 18:20:56.490174][info][3465112][Pipeline.cpp:363] [CV2856D0002E] Stop streams done!
+[11/06 18:20:56.510120][info][3465112][Pipeline.cpp:393] [CV2856D0002E] Stop pipeline done!
+[11/06 18:20:56.511024][info][3465112][Pipeline.cpp:65] [CV2856D0002E] Pipeline destroyed! @0x5721BFF59980
+[11/06 18:20:56.511085][info][3465112][SensorBase.cpp:53] [CV2856D0002E] SensorBase is destroyed
+[11/06 18:20:56.511882][info][3465112][ObLibuvcDevicePort.cpp:87] uvc_close done.
+[11/06 18:20:56.511885][info][3465112][ObLibuvcDevicePort.cpp:88] ~ObLibuvcDevicePort done
+[11/06 18:20:56.511966][info][3465112][SensorBase.cpp:53] [CV2856D0002E] SensorBase is destroyed
+[11/06 18:20:56.518345][info][3465112][ObLibuvcDevicePort.cpp:87] uvc_close done.
+[11/06 18:20:56.518349][info][3465112][ObLibuvcDevicePort.cpp:88] ~ObLibuvcDevicePort done
+[11/06 18:20:56.927273][warning][3465285][Pipeline.cpp:324] [CV2856D0002E] Output frameset queue is full, drop oldest frameset! [**10 logs in 4203ms, last: 18:20:53.552199**]
+[11/06 18:21:02.370194][info][3465337][HostTimestampProvider.cpp:36] Update clock type to: realtime(0)
+[11/06 18:21:02.700687][info][3465337][LinuxUsbPal.cpp:334] Create PollingDeviceWatcher!
+[11/06 18:21:02.700697][info][3465337][DeviceManager.cpp:25] Current found device(s): (4)
+[11/06 18:21:02.700698][info][3465337][DeviceManager.cpp:34] 	- Name: Gemini 305, PID: 0x0840, SN/ID: CV2856D0008H, Connection: USB3.2
+[11/06 18:21:02.700698][info][3465337][DeviceManager.cpp:34] 	- Name: Gemini 305, PID: 0x0840, SN/ID: CV2856D0002E, Connection: USB3.2
+[11/06 18:21:02.700699][info][3465337][DeviceManager.cpp:34] 	- Name: Gemini 335L, PID: 0x0804, SN/ID: CP28563000CV, Connection: USB3.2
+[11/06 18:21:02.700699][info][3465337][DeviceManager.cpp:34] 	- Name: Gemini 335L, PID: 0x0804, SN/ID: CP28563000CK, Connection: USB3.2
+[11/06 18:21:02.700701][info][3465337][DeviceManager.cpp:463] Enable net device enumeration: true
+[11/06 18:21:03.703635][info][3465337][DeviceManager.cpp:25] Current device(s) list: (4)
+[11/06 18:21:03.703644][info][3465337][DeviceManager.cpp:34] 	- Name: Gemini 305, PID: 0x0840, SN/ID: CV2856D0008H, Connection: USB3.2
+[11/06 18:21:03.703645][info][3465337][DeviceManager.cpp:34] 	- Name: Gemini 305, PID: 0x0840, SN/ID: CV2856D0002E, Connection: USB3.2
+[11/06 18:21:03.703645][info][3465337][DeviceManager.cpp:34] 	- Name: Gemini 335L, PID: 0x0804, SN/ID: CP28563000CV, Connection: USB3.2
+[11/06 18:21:03.703645][info][3465337][DeviceManager.cpp:34] 	- Name: Gemini 335L, PID: 0x0804, SN/ID: CP28563000CK, Connection: USB3.2
+[11/06 18:21:03.704329][info][3465337][G305Device.cpp:616] UVCAutoRebootOnFault=true for device: Gemini 305
+[11/06 18:21:03.710239][info][3465337][DeviceBase.cpp:742] key: AppSlot,value:1
+[11/06 18:21:03.710242][info][3465337][DeviceBase.cpp:742] key: HwType,value:S1
+[11/06 18:21:03.710243][info][3465337][DeviceBase.cpp:742] key: HwVer,value:V1.3
+[11/06 18:21:03.710243][info][3465337][DeviceBase.cpp:742] key: IspFwVer,value:20260424
+[11/06 18:21:03.710244][info][3465337][DeviceBase.cpp:742] key: IspNeedVer,value:20250920
+[11/06 18:21:03.710244][info][3465337][DeviceBase.cpp:742] key: PresetVer,value:0.0.9
+[11/06 18:21:03.898455][info][3465337][DeviceManager.cpp:200] Device created successfully! Name: Gemini 305, PID: 0x0840, SN/ID: CV2856D0002E FW: 1.0.70
+[11/06 18:21:03.898510][info][3465337][Pipeline.cpp:54] [CV2856D0002E] Pipeline created with device: {name: Gemini 305, sn: CV2856D0002E}, @0x63212EAA2550
+[11/06 18:21:06.017346][info][3465337][Pipeline.cpp:228] [CV2856D0002E] Check and set config done!
+[11/06 18:21:06.018544][info][3465337][Pipeline.cpp:266] [CV2856D0002E] Try to start streams!
+[11/06 18:21:06.018558][info][3465337][VideoSensor.cpp:61] [CV2856D0002E] Try to start stream: {type: Color, format: MJPG, width: 640, height: 480, fps: 30}
+[11/06 18:21:06.018566][info][3465337][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STOPPED to STARTING@Color
+[11/06 18:21:06.018568][info][3465337][VideoSensor.cpp:130] [CV2856D0002E] Start backend stream: {type: Color, format: MJPG, width: 640, height: 480, fps: 30}
+[11/06 18:21:06.020010][info][3465337][VideoSensor.cpp:61] [CV2856D0002E] Try to start stream: {type: Depth, format: Y16, width: 848, height: 530, fps: 30}
+[11/06 18:21:06.022994][info][3465337][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STOPPED to STARTING@Depth
+[11/06 18:21:06.023008][info][3465337][VideoSensor.cpp:130] [CV2856D0002E] Start backend stream: {type: Depth, format: Z16, width: 848, height: 530, fps: 30}
+[11/06 18:21:06.023878][info][3465337][Pipeline.cpp:293] [CV2856D0002E] Start streams done!
+[11/06 18:21:06.023880][info][3465337][Pipeline.cpp:250] [CV2856D0002E] Pipeline start done!
+[11/06 18:21:06.538509][info][3465434][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STARTING to STREAMING@Depth
+[11/06 18:21:06.603358][info][3465432][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STARTING to STREAMING@Color
+[11/06 18:21:06.603512][warning][3465337][Align.cpp:166] No other frame or align profile or to profile found!
+[11/06 18:21:06.603538][warning][3465337][Align.cpp:166] No other frame or align profile or to profile found!
+[11/06 18:21:07.471159][warning][3465437][Pipeline.cpp:324] [CV2856D0002E] Output frameset queue is full, drop oldest frameset!
+[11/06 18:21:10.502061][warning][3465437][Pipeline.cpp:324] [CV2856D0002E] Output frameset queue is full, drop oldest frameset! [**91 logs in 3030ms**]
+[11/06 18:21:11.567781][info][3465434][VideoSensor.cpp:180] [CV2856D0002E] Depth backend frame callback, frameRate=30.224697fps
+[11/06 18:21:11.567928][info][3465437][SensorBase.cpp:405] [CV2856D0002E] Depth Streaming... frameRate=30.254776fps
+[11/06 18:21:11.633151][info][3465432][VideoSensor.cpp:180] [CV2856D0002E] Color backend frame callback, frameRate=30.218687fps
+[11/06 18:21:11.633185][info][3465439][SensorBase.cpp:405] [CV2856D0002E] Color Streaming... frameRate=30.218687fps
+[11/06 18:21:16.530974][warning][3465437][Pipeline.cpp:324] [CV2856D0002E] Output frameset queue is full, drop oldest frameset! [**181 logs in 6028ms**]
+[11/06 18:21:16.597441][info][3465434][VideoSensor.cpp:180] [CV2856D0002E] Depth backend frame callback, frameRate=30.019880fps
+[11/06 18:21:16.597620][info][3465437][SensorBase.cpp:405] [CV2856D0002E] Depth Streaming... frameRate=30.019880fps
+[11/06 18:21:16.662795][info][3465432][VideoSensor.cpp:180] [CV2856D0002E] Color backend frame callback, frameRate=30.025850fps
+[11/06 18:21:16.662830][info][3465439][SensorBase.cpp:405] [CV2856D0002E] Color Streaming... frameRate=30.025850fps
+[11/06 18:21:21.627093][info][3465434][VideoSensor.cpp:180] [CV2856D0002E] Depth backend frame callback, frameRate=30.025850fps
+[11/06 18:21:21.627246][info][3465437][SensorBase.cpp:405] [CV2856D0002E] Depth Streaming... frameRate=30.025850fps
+[11/06 18:21:21.692448][info][3465432][VideoSensor.cpp:180] [CV2856D0002E] Color backend frame callback, frameRate=30.025850fps
+[11/06 18:21:21.692492][info][3465439][SensorBase.cpp:405] [CV2856D0002E] Color Streaming... frameRate=30.025850fps
+[11/06 18:21:22.800636][info][3465337][Pipeline.cpp:367] [CV2856D0002E] Try to stop pipeline!
+[11/06 18:21:22.800646][info][3465337][Pipeline.cpp:343] [CV2856D0002E] Try to stop streams!
+[11/06 18:21:22.800660][info][3465337][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STREAMING to STOPPING@Depth
+[11/06 18:21:22.818699][info][3465337][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STOPPING to STOPPED@Depth
+[11/06 18:21:22.818765][info][3465337][Pipeline.cpp:357] [CV2856D0002E] Sensor stream stopped, sensorType=Depth
+[11/06 18:21:22.818772][info][3465337][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STREAMING to STOPPING@Color
+[11/06 18:21:22.838689][info][3465337][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STOPPING to STOPPED@Color
+[11/06 18:21:22.838755][info][3465337][Pipeline.cpp:357] [CV2856D0002E] Sensor stream stopped, sensorType=Color
+[11/06 18:21:22.838757][info][3465337][Pipeline.cpp:363] [CV2856D0002E] Stop streams done!
+[11/06 18:21:22.858705][info][3465337][Pipeline.cpp:393] [CV2856D0002E] Stop pipeline done!
+[11/06 18:21:22.859617][info][3465337][Pipeline.cpp:65] [CV2856D0002E] Pipeline destroyed! @0x63212EAA2550
+[11/06 18:21:22.859677][info][3465337][SensorBase.cpp:53] [CV2856D0002E] SensorBase is destroyed
+[11/06 18:21:22.860429][info][3465337][ObLibuvcDevicePort.cpp:87] uvc_close done.
+[11/06 18:21:22.860430][info][3465337][ObLibuvcDevicePort.cpp:88] ~ObLibuvcDevicePort done
+[11/06 18:21:22.860510][info][3465337][SensorBase.cpp:53] [CV2856D0002E] SensorBase is destroyed
+[11/06 18:21:22.866701][info][3465337][ObLibuvcDevicePort.cpp:87] uvc_close done.
+[11/06 18:21:22.866705][info][3465337][ObLibuvcDevicePort.cpp:88] ~ObLibuvcDevicePort done
+[11/06 18:21:22.868608][warning][3465504][Pipeline.cpp:324] [CV2856D0002E] Output frameset queue is full, drop oldest frameset! [**43 logs in 6337ms, last: 18:21:20.428089**]
+[11/06 18:21:24.599652][info][3465554][HostTimestampProvider.cpp:36] Update clock type to: realtime(0)
+[11/06 18:21:24.602408][info][3465554][LinuxUsbPal.cpp:334] Create PollingDeviceWatcher!
+[11/06 18:21:24.602415][info][3465554][DeviceManager.cpp:25] Current found device(s): (4)
+[11/06 18:21:24.602416][info][3465554][DeviceManager.cpp:34] 	- Name: Gemini 305, PID: 0x0840, SN/ID: CV2856D0008H, Connection: USB3.2
+[11/06 18:21:24.602416][info][3465554][DeviceManager.cpp:34] 	- Name: Gemini 305, PID: 0x0840, SN/ID: CV2856D0002E, Connection: USB3.2
+[11/06 18:21:24.602417][info][3465554][DeviceManager.cpp:34] 	- Name: Gemini 335L, PID: 0x0804, SN/ID: CP28563000CV, Connection: USB3.2
+[11/06 18:21:24.602417][info][3465554][DeviceManager.cpp:34] 	- Name: Gemini 335L, PID: 0x0804, SN/ID: CP28563000CK, Connection: USB3.2
+[11/06 18:21:24.602418][info][3465554][DeviceManager.cpp:463] Enable net device enumeration: true
+[11/06 18:21:25.605533][info][3465554][DeviceManager.cpp:25] Current device(s) list: (4)
+[11/06 18:21:25.605542][info][3465554][DeviceManager.cpp:34] 	- Name: Gemini 305, PID: 0x0840, SN/ID: CV2856D0008H, Connection: USB3.2
+[11/06 18:21:25.605543][info][3465554][DeviceManager.cpp:34] 	- Name: Gemini 305, PID: 0x0840, SN/ID: CV2856D0002E, Connection: USB3.2
+[11/06 18:21:25.605543][info][3465554][DeviceManager.cpp:34] 	- Name: Gemini 335L, PID: 0x0804, SN/ID: CP28563000CV, Connection: USB3.2
+[11/06 18:21:25.605543][info][3465554][DeviceManager.cpp:34] 	- Name: Gemini 335L, PID: 0x0804, SN/ID: CP28563000CK, Connection: USB3.2
+[11/06 18:21:25.606186][info][3465554][G305Device.cpp:616] UVCAutoRebootOnFault=true for device: Gemini 305
+[11/06 18:21:25.612145][info][3465554][DeviceBase.cpp:742] key: AppSlot,value:1
+[11/06 18:21:25.612147][info][3465554][DeviceBase.cpp:742] key: HwType,value:S1
+[11/06 18:21:25.612148][info][3465554][DeviceBase.cpp:742] key: HwVer,value:V1.3
+[11/06 18:21:25.612148][info][3465554][DeviceBase.cpp:742] key: IspFwVer,value:20260424
+[11/06 18:21:25.612149][info][3465554][DeviceBase.cpp:742] key: IspNeedVer,value:20250920
+[11/06 18:21:25.612149][info][3465554][DeviceBase.cpp:742] key: PresetVer,value:0.0.9
+[11/06 18:21:25.800564][info][3465554][DeviceManager.cpp:200] Device created successfully! Name: Gemini 305, PID: 0x0840, SN/ID: CV2856D0002E FW: 1.0.70
+[11/06 18:21:25.800609][info][3465554][Pipeline.cpp:54] [CV2856D0002E] Pipeline created with device: {name: Gemini 305, sn: CV2856D0002E}, @0x5F67F18BB510
+[11/06 18:21:27.903699][info][3465554][Pipeline.cpp:228] [CV2856D0002E] Check and set config done!
+[11/06 18:21:27.904945][info][3465554][Pipeline.cpp:266] [CV2856D0002E] Try to start streams!
+[11/06 18:21:27.904957][info][3465554][VideoSensor.cpp:61] [CV2856D0002E] Try to start stream: {type: Color, format: MJPG, width: 640, height: 480, fps: 30}
+[11/06 18:21:27.904965][info][3465554][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STOPPED to STARTING@Color
+[11/06 18:21:27.904967][info][3465554][VideoSensor.cpp:130] [CV2856D0002E] Start backend stream: {type: Color, format: MJPG, width: 640, height: 480, fps: 30}
+[11/06 18:21:27.906411][info][3465554][VideoSensor.cpp:61] [CV2856D0002E] Try to start stream: {type: Depth, format: Y16, width: 848, height: 530, fps: 30}
+[11/06 18:21:27.909426][info][3465554][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STOPPED to STARTING@Depth
+[11/06 18:21:27.909439][info][3465554][VideoSensor.cpp:130] [CV2856D0002E] Start backend stream: {type: Depth, format: Z16, width: 848, height: 530, fps: 30}
+[11/06 18:21:27.910310][info][3465554][Pipeline.cpp:293] [CV2856D0002E] Start streams done!
+[11/06 18:21:27.910311][info][3465554][Pipeline.cpp:250] [CV2856D0002E] Pipeline start done!
+[11/06 18:21:28.424668][info][3465639][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STARTING to STREAMING@Depth
+[11/06 18:21:28.489567][info][3465637][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STARTING to STREAMING@Color
+[11/06 18:21:28.489697][warning][3465554][Align.cpp:166] No other frame or align profile or to profile found!
+[11/06 18:21:28.489736][warning][3465554][Align.cpp:166] No other frame or align profile or to profile found!
+[11/06 18:21:29.357560][warning][3465641][Pipeline.cpp:324] [CV2856D0002E] Output frameset queue is full, drop oldest frameset!
+[11/06 18:21:32.388310][warning][3465641][Pipeline.cpp:324] [CV2856D0002E] Output frameset queue is full, drop oldest frameset! [**91 logs in 3030ms**]
+[11/06 18:21:33.454036][info][3465639][VideoSensor.cpp:180] [CV2856D0002E] Depth backend frame callback, frameRate=30.224697fps
+[11/06 18:21:33.454270][info][3465641][SensorBase.cpp:405] [CV2856D0002E] Depth Streaming... frameRate=30.254776fps
+[11/06 18:21:33.519385][info][3465637][VideoSensor.cpp:180] [CV2856D0002E] Color backend frame callback, frameRate=30.218687fps
+[11/06 18:21:33.519429][info][3465643][SensorBase.cpp:405] [CV2856D0002E] Color Streaming... frameRate=30.218687fps
+[11/06 18:21:38.421753][warning][3465683][Pipeline.cpp:324] [CV2856D0002E] Output frameset queue is full, drop oldest frameset! [**132 logs in 6033ms, last: 18:21:38.383891**]
+[11/06 18:21:38.483652][info][3465639][VideoSensor.cpp:180] [CV2856D0002E] Depth backend frame callback, frameRate=30.019880fps
+[11/06 18:21:38.483892][info][3465641][SensorBase.cpp:405] [CV2856D0002E] Depth Streaming... frameRate=30.019880fps
+[11/06 18:21:38.549035][info][3465637][VideoSensor.cpp:180] [CV2856D0002E] Color backend frame callback, frameRate=30.025850fps
+[11/06 18:21:38.549077][info][3465643][SensorBase.cpp:405] [CV2856D0002E] Color Streaming... frameRate=30.025850fps
+[11/06 18:21:43.513348][info][3465639][VideoSensor.cpp:180] [CV2856D0002E] Depth backend frame callback, frameRate=30.025850fps
+[11/06 18:21:43.513519][info][3465641][SensorBase.cpp:405] [CV2856D0002E] Depth Streaming... frameRate=30.025850fps
+[11/06 18:21:43.578659][info][3465637][VideoSensor.cpp:180] [CV2856D0002E] Color backend frame callback, frameRate=30.025850fps
+[11/06 18:21:43.578700][info][3465643][SensorBase.cpp:405] [CV2856D0002E] Color Streaming... frameRate=30.025850fps
+[11/06 18:21:47.184784][info][3465554][Pipeline.cpp:367] [CV2856D0002E] Try to stop pipeline!
+[11/06 18:21:47.184793][info][3465554][Pipeline.cpp:343] [CV2856D0002E] Try to stop streams!
+[11/06 18:21:47.184807][info][3465554][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STREAMING to STOPPING@Depth
+[11/06 18:21:47.208945][info][3465554][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STOPPING to STOPPED@Depth
+[11/06 18:21:47.209017][info][3465554][Pipeline.cpp:357] [CV2856D0002E] Sensor stream stopped, sensorType=Depth
+[11/06 18:21:47.209023][info][3465554][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STREAMING to STOPPING@Color
+[11/06 18:21:47.228942][info][3465554][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STOPPING to STOPPED@Color
+[11/06 18:21:47.229008][info][3465554][Pipeline.cpp:357] [CV2856D0002E] Sensor stream stopped, sensorType=Color
+[11/06 18:21:47.229009][info][3465554][Pipeline.cpp:363] [CV2856D0002E] Stop streams done!
+[11/06 18:21:47.248947][info][3465554][Pipeline.cpp:393] [CV2856D0002E] Stop pipeline done!
+[11/06 18:21:47.249917][info][3465554][Pipeline.cpp:65] [CV2856D0002E] Pipeline destroyed! @0x5F67F18BB510
+[11/06 18:21:47.249978][info][3465554][SensorBase.cpp:53] [CV2856D0002E] SensorBase is destroyed
+[11/06 18:21:47.250768][info][3465554][ObLibuvcDevicePort.cpp:87] uvc_close done.
+[11/06 18:21:47.250769][info][3465554][ObLibuvcDevicePort.cpp:88] ~ObLibuvcDevicePort done
+[11/06 18:21:47.250847][info][3465554][SensorBase.cpp:53] [CV2856D0002E] SensorBase is destroyed
+[11/06 18:21:47.256967][info][3465554][ObLibuvcDevicePort.cpp:87] uvc_close done.
+[11/06 18:21:47.256970][info][3465554][ObLibuvcDevicePort.cpp:88] ~ObLibuvcDevicePort done
+[11/06 18:21:47.258701][warning][3465712][Pipeline.cpp:324] [CV2856D0002E] Output frameset queue is full, drop oldest frameset! [**15 logs in 8836ms, last: 18:21:39.816257**]
+[11/06 18:23:02.953796][info][3465824][HostTimestampProvider.cpp:36] Update clock type to: realtime(0)
+[11/06 18:23:03.278159][info][3465824][LinuxUsbPal.cpp:334] Create PollingDeviceWatcher!
+[11/06 18:23:03.278174][info][3465824][DeviceManager.cpp:25] Current found device(s): (4)
+[11/06 18:23:03.278176][info][3465824][DeviceManager.cpp:34] 	- Name: Gemini 305, PID: 0x0840, SN/ID: CV2856D0008H, Connection: USB3.2
+[11/06 18:23:03.278177][info][3465824][DeviceManager.cpp:34] 	- Name: Gemini 305, PID: 0x0840, SN/ID: CV2856D0002E, Connection: USB3.2
+[11/06 18:23:03.278177][info][3465824][DeviceManager.cpp:34] 	- Name: Gemini 335L, PID: 0x0804, SN/ID: CP28563000CV, Connection: USB3.2
+[11/06 18:23:03.278178][info][3465824][DeviceManager.cpp:34] 	- Name: Gemini 335L, PID: 0x0804, SN/ID: CP28563000CK, Connection: USB3.2
+[11/06 18:23:03.278180][info][3465824][DeviceManager.cpp:463] Enable net device enumeration: true
+[11/06 18:23:04.281317][info][3465824][DeviceManager.cpp:25] Current device(s) list: (4)
+[11/06 18:23:04.281329][info][3465824][DeviceManager.cpp:34] 	- Name: Gemini 305, PID: 0x0840, SN/ID: CV2856D0008H, Connection: USB3.2
+[11/06 18:23:04.281330][info][3465824][DeviceManager.cpp:34] 	- Name: Gemini 305, PID: 0x0840, SN/ID: CV2856D0002E, Connection: USB3.2
+[11/06 18:23:04.281330][info][3465824][DeviceManager.cpp:34] 	- Name: Gemini 335L, PID: 0x0804, SN/ID: CP28563000CV, Connection: USB3.2
+[11/06 18:23:04.281331][info][3465824][DeviceManager.cpp:34] 	- Name: Gemini 335L, PID: 0x0804, SN/ID: CP28563000CK, Connection: USB3.2
+[11/06 18:23:04.282168][info][3465824][G305Device.cpp:616] UVCAutoRebootOnFault=true for device: Gemini 305
+[11/06 18:23:04.288278][info][3465824][DeviceBase.cpp:742] key: AppSlot,value:1
+[11/06 18:23:04.288284][info][3465824][DeviceBase.cpp:742] key: HwType,value:S1
+[11/06 18:23:04.288284][info][3465824][DeviceBase.cpp:742] key: HwVer,value:V1.3
+[11/06 18:23:04.288285][info][3465824][DeviceBase.cpp:742] key: IspFwVer,value:20260424
+[11/06 18:23:04.288285][info][3465824][DeviceBase.cpp:742] key: IspNeedVer,value:20250920
+[11/06 18:23:04.288286][info][3465824][DeviceBase.cpp:742] key: PresetVer,value:0.0.9
+[11/06 18:23:04.477432][info][3465824][DeviceManager.cpp:200] Device created successfully! Name: Gemini 305, PID: 0x0840, SN/ID: CV2856D0002E FW: 1.0.70
+[11/06 18:23:04.477492][info][3465824][Pipeline.cpp:54] [CV2856D0002E] Pipeline created with device: {name: Gemini 305, sn: CV2856D0002E}, @0x5599F9C77510
+[11/06 18:23:06.588086][info][3465824][Pipeline.cpp:228] [CV2856D0002E] Check and set config done!
+[11/06 18:23:06.589315][info][3465824][Pipeline.cpp:266] [CV2856D0002E] Try to start streams!
+[11/06 18:23:06.589337][info][3465824][VideoSensor.cpp:61] [CV2856D0002E] Try to start stream: {type: Color, format: MJPG, width: 640, height: 480, fps: 30}
+[11/06 18:23:06.589345][info][3465824][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STOPPED to STARTING@Color
+[11/06 18:23:06.589348][info][3465824][VideoSensor.cpp:130] [CV2856D0002E] Start backend stream: {type: Color, format: MJPG, width: 640, height: 480, fps: 30}
+[11/06 18:23:06.590778][info][3465824][VideoSensor.cpp:61] [CV2856D0002E] Try to start stream: {type: Depth, format: Y16, width: 848, height: 530, fps: 30}
+[11/06 18:23:06.593687][info][3465824][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STOPPED to STARTING@Depth
+[11/06 18:23:06.593694][info][3465824][VideoSensor.cpp:130] [CV2856D0002E] Start backend stream: {type: Depth, format: Z16, width: 848, height: 530, fps: 30}
+[11/06 18:23:06.594545][info][3465824][Pipeline.cpp:293] [CV2856D0002E] Start streams done!
+[11/06 18:23:06.594546][info][3465824][Pipeline.cpp:250] [CV2856D0002E] Pipeline start done!
+[11/06 18:23:07.109416][info][3465920][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STARTING to STREAMING@Depth
+[11/06 18:23:07.174173][info][3465918][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STARTING to STREAMING@Color
+[11/06 18:23:07.174325][warning][3465824][Align.cpp:166] No other frame or align profile or to profile found!
+[11/06 18:23:07.174362][warning][3465824][Align.cpp:166] No other frame or align profile or to profile found!
+[11/06 18:23:08.041988][warning][3465924][Pipeline.cpp:324] [CV2856D0002E] Output frameset queue is full, drop oldest frameset!
+[11/06 18:23:11.072893][warning][3465924][Pipeline.cpp:324] [CV2856D0002E] Output frameset queue is full, drop oldest frameset! [**91 logs in 3030ms**]
+[11/06 18:23:12.138644][info][3465920][VideoSensor.cpp:180] [CV2856D0002E] Depth backend frame callback, frameRate=30.224697fps
+[11/06 18:23:12.138846][info][3465924][SensorBase.cpp:405] [CV2856D0002E] Depth Streaming... frameRate=30.254776fps
+[11/06 18:23:12.203967][info][3465918][VideoSensor.cpp:180] [CV2856D0002E] Color backend frame callback, frameRate=30.224697fps
+[11/06 18:23:12.204012][info][3465926][SensorBase.cpp:405] [CV2856D0002E] Color Streaming... frameRate=30.218687fps
+[11/06 18:23:17.106499][warning][3465966][Pipeline.cpp:324] [CV2856D0002E] Output frameset queue is full, drop oldest frameset! [**142 logs in 6033ms, last: 18:23:15.802947**]
+[11/06 18:23:17.168361][info][3465920][VideoSensor.cpp:180] [CV2856D0002E] Depth backend frame callback, frameRate=30.019880fps
+[11/06 18:23:17.168573][info][3465924][SensorBase.cpp:405] [CV2856D0002E] Depth Streaming... frameRate=30.019880fps
+[11/06 18:23:17.233606][info][3465918][VideoSensor.cpp:180] [CV2856D0002E] Color backend frame callback, frameRate=30.019880fps
+[11/06 18:23:17.233679][info][3465926][SensorBase.cpp:405] [CV2856D0002E] Color Streaming... frameRate=30.025850fps
+[11/06 18:23:19.407105][info][3465824][Pipeline.cpp:367] [CV2856D0002E] Try to stop pipeline!
+[11/06 18:23:19.407115][info][3465824][Pipeline.cpp:343] [CV2856D0002E] Try to stop streams!
+[11/06 18:23:19.407127][info][3465824][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STREAMING to STOPPING@Depth
+[11/06 18:23:19.418460][info][3465824][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STOPPING to STOPPED@Depth
+[11/06 18:23:19.418519][info][3465824][Pipeline.cpp:357] [CV2856D0002E] Sensor stream stopped, sensorType=Depth
+[11/06 18:23:19.418524][info][3465824][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STREAMING to STOPPING@Color
+[11/06 18:23:19.438516][info][3465824][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STOPPING to STOPPED@Color
+[11/06 18:23:19.438588][info][3465824][Pipeline.cpp:357] [CV2856D0002E] Sensor stream stopped, sensorType=Color
+[11/06 18:23:19.438589][info][3465824][Pipeline.cpp:363] [CV2856D0002E] Stop streams done!
+[11/06 18:23:19.458490][info][3465824][Pipeline.cpp:393] [CV2856D0002E] Stop pipeline done!
+[11/06 18:23:19.459477][info][3465824][Pipeline.cpp:65] [CV2856D0002E] Pipeline destroyed! @0x5599F9C77510
+[11/06 18:23:19.459536][info][3465824][SensorBase.cpp:53] [CV2856D0002E] SensorBase is destroyed
+[11/06 18:23:19.460287][info][3465824][ObLibuvcDevicePort.cpp:87] uvc_close done.
+[11/06 18:23:19.460288][info][3465824][ObLibuvcDevicePort.cpp:88] ~ObLibuvcDevicePort done
+[11/06 18:23:19.460373][info][3465824][SensorBase.cpp:53] [CV2856D0002E] SensorBase is destroyed
+[11/06 18:23:19.466636][info][3465824][ObLibuvcDevicePort.cpp:87] uvc_close done.
+[11/06 18:23:19.466639][info][3465824][ObLibuvcDevicePort.cpp:88] ~ObLibuvcDevicePort done
+[11/06 18:23:19.468560][warning][3465993][Pipeline.cpp:324] [CV2856D0002E] Output frameset queue is full, drop oldest frameset! [**15 logs in 2362ms, last: 18:23:18.500778**]
+[11/06 18:23:21.074789][info][3466028][HostTimestampProvider.cpp:36] Update clock type to: realtime(0)
+[11/06 18:23:21.077565][info][3466028][LinuxUsbPal.cpp:334] Create PollingDeviceWatcher!
+[11/06 18:23:21.077572][info][3466028][DeviceManager.cpp:25] Current found device(s): (4)
+[11/06 18:23:21.077573][info][3466028][DeviceManager.cpp:34] 	- Name: Gemini 305, PID: 0x0840, SN/ID: CV2856D0008H, Connection: USB3.2
+[11/06 18:23:21.077574][info][3466028][DeviceManager.cpp:34] 	- Name: Gemini 305, PID: 0x0840, SN/ID: CV2856D0002E, Connection: USB3.2
+[11/06 18:23:21.077574][info][3466028][DeviceManager.cpp:34] 	- Name: Gemini 335L, PID: 0x0804, SN/ID: CP28563000CV, Connection: USB3.2
+[11/06 18:23:21.077574][info][3466028][DeviceManager.cpp:34] 	- Name: Gemini 335L, PID: 0x0804, SN/ID: CP28563000CK, Connection: USB3.2
+[11/06 18:23:21.077575][info][3466028][DeviceManager.cpp:463] Enable net device enumeration: true
+[11/06 18:23:22.080531][info][3466028][DeviceManager.cpp:25] Current device(s) list: (4)
+[11/06 18:23:22.080543][info][3466028][DeviceManager.cpp:34] 	- Name: Gemini 305, PID: 0x0840, SN/ID: CV2856D0008H, Connection: USB3.2
+[11/06 18:23:22.080544][info][3466028][DeviceManager.cpp:34] 	- Name: Gemini 305, PID: 0x0840, SN/ID: CV2856D0002E, Connection: USB3.2
+[11/06 18:23:22.080544][info][3466028][DeviceManager.cpp:34] 	- Name: Gemini 335L, PID: 0x0804, SN/ID: CP28563000CV, Connection: USB3.2
+[11/06 18:23:22.080545][info][3466028][DeviceManager.cpp:34] 	- Name: Gemini 335L, PID: 0x0804, SN/ID: CP28563000CK, Connection: USB3.2
+[11/06 18:23:22.081268][info][3466028][G305Device.cpp:616] UVCAutoRebootOnFault=true for device: Gemini 305
+[11/06 18:23:22.087316][info][3466028][DeviceBase.cpp:742] key: AppSlot,value:1
+[11/06 18:23:22.087320][info][3466028][DeviceBase.cpp:742] key: HwType,value:S1
+[11/06 18:23:22.087321][info][3466028][DeviceBase.cpp:742] key: HwVer,value:V1.3
+[11/06 18:23:22.087322][info][3466028][DeviceBase.cpp:742] key: IspFwVer,value:20260424
+[11/06 18:23:22.087322][info][3466028][DeviceBase.cpp:742] key: IspNeedVer,value:20250920
+[11/06 18:23:22.087323][info][3466028][DeviceBase.cpp:742] key: PresetVer,value:0.0.9
+[11/06 18:23:22.276874][info][3466028][DeviceManager.cpp:200] Device created successfully! Name: Gemini 305, PID: 0x0840, SN/ID: CV2856D0002E FW: 1.0.70
+[11/06 18:23:22.276936][info][3466028][Pipeline.cpp:54] [CV2856D0002E] Pipeline created with device: {name: Gemini 305, sn: CV2856D0002E}, @0x64EC5A9D2510
+[11/06 18:23:24.454407][info][3466028][Pipeline.cpp:228] [CV2856D0002E] Check and set config done!
+[11/06 18:23:24.455621][info][3466028][Pipeline.cpp:266] [CV2856D0002E] Try to start streams!
+[11/06 18:23:24.455632][info][3466028][VideoSensor.cpp:61] [CV2856D0002E] Try to start stream: {type: Color, format: MJPG, width: 640, height: 480, fps: 30}
+[11/06 18:23:24.455639][info][3466028][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STOPPED to STARTING@Color
+[11/06 18:23:24.455642][info][3466028][VideoSensor.cpp:130] [CV2856D0002E] Start backend stream: {type: Color, format: MJPG, width: 640, height: 480, fps: 30}
+[11/06 18:23:24.457049][info][3466028][VideoSensor.cpp:61] [CV2856D0002E] Try to start stream: {type: Depth, format: Y16, width: 848, height: 530, fps: 30}
+[11/06 18:23:24.459499][info][3466028][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STOPPED to STARTING@Depth
+[11/06 18:23:24.459503][info][3466028][VideoSensor.cpp:130] [CV2856D0002E] Start backend stream: {type: Depth, format: Z16, width: 848, height: 530, fps: 30}
+[11/06 18:23:24.460287][info][3466028][Pipeline.cpp:293] [CV2856D0002E] Start streams done!
+[11/06 18:23:24.460288][info][3466028][Pipeline.cpp:250] [CV2856D0002E] Pipeline start done!
+[11/06 18:23:24.976486][info][3466109][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STARTING to STREAMING@Depth
+[11/06 18:23:25.041330][info][3466107][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STARTING to STREAMING@Color
+[11/06 18:23:25.041481][warning][3466028][Align.cpp:166] No other frame or align profile or to profile found!
+[11/06 18:23:25.041512][warning][3466028][Align.cpp:166] No other frame or align profile or to profile found!
+[11/06 18:23:25.909141][warning][3466114][Pipeline.cpp:324] [CV2856D0002E] Output frameset queue is full, drop oldest frameset!
+[11/06 18:23:28.939974][warning][3466114][Pipeline.cpp:324] [CV2856D0002E] Output frameset queue is full, drop oldest frameset! [**91 logs in 3030ms**]
+[11/06 18:23:30.005736][info][3466109][VideoSensor.cpp:180] [CV2856D0002E] Depth backend frame callback, frameRate=30.224697fps
+[11/06 18:23:30.005891][info][3466114][SensorBase.cpp:405] [CV2856D0002E] Depth Streaming... frameRate=30.254776fps
+[11/06 18:23:30.071100][info][3466107][VideoSensor.cpp:180] [CV2856D0002E] Color backend frame callback, frameRate=30.218687fps
+[11/06 18:23:30.071146][info][3466116][SensorBase.cpp:405] [CV2856D0002E] Color Streaming... frameRate=30.218687fps
+[11/06 18:23:34.973409][warning][3466157][Pipeline.cpp:324] [CV2856D0002E] Output frameset queue is full, drop oldest frameset! [**135 logs in 6033ms, last: 18:23:33.436802**]
+[11/06 18:23:35.035443][info][3466109][VideoSensor.cpp:180] [CV2856D0002E] Depth backend frame callback, frameRate=30.019880fps
+[11/06 18:23:35.035661][info][3466114][SensorBase.cpp:405] [CV2856D0002E] Depth Streaming... frameRate=30.019880fps
+[11/06 18:23:35.100756][info][3466107][VideoSensor.cpp:180] [CV2856D0002E] Color backend frame callback, frameRate=30.025850fps
+[11/06 18:23:35.100804][info][3466116][SensorBase.cpp:405] [CV2856D0002E] Color Streaming... frameRate=30.025850fps
+[11/06 18:23:38.242084][info][3466028][Pipeline.cpp:367] [CV2856D0002E] Try to stop pipeline!
+[11/06 18:23:38.242097][info][3466028][Pipeline.cpp:343] [CV2856D0002E] Try to stop streams!
+[11/06 18:23:38.242113][info][3466028][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STREAMING to STOPPING@Depth
+[11/06 18:23:38.257607][info][3466028][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STOPPING to STOPPED@Depth
+[11/06 18:23:38.257667][info][3466028][Pipeline.cpp:357] [CV2856D0002E] Sensor stream stopped, sensorType=Depth
+[11/06 18:23:38.257672][info][3466028][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STREAMING to STOPPING@Color
+[11/06 18:23:38.277610][info][3466028][SensorBase.cpp:216] [CV2856D0002E] Stream state changed from STOPPING to STOPPED@Color
+[11/06 18:23:38.277684][info][3466028][Pipeline.cpp:357] [CV2856D0002E] Sensor stream stopped, sensorType=Color
+[11/06 18:23:38.277685][info][3466028][Pipeline.cpp:363] [CV2856D0002E] Stop streams done!
+[11/06 18:23:38.297606][info][3466028][Pipeline.cpp:393] [CV2856D0002E] Stop pipeline done!
+[11/06 18:23:38.298572][info][3466028][Pipeline.cpp:65] [CV2856D0002E] Pipeline destroyed! @0x64EC5A9D2510
+[11/06 18:23:38.298628][info][3466028][SensorBase.cpp:53] [CV2856D0002E] SensorBase is destroyed
+[11/06 18:23:38.299421][info][3466028][ObLibuvcDevicePort.cpp:87] uvc_close done.
+[11/06 18:23:38.299422][info][3466028][ObLibuvcDevicePort.cpp:88] ~ObLibuvcDevicePort done
+[11/06 18:23:38.299503][info][3466028][SensorBase.cpp:53] [CV2856D0002E] SensorBase is destroyed
+[11/06 18:23:38.305704][info][3466028][ObLibuvcDevicePort.cpp:87] uvc_close done.
+[11/06 18:23:38.305707][info][3466028][ObLibuvcDevicePort.cpp:88] ~ObLibuvcDevicePort done
+[11/06 18:23:39.103789][warning][3466186][Pipeline.cpp:324] [CV2856D0002E] Output frameset queue is full, drop oldest frameset! [**19 logs in 4130ms, last: 18:23:36.934174**]
