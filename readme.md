@@ -225,6 +225,145 @@ python visualize_pose_3d.py \
 
 The preview starts paused. Select the target in the first frame, press `SPACE`/`r` to start or pause, and press `b` to select a new box. Press `q` to finish. For headless recording, supply `--bbox x1 y1 x2 y2 --no-preview`; coordinates are in the colour image. Saved depth PNGs are `uint16` millimetres, and `cam_K.txt` matches the saved aligned colour resolution.
 
+### Orbbec 深度质量设置
+
+`record_dataset.py` 直接调用官方 Python SDK（安装包 `pyorbbecsdk2`，导入名 `pyorbbecsdk`），不经过 ROS。当前相机环境安装版本为 2.1.2。处理顺序为：原生深度 → SDK 滤波 → 对齐至 RGB → 距离范围筛选 → 保存为 `uint16` 毫米 PNG；`cam_K.txt` 始终对应保存的 RGB 分辨率。
+
+默认 RGB 和原生深度流均为 `848×530`，与 realman_pi 右腕 Gemini 305 的当前档位一致；保存的 RGB、对齐深度和 mask 也均为 `848×530`。可通过 `--width`、`--height` 和 `--depth-width`、`--depth-height` 分别指定其他相机支持的档位。
+
+针对固定相机拍静止料箱/插头、重点改善 FoundationPose 注册首帧的场景，默认 `--depth-filter first-frame`。先丢弃 60 对预热帧；开始录制后，采集 30 张经过保边空间滤波并对齐至 RGB 的深度，对每个像素的有效测量取中位数，抑制随机噪声和偶发异常值，再保存为第一帧 depth。首帧 RGB 和 mask 来自采集窗口的最后一帧，因此整个采集窗口内相机和物体必须保持静止。后续帧使用相机未加软件滤波的对齐深度，继续供跟踪使用。
+
+每个像素至少需要在采集窗口内 80% 的帧中有有效深度，而且窗口最后一帧中也必须有效，否则输出 0。关闭补洞，避免将缺测直接填成附近背景。选框或按开始/暂停时会清空尚未完成的首帧采样，确保首帧在开始录制后重新积累。录制示例：
+
+```bash
+INBOX_ID=14
+/home/yixiaoshen/Repo/chaung_wei_2_jiao_fu/.venv/bin/python record_dataset.py \
+  --object eu-plug --data-dir '/home/yixiaoshen/Repo/FoundationPose/demo_data/eu-plug/multi_scene_eu-plug/multi_inbox${INBOX_ID}_eu-plug/raw' --serial 'CV2856D0002E' --fps 30 --record-fps 30 --duration 300
+```
+
+如果只想保存这一张高质量初始化图，追加 `--max-frames 1`。首帧融合详情和 SAM 区域的有效深度比例会记录在 `capture_meta.json` 的 `first_frame_depth` 中。中位数融合主要降低随机噪声，无法保证绝对测量精度，也无法恢复反光、遮挡或过近距离造成的真实缺测。
+
+还可使用 `--depth-filter spatial` 对整段序列做保边空间滤波，或 `--depth-filter static` 对整段序列做空间滤波和 SDK 时间滤波；`static` 在有运动时可能产生拖影。`--depth-filter none` 关闭新增的软件滤波。此前实机 60 帧的相邻帧差改善（均值 2.28→0.98 mm，95 分位 7→2 mm）对应整段 `static` 时间滤波，不是首帧中位数融合的精度验证。
+
+| 参数 | 用途 |
+| --- | --- |
+| `--first-frame-samples 30` | 默认模式下用于首帧中位数融合的深度帧数，30 FPS 时名义采样时间约 1 秒 |
+| `--first-frame-min-valid 0.8` | 首帧融合中，每个像素所需的有效测量比例 |
+| `--spatial-alpha 0.5` | 当前像素权重，范围 0.1–1；减小会增强空间平滑 |
+| `--temporal-weight 0.4` | `static` 模式的当前帧权重，范围 0.1–1；减小会增强时间平滑并增加拖影风险 |
+| `--depth-min-mm 100 --depth-max-mm 1500` | 示例距离范围；范围外置 0，按实际工作距离调整，不会填补缺测 |
+| `--save-unfiltered-depth` | 同时在 `depth_raw/` 保存同帧、同 RGB 坐标系的未滤波深度，仍为 `uint16` 毫米，可与 `depth/` 对比 |
+| `--depth-width 1280 --depth-height 800 --depth-fps 30` | 指定原生深度档位；输出仍对齐到所选 RGB 分辨率。仅在相机支持时可用，会增加传输和处理开销 |
+| `--camera-preset 'High Accuracy'` | 可选的相机预设，正常退出或 Ctrl+C 时恢复之前的预设；效果需按场景对比 |
+
+深度帧率默认匹配实际选中的 RGB 帧率。指定不支持的 RGB 分辨率或深度档位会报错，不会静默更换分辨率。可查询所选相机的档位和预设，不启动录制：
+
+```bash
+/home/yixiaoshen/Repo/chaung_wei_2_jiao_fu/.venv/bin/python record_dataset.py \
+  --serial CV2856D0002E --list-profiles
+```
+
+相机 `CV2856D0002E` 为 Gemini 305，已查询到 `1280×800@30` 深度档位，以及 `Default`、`High Accuracy`、`Close Range High Accuracy` 等预设。多台主动深度相机同时照射同一料箱时，也应检查是否存在相互干扰。实际使用的 SDK 版本、流档位、滤波参数、距离范围和所请求预设都会记录在 `capture_meta.json` 中；已有数据不会被自动修改。
+
+## 从 X-AnyLabeling 标注生成多实例数据
+
+以下命令均在 FoundationPose 仓库根目录执行，使用 `.venv` 中的 Python。将首帧 RGB 复制出来，在 X-AnyLabeling 中逐个分割目标，保存 JSON 和对应 PNG。`raw/` 应包含以下文件，其中 `rgb/`、`depth/` 使用相同的帧名，深度 PNG 为 `uint16` 毫米单位：
+
+```text
+demo_data/eu-plug/multi_scene_eu-plug/multi_inbox04_eu-plug/
+└── raw/
+    ├── inbox04.json
+    ├── inbox04.png
+    ├── cam_K.txt
+    ├── capture_meta.json          # 可选，采集元数据
+    ├── rgb/<帧时间戳>.png
+    └── depth/<帧时间戳>.png
+```
+
+运行 [prepare_instance_datasets.py](prepare_instance_datasets.py)：
+
+```bash
+INBOX_ID=13
+.venv/bin/python prepare_instance_datasets.py \
+  --annotation demo_data/eu-plug/multi_scene_eu-plug/multi_inbox${INBOX_ID}_eu-plug/raw/inbox${INBOX_ID}.json
+```
+
+脚本检查标注 PNG 与按文件名排序后的首帧 RGB 完全一致，筛选 `eu-plug` 标签，并按 JSON `shapes` 中的顺序从 1 编号。每个匹配的 shape 对应一个实例；`polygon` 和作为分割轮廓导出的 `linestrip` 均按闭合多边形填充为 0/255 二值 mask。默认在 `raw/` 的上一级生成：
+
+```text
+multi_inbox04_eu-plug/
+├── raw/
+├── single_inbox1_eu-plug/
+│   ├── rgb/                      # 完整 RGB 序列
+│   ├── depth/                    # 完整深度序列
+│   ├── masks/<首帧时间戳>.png     # 仅该实例的首帧 mask
+│   ├── cam_K.txt
+│   └── capture_meta.json         # 含实例 ID、原始 shape 下标和 mask 信息
+├── single_inbox2_eu-plug/
+└── ...
+```
+
+`run_demo.py` 使用首帧 mask 完成姿态初始化，后续帧由跟踪器处理，因此只需要首帧 mask。当前 `inbox03` 已生成 17 个实例，每个有 26 对 RGB/depth；`inbox04` 已生成 14 个实例，每个有 46 对 RGB/depth。
+
+处理其他场景时替换 `--annotation` 路径即可；`--label` 可选择其他类别，`--output-dir` 可指定输出父目录。已有同名实例目录时脚本会拒绝覆盖；当前 `inbox03`、`inbox04` 已完成转换，无需重复生成。
+
+## 批量运行多实例 demo
+
+[run_demo_batch.py](run_demo_batch.py) 自动发现实例目录，按编号依次调用 `run_demo.py`，每次运行一个实例。所有实例共用同一 mesh，使用当前 Python 环境执行，并关闭弹窗预览。
+
+先预览待执行命令，`--dry-run` 不运行推理，也不创建输出：
+
+```bash
+.venv/bin/python run_demo_batch.py \
+  --scene-root demo_data/eu-plug/multi_scene_eu-plug/multi_inbox04_eu-plug \
+  --mesh-file demo_data/eu-plug/mesh_eu-plug/TexturedMeshSimplified.obj \
+  --output-dir results/multi_inbox04 \
+  --dry-run
+```
+
+批量运行 `inbox04` 的 14 个实例：
+
+```bash
+INBOX_ID=13
+.venv/bin/python run_demo_batch.py \
+  --scene-root demo_data/eu-plug/multi_scene_eu-plug/multi_inbox${INBOX_ID}_eu-plug \
+  --mesh-file demo_data/eu-plug/mesh_eu-plug/TexturedMeshSimplified.obj \
+  --output-dir results/multi_inbox${INBOX_ID}
+```
+
+默认 `--debug 2`，保存逐帧姿态、可视化 PNG 和 H.264 MP4。视频使用 `yuv420p` 和 `faststart`，可以在 VS Code 中直接预览。需要系统安装带 `libx264` 编码器的 FFmpeg（Ubuntu：`sudo apt install ffmpeg`）。输出结构如下，`instance<ID>` 与输入 `single_inbox<ID>_eu-plug` 对应，也兼容现有多实例查看器：
+
+```text
+results/multi_inbox04/
+├── instance1/
+│   ├── ob_in_cam/<帧时间戳>.txt   # 4×4 位姿矩阵
+│   ├── track_vis/<帧时间戳>.png
+│   ├── register_vis.png
+│   ├── register_score.json
+│   └── pose_video.mp4
+├── instance2/
+├── ...
+├── logs/
+│   ├── instance1.log
+│   └── ...
+└── batch_summary.json            # 状态、命令、耗时及日志路径
+```
+
+可在上述命令末尾追加以下参数：
+
+| 参数 | 用途 |
+| --- | --- |
+| `--instances 1 3 5` | 仅处理指定实例，按编号排序运行 |
+| `--pattern 'single_inbox*_eu-plug'` | 指定实例目录匹配规则，默认即此规则 |
+| `--debug 0` | 仅保存姿态及推理过程输出，不生成视频 |
+| `--est-refine-iter 5 --track-refine-iter 2` | 设置首帧姿态估计和后续跟踪的迭代次数 |
+| `--video-fps 20` | 手动指定视频帧率，默认根据输入时间戳推算 |
+| `--overwrite` | 强制重跑已有完整结果的实例 |
+
+默认检查每帧姿态文件；`--debug 2` 及以上还检查每帧可视化 PNG 和 MP4 是否存在且非空，满足条件的实例会跳过。重复执行相同命令可以继续处理尚未完成的实例。脚本按文件完整性判断是否跳过；更换 mesh 或推理参数后，请使用新输出目录或追加 `--overwrite`。实际重跑的实例会清空其 `instance<ID>/` 目录，日志也会重写。
+
+单个实例失败后会继续处理后续实例，具体错误可查看 `logs/instance<ID>.log`。每个实例结束后更新 `batch_summary.json`；只要有失败项，批处理最终退出码为 1。将示例中的场景路径改为 `multi_inbox03_eu-plug`、结果路径改为 `results/multi_inbox03`，即可处理 `inbox03`。
+
 
 <img src="assets/demo.jpg" width="50%">
 
