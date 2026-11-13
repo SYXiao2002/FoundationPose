@@ -11,6 +11,7 @@ from estimater import *
 from datareader import *
 import argparse
 import json
+import shutil
 from video_utils import H264VideoWriter
 
 
@@ -47,7 +48,15 @@ if __name__=='__main__':
 
   debug = args.debug
   debug_dir = args.debug_dir
-  os.system(f'rm -rf {debug_dir}/* && mkdir -p {debug_dir}/track_vis {debug_dir}/ob_in_cam')
+  os.makedirs(debug_dir, exist_ok=True)
+  for name in os.listdir(debug_dir):
+    path = os.path.join(debug_dir, name)
+    if os.path.isdir(path) and not os.path.islink(path):
+      shutil.rmtree(path)
+    else:
+      os.unlink(path)
+  os.makedirs(f'{debug_dir}/track_vis')
+  os.makedirs(f'{debug_dir}/ob_in_cam')
 
   to_origin, extents = trimesh.bounds.oriented_bounds(mesh)
   bbox = np.stack([-extents/2, extents/2], axis=0).reshape(2,3)
