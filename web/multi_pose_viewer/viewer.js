@@ -71,6 +71,7 @@ function transformedVertices(pose) {
 function objectBounds(instances, padding = 0.045) {
   const min = [Infinity, Infinity, Infinity], max = [-Infinity, -Infinity, -Infinity];
   for (const instance of instances) {
+    if (!instance.pose) continue;
     for (const vertex of transformedVertices(instance.pose)) {
       for (let axis = 0; axis < 3; axis++) {
         min[axis] = Math.min(min[axis], vertex[axis] - padding);
@@ -78,18 +79,36 @@ function objectBounds(instances, padding = 0.045) {
       }
     }
   }
+  if (!Number.isFinite(min[0])) return { min: [-1, -1, 0], max: [1, 1, 2] };
   return { min, max };
 }
 
+const statusLabels = { invalid: '无效', insufficient_evidence: '证据不足', suspect: '待复核', pass_screening: '通过筛查' };
+const statusOrder = { invalid: 0, insufficient_evidence: 1, suspect: 2, pass_screening: 3 };
+const warningLabels = {
+  invalid_pose: 'Pose 无效', empty_mask: 'Mask 为空', empty_render: '模型未渲染到图像',
+  few_mask_depth_points: 'Mask 有效深度点过少', low_mask_depth_fraction: 'Mask 深度有效率低',
+  few_overlap_depth_points: '重合区域有效深度点过少', low_iou: '轮廓 IoU 低',
+  low_mask_coverage: 'Mask 覆盖率低', high_depth_median: '深度误差中位数高',
+  high_depth_p90: '深度误差 P90 高', low_depth_inliers: '深度内点比例低', high_occlusion: '疑似遮挡比例高',
+};
+
 function renderInstanceList() {
   const list = $('#instance-list');
-  for (const instance of state.info.instances) {
+  list.replaceChildren();
+  const instances = [...state.info.instances];
+  if ($('#instance-order').value === 'review') instances.sort((a, b) =>
+    statusOrder[a.validation.status] - statusOrder[b.validation.status] ||
+    b.validation.warnings.length - a.validation.warnings.length || a.id - b.id);
+  for (const instance of instances) {
     const row = document.createElement('div');
     row.className = 'instance-row';
     row.dataset.id = instance.id;
-    row.title = `t = [${instance.origin.map(v => v.toFixed(5)).join(', ')}] m` +
+    row.title = (instance.origin ? `t = [${instance.origin.map(v => v.toFixed(5)).join(', ')}] m` : 'Pose 无效') +
       (instance.score == null ? '' : ` · Register score: ${instance.score.toFixed(3)}`);
-    row.innerHTML = `<label class="instance-choice"><input type="checkbox" class="pose-checkbox" value="${instance.id}" aria-label="显示 instance ${instance.id}" checked><span class="swatch" style="background:${instance.color}"></span><span class="instance-label">Instance ${instance.id}</span></label><label class="mesh-choice" title="该实例的 OBJ 显示开关"><input type="checkbox" class="mesh-checkbox" aria-label="instance ${instance.id} 的 OBJ" checked>OBJ</label>`;
+    row.innerHTML = `<label class="instance-choice"><input type="checkbox" class="pose-checkbox" value="${instance.id}" aria-label="显示 instance ${instance.id}"><span class="swatch" style="background:${instance.color}"></span><span class="instance-label">Instance ${instance.id}</span></label><span class="status status-${instance.validation.status}">${statusLabels[instance.validation.status]}</span><label class="mesh-choice" title="该实例的 OBJ 显示开关"><input type="checkbox" class="mesh-checkbox" aria-label="instance ${instance.id} 的 OBJ">OBJ</label>`;
+    row.querySelector('.pose-checkbox').checked = state.selected.has(instance.id);
+    row.querySelector('.mesh-checkbox').checked = !state.hiddenModels.has(instance.id);
     row.querySelector('.pose-checkbox').addEventListener('change', event => {
       if (event.target.checked) state.selected.add(instance.id);
       else state.selected.delete(instance.id);
@@ -101,6 +120,41 @@ function renderInstanceList() {
       updateVisibility();
     });
     list.append(row);
+  }
+}
+
+function renderValidation(selected) {
+  const container = $('#validation-details');
+  container.replaceChildren();
+  if (!selected.length) { container.textContent = '选择实例以查看验证结果'; return; }
+  const value = (number, suffix = '', scale = 1) => number == null ? '无数据' : `${(number * scale).toFixed(scale === 100 ? 1 : 2)}${suffix}`;
+  for (const instance of selected) {
+    const { status, warnings, metrics: m } = instance.validation;
+    const item = document.createElement('div');
+    item.className = 'validation-item';
+    const warningsText = warnings.length ? warnings.map(code => warningLabels[code] || code).join('；') : '无告警';
+    item.innerHTML = `<div class="validation-item-title"><strong>#${instance.id}</strong><span class="status status-${status}">${statusLabels[status]}</span><span class="warning-text"></span></div><div class="metric-grid"></div>`;
+    item.querySelector('.warning-text').textContent = warningsText;
+    const entries = [
+      ['Mask 像素', m.mask_pixels], ['Mask 有效深度点', m.mask_valid_depth_pixels],
+      ['Mask 深度有效率', value(m.mask_valid_depth_fraction, '%', 100)],
+      ['渲染像素', m.render_pixels], ['重合像素', m.overlap_pixels], ['重合有效深度点', m.overlap_valid_depth_pixels],
+      ['重合有效点 / Mask', value(m.overlap_valid_depth_fraction_of_mask, '%', 100)],
+      ['轮廓 IoU', value(m.silhouette_iou)], ['Mask 覆盖率', value(m.mask_coverage, '%', 100)],
+      ['渲染覆盖率', value(m.render_coverage, '%', 100)], ['可见轮廓 IoU', value(m.visible_silhouette_iou)],
+      ['深度误差中位数', value(m.depth_median_mm, ' mm')], ['深度误差 P90', value(m.depth_p90_mm, ' mm')],
+      ['有符号深度中位数', value(m.signed_depth_median_mm, ' mm')],
+      ['深度内点比例', value(m.depth_inlier_fraction, '%', 100)],
+      ['疑似遮挡 / 有效渲染', value(m.occluded_fraction_of_render_valid_depth, '%', 100)],
+      ['渲染区域深度未知', value(m.render_unknown_depth_fraction, '%', 100)],
+    ];
+    for (const [label, number] of entries) {
+      const cell = document.createElement('div');
+      const name = document.createElement('span'); name.textContent = label;
+      const val = document.createElement('strong'); val.textContent = number == null ? '无数据' : number;
+      cell.append(name, val); item.querySelector('.metric-grid').append(cell);
+    }
+    container.append(item);
   }
 }
 
@@ -121,10 +175,11 @@ function updateSelection() {
   readout.replaceChildren(...selected.map(instance => {
     const chip = document.createElement('span');
     chip.className = 'pose-chip';
-    chip.innerHTML = `<strong style="color:${instance.color}">#${instance.id}</strong>${instance.origin.map(value => value.toFixed(3)).join(', ')} m`;
+    chip.innerHTML = `<strong style="color:${instance.color}">#${instance.id}</strong>${instance.origin ? instance.origin.map(value => value.toFixed(3)).join(', ') + ' m' : 'Pose 无效'}`;
     return chip;
   }));
   if (!selected.length) readout.textContent = '勾选或在 Mask 图上框选实例，显示对应的 pose。';
+  renderValidation(selected);
   drawMask($('#mask-selection'));
   drawMask($('#large-mask'), true);
   updateVisibility();
@@ -135,6 +190,7 @@ function updateVisibility() {
   const indices = [], visibility = [];
   for (const instance of state.info.instances) {
     const traces = state.traceIndices.get(instance.id);
+    if (!traces) continue;
     const selected = state.selected.has(instance.id);
     indices.push(traces.mesh, ...traces.axes, traces.origin);
     const axes = selected && $('#show-axes').checked;
@@ -184,6 +240,7 @@ async function drawScene() {
   const faces = state.model.faces;
   const i = faces.map(face => face[0]), j = faces.map(face => face[1]), k = faces.map(face => face[2]);
   for (const instance of state.info.instances) {
+    if (!instance.pose) continue;
     const vertices = transformedVertices(instance.pose);
     const mesh = traces.length;
     traces.push({
@@ -314,6 +371,7 @@ function bindMaskCanvas(canvas, withImage = false) {
 }
 
 function bindControls() {
+  $('#instance-order').onchange = () => { renderInstanceList(); updateSelection(); };
   $('#select-all').onclick = () => setSelection(state.info.instances.map(item => item.id));
   $('#clear-selection').onclick = () => setSelection([]);
   $('#invert-selection').onclick = () => setSelection(state.info.instances.filter(item => !state.selected.has(item.id)).map(item => item.id));
@@ -328,6 +386,7 @@ function bindControls() {
     $('#axis-size-value').value = `${event.target.value} mm`;
     const indices = [], x = [], y = [], z = [];
     for (const instance of state.info.instances) {
+      if (!instance.pose) continue;
       [0, 1, 2].forEach(axis => {
         const trace = axisTrace(instance, axis);
         indices.push(state.traceIndices.get(instance.id).axes[axis]);
@@ -375,6 +434,8 @@ async function init() {
     $('#scene-name').textContent = state.info.scene;
     $('#frame-id').textContent = state.info.frame;
     $('#instance-total').textContent = String(state.info.instances.length);
+    const t = state.info.validation.thresholds;
+    $('#validation-thresholds').textContent = `Mask 有效深度 ≥ ${t.min_mask_depth_points} 点、${t.min_mask_depth_fraction * 100}%；重合有效深度 ≥ ${t.min_overlap_depth_points} 点；IoU ≥ ${t.min_iou}；Mask 覆盖 ≥ ${t.min_mask_coverage * 100}%；深度中位数 ≤ ${t.max_depth_median_mm} mm、P90 ≤ ${t.max_depth_p90_mm} mm；${t.depth_tolerance_mm} mm 深度内点 ≥ ${t.min_depth_inlier_fraction * 100}%；遮挡深度差 > ${t.occlusion_tolerance_mm} mm、比例 > ${t.max_occluded_fraction * 100}% 告警。`;
     renderInstanceList();
     await drawScene();
     bindControls();

@@ -15,6 +15,7 @@ import cv2
 import numpy as np
 import trimesh
 from plotly.offline import get_plotlyjs
+from pose_geometry_validation import MeshDepthRenderer, ValidationConfig, config_dict, evaluate_geometry
 
 
 ROOT = Path(__file__).resolve().parent
@@ -119,6 +120,8 @@ class ViewerData:
         self.K = np.loadtxt(self.scene_dir / "cam_K.txt").reshape(3, 3)
         if not np.isfinite(self.K).all() or self.K[0, 0] <= 0 or self.K[1, 1] <= 0:
             raise ValueError("Invalid camera intrinsics")
+        if not np.allclose(self.K[[0, 1, 2, 2, 2], [1, 0, 0, 1, 2]], [0, 0, 0, 0, 1], atol=1e-8):
+            raise ValueError("The renderer requires a pinhole camera matrix without skew")
         self.bgr = cv2.imread(str(self.rgb_file), cv2.IMREAD_COLOR)
         self.depth = cv2.imread(str(self.depth_file), cv2.IMREAD_UNCHANGED)
         if self.bgr is None or self.depth is None:
@@ -136,19 +139,33 @@ class ViewerData:
     @lru_cache(maxsize=1)
     def info(self):
         instances = []
-        for instance in self.instances:
-            pose = np.loadtxt(instance["pose_file"]).reshape(4, 4)
-            if not np.isfinite(pose).all() or not np.allclose(pose[3], [0, 0, 0, 1], atol=1e-5):
-                raise ValueError(f"Invalid pose: {instance['pose_file']}")
-            score_file = instance["pose_file"].parent.parent / "register_score.json"
-            score = json.loads(score_file.read_text()).get("score") if score_file.is_file() else None
-            instances.append({
-                "id": instance["id"],
-                "color": instance["color"],
-                "pose": pose.astype(float).tolist(),
-                "origin": pose[:3, 3].astype(float).tolist(),
-                "score": score,
-            })
+        mesh = trimesh.load(self.mesh_file, force="mesh", process=False)
+        config = ValidationConfig()
+        renderer = MeshDepthRenderer(mesh, self.K, self.depth.shape[1], self.depth.shape[0])
+        try:
+            for instance in self.instances:
+                try:
+                    pose = np.loadtxt(instance["pose_file"]).reshape(4, 4)
+                    rotation = pose[:3, :3]
+                    if (not np.isfinite(pose).all() or not np.allclose(pose[3], [0, 0, 0, 1], atol=1e-5)
+                            or not np.allclose(rotation.T @ rotation, np.eye(3), atol=1e-3)
+                            or not np.isclose(np.linalg.det(rotation), 1, atol=1e-3)):
+                        raise ValueError("Invalid rigid transform")
+                    validation = evaluate_geometry(instance["mask"], self.depth, renderer.render(pose), config)
+                    pose_data = pose.astype(float).tolist()
+                    origin = pose[:3, 3].astype(float).tolist()
+                except (ValueError, OSError) as error:
+                    validation = {"status": "invalid", "warnings": ["invalid_pose"], "metrics": {}, "error": str(error)}
+                    pose_data, origin = None, None
+                score_file = instance["pose_file"].parent.parent / "register_score.json"
+                score = json.loads(score_file.read_text()).get("score") if score_file.is_file() else None
+                instances.append({
+                    "id": instance["id"], "color": instance["color"], "pose": pose_data,
+                    "origin": origin, "score": score, "validation": validation,
+                    "pose_file": str(instance["pose_file"]), "mask_file": str(instance["mask_file"]),
+                })
+        finally:
+            renderer.close()
         return {
             "scene": self.debug_dir.name,
             "frame": self.frame_stem,
@@ -156,6 +173,9 @@ class ViewerData:
             "image_size": [self.bgr.shape[1], self.bgr.shape[0]],
             "K": self.K.tolist(),
             "mesh_name": self.mesh_file.name,
+            "validation": {"profile": "eu-plug provisional v1", "thresholds": config_dict(config),
+                           "mesh_file": str(self.mesh_file), "depth_file": str(self.depth_file),
+                           "depth_unit": "mm", "pose_unit": "m"},
             "instances": instances,
         }
 
@@ -279,6 +299,9 @@ def export_html(data: ViewerData, output: Path):
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(document, encoding="utf-8")
     print(f"Exported first-frame viewer: {output}")
+    report = output.with_name(output.stem + "_validation.json")
+    report.write_text(json.dumps(data.info(), ensure_ascii=False, indent=2, allow_nan=False) + "\n", encoding="utf-8")
+    print(f"Validation report: {report}")
 
 
 def main():

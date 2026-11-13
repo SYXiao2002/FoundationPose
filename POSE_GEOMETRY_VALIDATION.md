@@ -132,6 +132,31 @@ signed_depth_mm = (Z_render - Z_obs) * 1000
 
 该场景中，原始 instance 13 和 17 的 `register_score.json` 分数分别约为 124.703 和 132.625，但都存在明显的几何不匹配。注册分数是网络对候选 pose 的排序信号，不能直接视作概率或替代这些几何检查。
 
-## 后续实现要求
+## 实现和 eu-plug 初始阈值
 
-本文只定义指标和本次诊断结果，**项目目前没有实现本文的批量检测或自动剔除命令**。实现时建议以每实例一条结构化记录保存 frame ID、pose/mesh/mask 路径、单位、渲染参数、指标、有效像素数、阈值版本和状态；原始 pose 应保留，筛查结果另存，避免覆盖已有估计结果。
+`pose_geometry_validation.py` 使用 `pyrender` 离屏渲染原始 OBJ 的完整三角网格和相机 Z 深度，不依赖 FoundationPose 的网络或分数。`visualize_multi_instance_web.py` 对结果目录中每个 instance 的首帧运行检查；`--output` 同时生成独立 HTML 和同名的 `_validation.json` 报告，原始 pose 不会改变。示例：
+
+```bash
+.venv/bin/python visualize_multi_instance_web.py \
+  --output results/multi_inbox06/pose_viewer.html \
+  --debug-dir results/multi_inbox06 \
+  --scene-dir demo_data/eu-plug/multi_scene_eu-plug/multi_inbox06_eu-plug/raw \
+  --mesh-file demo_data/eu-plug/mesh_eu-plug/TexturedMeshSimplified.obj \
+  --point-stride 2
+```
+
+HTML 的排序和状态仅用于安排复核，JSON 保留各项指标、路径和阈值。网页点云的采样步长不影响验证，验证使用完整分辨率的原始深度。渲染器使用 EGL、透视投影、无背面剔除；像素边缘约定不同可能导致本实现和上面的历史结果略有差异。深度量纲为毫米，模型和 pose 单位为米，内参必须为无 skew 的针孔模型。
+
+当前 `ValidationConfig` 是 **eu-plug 初始筛查配置**，未经标注样本校准，不可当作其他 mesh 的通用阈值：
+
+| 检查 | 告警条件 |
+| --- | --- |
+| Mask 有效深度 | 少于 300 点或占 mask 少于 50% |
+| 重合有效深度 | 少于 200 点，不根据该小样本的深度误差判定异常 |
+| 轮廓 | IoU 小于 0.50 或 mask 覆盖率小于 70% |
+| 重合深度 | 绝对误差中位数大于 10 mm、P90 大于 25 mm，或 10 mm 内点比例低于 70% |
+| 疑似遮挡 | 渲染区域有效观测深度中，观测表面比模型表面近超过 10 mm 的比例大于 30% |
+
+点数按完整分辨率的有效深度像素计，每个像素对应一个可反投影点；并不能仅凭点数区分遮挡与深度缺失。疑似遮挡比例的分母是**渲染区域内有有效观测深度的像素**，深度未知比例单独报告。可见轮廓 IoU 只去掉疑似遮挡的渲染像素，未知深度仍保留在轮廓中；该指标依赖当前 pose，并非真实可见性标注。过小 mask、模型不在图内或输入不一致也应结合图像复核。
+
+状态优先级为 `invalid`、`insufficient_evidence`、`suspect`、`pass_screening`；各状态仍保留全部独立告警，例如证据不足的 pose 也可能同时有低重合率。通过筛查不代表 pose 真实正确，遮挡、相近物体及对称性仍可造成歧义。阈值应结合人工标注结果及误检、漏检成本调整。

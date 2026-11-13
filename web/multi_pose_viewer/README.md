@@ -21,8 +21,13 @@
 导出可直接用浏览器打开的单文件 HTML：
 
 ```bash
+INBOX_ID=03
 .venv/bin/python visualize_multi_instance_web.py \
-  --output results/multi_inbox03/pose_viewer.html
+  --output results/multi_inbox${INBOX_ID}/pose_viewer.html \
+  --debug-dir results/multi_inbox${INBOX_ID} \
+  --scene-dir demo_data/eu-plug/multi_scene_eu-plug/multi_inbox${INBOX_ID}_eu-plug/raw \
+  --mesh-file demo_data/eu-plug/mesh_eu-plug/TexturedMeshSimplified.obj \
+  --point-stride 2 
 ```
 
 导出文件内嵌点云、模型、mask、位姿和 Plotly，无需服务、网络或额外资源，可以复制到其他电脑查看。需要支持 WebGL 的浏览器。
@@ -30,10 +35,11 @@
 其他场景通过参数指定，OBJ 必须与估计 pose 时使用的模型一致：
 
 ```bash
+INBOX_ID=10
 .venv/bin/python visualize_multi_instance_web.py \
-  --debug-dir results/another_scene \
-  --scene-dir demo_data/another_scene/raw \
-  --mesh-file demo_data/object/mesh.obj \
+  --debug-dir results/multi_inbox${INBOX_ID} \
+  --scene-dir demo_data/eu-plug/multi_scene_eu-plug/multi_inbox${INBOX_ID}_eu-plug/raw \
+  --mesh-file demo_data/eu-plug/mesh_eu-plug/TexturedMeshSimplified.obj \
   --point-stride 2 \
   --port 8765 --no-browser
 ```

@@ -33,6 +33,7 @@
           <button id="select-all" type="button">全选</button>
           <button id="clear-selection" type="button">清空</button>
           <button id="invert-selection" type="button">反选</button>
+          <select id="instance-order" aria-label="实例排序"><option value="review">复核优先</option><option value="id">按 ID</option></select>
         </div>
         <div id="instance-list" class="instance-list" role="group" aria-label="Choose instances"></div>
       </section>
@@ -56,6 +57,11 @@
         <span class="interaction-hint">左键旋转 · 右键平移 · 滚轮缩放</span>
       </div>
       <div id="scene-plot" role="img" aria-label="Interactive RGB point cloud with selected instance poses"></div>
+      <section class="validation-section" aria-labelledby="validation-title">
+        <div class="validation-heading"><h2 id="validation-title">几何验证</h2><span>eu-plug 初始阈值 · 筛查结果需人工复核</span></div>
+        <details class="thresholds"><summary>筛查阈值</summary><div id="validation-thresholds"></div></details>
+        <div id="validation-details" class="validation-details"></div>
+      </section>
       <div class="scene-footer">
         <div class="axis-key"><span><i class="axis-x"></i>X</span><span><i class="axis-y"></i>Y</span><span><i class="axis-z"></i>Z</span></div>
         <div id="pose-readout" class="pose-readout">勾选或在 Mask 图上框选实例，显示对应的 pose。</div>
