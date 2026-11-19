@@ -1,0 +1,11 @@
+.git
+.venv
+weights
+results
+demo_data
+data
+__pycache__
+*.pyc
+mycpp/build
+**/node_modules
+**/__pycache__
