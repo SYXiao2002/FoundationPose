@@ -16,6 +16,10 @@ We present FoundationPose, a unified foundation model for 6D object pose estimat
 **🥇 No. 1 on the world-wide [BOP leaderboard](https://bop.felk.cvut.cz/leaderboards/pose-estimation-unseen-bop23/core-datasets/) (as of 2024/03) for model-based novel object pose estimation.**
 <img src="assets/bop.jpg" width="80%">
 
+## 6D pose history
+
+The containerized single-frame service saves debug=3 outputs and timestamp-keyed RGB-D/pose history. See [deployment and usage](docs/6d_pose_history.md).
+
 ## Demos
 
 Robotic Applications:
