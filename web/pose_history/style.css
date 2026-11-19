@@ -1,0 +1,57 @@
+.history-page { margin: 0; background: #f5f7f4; color: #202824; font: 14px/1.5 system-ui, sans-serif; }
+.history-page * { box-sizing: border-box; }
+.history-page h1 { font-size: 22px; margin: 0; }
+.history-page p { margin: 5px 0; }
+.history-page a, .topbar a { color: #287a52; }
+.history-header { display: flex; gap: 24px; align-items: center; padding: 22px max(24px, calc((100vw - 1320px)/2)); background: white; border-bottom: 1px solid #dce3dc; }
+.history-header p, .history-meta, .history-page #message { color: #69736c; }
+.history-header button { margin-left: auto; }
+.history-main { max-width: 1320px; margin: auto; padding: 24px; }
+.history-page button, .history-page input, .history-page select { padding: 9px 12px; border: 1px solid #cbd5cd; border-radius: 6px; background: white; color: inherit; font: inherit; }
+.history-page button { cursor: pointer; }
+.history-page button:disabled { opacity: .5; cursor: wait; }
+.history-filters { display: flex; flex-wrap: wrap; align-items: end; gap: 12px; margin-bottom: 22px; }
+.history-filters label { display: grid; gap: 4px; font-size: 12px; }
+.history-filters input { max-width: 220px; }
+.history-records { display: grid; gap: 18px; }
+.history-record { display: block; padding: 18px; border: 1px solid #dce3dc; border-radius: 10px; background: white; text-decoration: none; color: inherit !important; }
+.history-record:hover { border-color: #287a52; box-shadow: 0 3px 16px #287a5210; }
+.history-record-head { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
+.history-record-head time { font-size: 17px; font-weight: 650; }
+.history-badge { font-size: 12px; background: #e8f2eb; border-radius: 4px; padding: 3px 9px; }
+.history-badge.failed, .history-badge.interrupted { background: #fbe8e4; color: #9b3d29; }
+.history-meta { font-size: 12px; overflow-wrap: anywhere; margin-top: 6px; }
+.history-previews { display: grid; grid-template-columns: minmax(200px, 1fr) minmax(300px, 1.5fr); gap: 20px; margin-top: 14px; }
+.history-previews figure { margin: 0; min-width: 0; }
+.history-previews figcaption { font-size: 12px; color: #69736c; margin-bottom: 7px; }
+.history-preview-frame { min-height: 180px; height: 220px; background: #f3f5f2; display: flex; align-items: center; justify-content: center; border-radius: 6px; overflow: hidden; color: #69736c; }
+.history-preview-frame img { width: 100%; height: 100%; object-fit: contain; }
+.history-pagination { display: flex; align-items: center; justify-content: space-between; margin: 24px 0; }
+.history-images { padding: 16px; border-bottom: 1px solid #dce3dc; overflow-wrap: anywhere; }
+.history-images figure { margin: 12px 0; }
+.history-images img { max-width: 100%; height: auto; display: block; border-radius: 4px; }
+.history-images figcaption { font-size: 12px; margin-bottom: 5px; color: #69736c; }
+.history-images a { color: #287a52; }
+.history-images pre { font-size: 11px; white-space: pre-wrap; }
+.history-images .history-notice { color: #9b3d29; }
+.history-detail .workspace { grid-template-columns: 320px minmax(0, 1fr) clamp(300px, 30vw, 420px); }
+.history-score-candidates { min-width: 0; min-height: 0; overflow: auto; padding: 16px 12px; border-left: 1px solid #dce3dc; background: white; }
+.score-candidates-heading { margin-bottom: 10px; }
+.score-candidates-heading h2 { font-size: 14px; }
+.score-candidates-heading p, #score-candidates-status { margin: 5px 0 12px; color: #69736c; font-size: 12px; }
+.history-score-candidates img { display: block; width: 100%; height: auto; }
+@media (min-width: 901px) and (max-width: 1100px) {
+  .history-detail .workspace { grid-template-columns: 250px minmax(0, 1fr) 280px; }
+}
+@media (max-width: 900px) {
+  .history-detail .workspace { grid-template-columns: 250px minmax(0, 1fr); height: auto; }
+  .history-detail .sidebar { max-height: calc(100dvh - 66px); }
+  .history-detail .viewer-area { height: calc(100dvh - 66px); }
+  .history-score-candidates { grid-column: 1 / -1; height: 520px; border-left: 0; border-top: 1px solid #dce3dc; }
+  .history-score-candidates img { width: min(100%, 620px); }
+}
+@media (max-width: 650px) {
+  .history-detail .sidebar { max-height: 330px; }
+  .history-detail .viewer-area { height: calc(100dvh - 390px); }
+}
+@media (max-width: 700px) { .history-previews { grid-template-columns: 1fr; } .history-header { padding: 18px; gap: 12px; } .history-main { padding: 14px; } .history-preview-frame { height: 180px; } }

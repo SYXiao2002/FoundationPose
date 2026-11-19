@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>6D 位姿历史</title>
+  <link rel="stylesheet" href="/6d_pose_history/assets/history.css">
+  <script defer src="/6d_pose_history/assets/history.js"></script>
+</head>
+<body class="history-page">
+  <header class="history-header"><a href="/6d_pose.html">← 6D 位姿</a><div><h1>6D 位姿历史</h1><p>按解算时间回看 RGB、最高分候选与三维位姿</p></div><button id="refresh">刷新</button></header>
+  <main class="history-main">
+    <form id="filters" class="history-filters">
+      <label>起始时间（上海）<input id="from" name="from" type="datetime-local" step="1"></label>
+      <label>结束时间（上海）<input id="to" name="to" type="datetime-local" step="1"></label>
+      <label>对象<input id="object" name="object_id" placeholder="全部对象"></label>
+      <label>状态<select id="status" name="status"><option value="">全部</option><option value="complete">完成</option><option value="running">运行中</option><option value="failed">失败</option><option value="interrupted">中断</option></select></label>
+      <button type="submit">筛选</button><button id="clear" type="button">清空</button>
+    </form>
+    <p id="message" role="status">正在加载历史…</p>
+    <div id="records" class="history-records"></div>
+    <nav class="history-pagination"><a id="first" href="/6d_pose_history/">返回最新</a><button id="more" hidden>下一页</button></nav>
+  </main>
+</body>
+</html>

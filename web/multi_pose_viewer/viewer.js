@@ -39,10 +39,12 @@ async function loadInputs() {
     mapSource = embedded.maskMap;
   } else {
     [info, sceneBuffer, model] = await Promise.all([
-      get('/api/info'), get('/api/scene', 'arrayBuffer'), get('/api/model'),
+      get(window.POSE_VIEWER_BASE ? `${window.POSE_VIEWER_BASE}/info` : '/api/info'),
+      get(window.POSE_VIEWER_BASE ? `${window.POSE_VIEWER_BASE}/scene` : '/api/scene', 'arrayBuffer'),
+      get(window.POSE_VIEWER_BASE ? `${window.POSE_VIEWER_BASE}/model` : '/api/model'),
     ]);
-    maskSource = '/api/mask.jpg';
-    mapSource = '/api/masks.png';
+    maskSource = window.POSE_VIEWER_BASE ? `${window.POSE_VIEWER_BASE}/mask-preview` : '/api/mask.jpg';
+    mapSource = window.POSE_VIEWER_BASE ? `${window.POSE_VIEWER_BASE}/mask-map` : '/api/masks.png';
   }
   const count = new DataView(sceneBuffer).getUint32(0, true);
   if (sceneBuffer.byteLength !== 4 + count * 15) throw new Error('点云数据长度错误');
@@ -54,6 +56,7 @@ async function loadInputs() {
   };
   const [maskImage, maskMap] = await Promise.all([loadImage(maskSource), loadImage(mapSource)]);
   state.maskImage = maskImage;
+  $('#mask-preview').src = maskSource;
   const canvas = document.createElement('canvas');
   [canvas.width, canvas.height] = info.image_size;
   const context = canvas.getContext('2d', { willReadFrequently: true });
@@ -107,6 +110,7 @@ function renderInstanceList() {
     row.title = (instance.origin ? `t = [${instance.origin.map(v => v.toFixed(5)).join(', ')}] m` : 'Pose 无效') +
       (instance.score == null ? '' : ` · Register score: ${instance.score.toFixed(3)}`);
     row.innerHTML = `<label class="instance-choice"><input type="checkbox" class="pose-checkbox" value="${instance.id}" aria-label="显示 instance ${instance.id}"><span class="swatch" style="background:${instance.color}"></span><span class="instance-label">Instance ${instance.id}</span></label><span class="status status-${instance.validation.status}">${statusLabels[instance.validation.status]}</span><label class="mesh-choice" title="该实例的 OBJ 显示开关"><input type="checkbox" class="mesh-checkbox" aria-label="instance ${instance.id} 的 OBJ">OBJ</label>`;
+    row.querySelector('.instance-label').textContent = instance.label || `Instance ${instance.id}`;
     row.querySelector('.pose-checkbox').checked = state.selected.has(instance.id);
     row.querySelector('.mesh-checkbox').checked = !state.hiddenModels.has(instance.id);
     row.querySelector('.pose-checkbox').addEventListener('change', event => {
@@ -435,7 +439,11 @@ async function init() {
     $('#frame-id').textContent = state.info.frame;
     $('#instance-total').textContent = String(state.info.instances.length);
     const t = state.info.validation.thresholds;
+    if (state.info.validation.profile === 'archived') {
+      $('#validation-thresholds').textContent = `当次筛查参数：${JSON.stringify(t)}`;
+    } else {
     $('#validation-thresholds').textContent = `Mask 有效深度 ≥ ${t.min_mask_depth_points} 点、${t.min_mask_depth_fraction * 100}%；重合有效深度 ≥ ${t.min_overlap_depth_points} 点；IoU ≥ ${t.min_iou}；Mask 覆盖 ≥ ${t.min_mask_coverage * 100}%；深度中位数 ≤ ${t.max_depth_median_mm} mm、P90 ≤ ${t.max_depth_p90_mm} mm；${t.depth_tolerance_mm} mm 深度内点 ≥ ${t.min_depth_inlier_fraction * 100}%；遮挡深度差 > ${t.occlusion_tolerance_mm} mm、比例 > ${t.max_occluded_fraction * 100}% 告警。`;
+    }
     renderInstanceList();
     await drawScene();
     bindControls();
