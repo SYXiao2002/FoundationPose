@@ -1,7 +1,8 @@
 # Independent CUDA service. FoundationPose owns the service, history API and UI;
 # weights and the object mesh are mounted read-only at runtime.
 ARG POSE6D_BASE_IMAGE=nvcr.io/nvidian/bundlesdf@sha256:534a24c4fb89c89ba3aefbbaef97dce9b693656e27f46bf55ebb85e45c2842dd
-FROM ${POSE6D_BASE_IMAGE}
+ARG POSE6D_RUNTIME_IMAGE=realman-pose6d-runtime:local
+FROM ${POSE6D_BASE_IMAGE} AS pose6d_runtime_base
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 \
     PYTHONPATH=/opt/pose6d/reference \
     XDG_CACHE_HOME=/tmp/cache MPLCONFIGDIR=/tmp/matplotlib
@@ -25,6 +26,18 @@ RUN --mount=type=bind,from=nvdiffrast_source,target=/tmp/nvdiffrast-source \
     && rm -rf /tmp/nvdiffrast-build/build /tmp/nvdiffrast-build/.git \
     && python3 -m pip install --no-cache-dir --no-build-isolation /tmp/nvdiffrast-build \
     && rm -rf /tmp/nvdiffrast-build
+ARG POSE6D_RUNTIME_FINGERPRINT=unset
+LABEL io.realman.pose6d.runtime-fingerprint=${POSE6D_RUNTIME_FINGERPRINT}
+
+# Keep this dependency image tagged and separate. Pose/service/web changes then
+# reuse CUDA Python packages and the compiled nvdiffrast extension after BuildKit
+# cache cleanup instead of downloading and compiling them again.
+FROM ${POSE6D_RUNTIME_IMAGE} AS pose6d_server
+WORKDIR /opt/pose6d/reference
+ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 \
+    PYTHONPATH=/opt/pose6d/reference \
+    XDG_CACHE_HOME=/tmp/cache MPLCONFIGDIR=/tmp/matplotlib \
+    TORCH_CUDA_ARCH_LIST="8.6;8.9" FORCE_CUDA=1 MAX_JOBS=2
 COPY Utils.py datareader.py estimater.py score_vis_layout.py /opt/pose6d/reference/
 COPY learning /opt/pose6d/reference/learning
 COPY mycpp/CMakeLists.txt /opt/pose6d/reference/mycpp/CMakeLists.txt
