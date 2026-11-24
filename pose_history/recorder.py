@@ -10,15 +10,30 @@ class RecordingRuntime:
         self.runtime, self.store = runtime, store
         self.model_asset_id = model_asset_id
         self.parameters = parameters or {}
-        self.object_id = runtime.object_id
-        self.model_sha256 = runtime.model_sha256
+        self.object_id = getattr(runtime, "object_id", None)
+        self.model_sha256 = getattr(runtime, "model_sha256", None)
+        self.default_object_id = getattr(runtime, "default_object_id", self.object_id)
+
+    def model_manifest(self):
+        if hasattr(self.runtime, "model_manifest"):
+            return self.runtime.model_manifest()
+        return {self.object_id: {"model_sha256": self.model_sha256}}
+
+    def validate_request(self, request):
+        if hasattr(self.runtime, "validate_request"):
+            return self.runtime.validate_request(request)
+        from pose_service.protocol import validate_request
+        return validate_request(request, self.object_id, self.model_sha256)
 
     def replay(self, request):
         return self.store.replay(request)
 
     def infer(self, request):
         started = time.perf_counter()
-        record, created = self.store.begin(request, self.model_asset_id, self.parameters)
+        asset_id = (self.runtime.model_asset_id(request["object_id"])
+                    if hasattr(self.runtime, "model_asset_id") else self.model_asset_id)
+        parameters = {**self.parameters, "object_id": request["object_id"]}
+        record, created = self.store.begin(request, asset_id, parameters)
         if not created:
             return self.store.replay(request)
         try:
