@@ -1,8 +1,11 @@
 """FoundationPose wrapper; model output uses the original mesh coordinates."""
 
 import hashlib
+import gc
+import logging
 from pathlib import Path
 import tempfile
+import threading
 import time
 
 import numpy as np
@@ -10,6 +13,8 @@ import numpy as np
 from .protocol import rigid
 from .protocol import validate_request
 from .screening import screen
+
+LOG = logging.getLogger(__name__)
 
 
 class FoundationRuntime:
@@ -41,7 +46,7 @@ class FoundationRuntime:
 
         started = time.perf_counter()
         torch.cuda.reset_peak_memory_stats()
-        validate_request(request, self.object_id, self.model_sha256)
+        self.validate_request(request)
         # The upstream crop projection multiplies K by double-precision mesh points.
         K = np.asarray(request["K"], dtype=np.float64)
         # MessagePack arrays are read-only byte views; upstream Torch expects writable storage.
@@ -89,3 +94,105 @@ class FoundationRuntime:
                 "timings": {"registration_ms": registration_ms, "inference_ms": (time.perf_counter() - started) * 1000,
                             "peak_gpu_allocated_bytes": torch.cuda.max_memory_allocated()},
                 "score": score, "best_candidate_id": int(self.estimator.best_id.detach().cpu().item()), "screening": result}
+
+    def validate_request(self, request):
+        return validate_request(request, self.object_id, self.model_sha256)
+
+
+class FoundationRuntimeRegistry:
+    """Select one registered mesh at a time while keeping one FoundationPose model on GPU."""
+
+    def __init__(self, models, *, iterations=5, screening=None, runtime_factory=FoundationRuntime):
+        if not models:
+            raise ValueError("at least one FoundationPose model must be configured")
+        self.iterations = iterations
+        self.screening = screening or {}
+        self.runtime_factory = runtime_factory
+        self.models = {}
+        self._active = None
+        self._lock = threading.RLock()
+        for object_id, path in models.items():
+            if not isinstance(object_id, str) or not object_id or len(object_id) > 128:
+                raise ValueError("model IDs must be nonempty strings up to 128 characters")
+            mesh_path = Path(path).expanduser().resolve()
+            if not mesh_path.is_file():
+                raise FileNotFoundError(f"mesh for {object_id} does not exist: {mesh_path}")
+            self.models[object_id] = {
+                "path": mesh_path,
+                "model_sha256": hashlib.sha256(mesh_path.read_bytes()).hexdigest(),
+                "model_asset_id": None,
+            }
+        self.default_object_id = next(iter(self.models))
+        self.object_id = self.default_object_id
+        self.model_sha256 = self.models[self.default_object_id]["model_sha256"]
+
+    def model_manifest(self):
+        return {object_id: {"model_sha256": model["model_sha256"]}
+                for object_id, model in self.models.items()}
+
+    def prepare_archives(self, store, provenance):
+        """Snapshot each CPU mesh so old history remains tied to its original geometry."""
+        import trimesh
+
+        for object_id, model in self.models.items():
+            mesh = trimesh.load(str(model["path"]), force="mesh", process=False)
+            if len(mesh.vertices) == 0 or len(mesh.faces) == 0:
+                raise ValueError(f"mesh for {object_id} is empty")
+            model["model_asset_id"] = store.snapshot_model(
+                mesh, model["model_sha256"],
+                {**provenance, "object_id": object_id, "mesh_name": model["path"].name})
+
+    def validate_request(self, request):
+        from .protocol import validate_request
+
+        if not isinstance(request, dict):
+            raise ValueError("expected register request object")
+        object_id = request.get("object_id")
+        model = self.models.get(object_id)
+        if model is None:
+            raise ValueError("unknown object_id")
+        return validate_request(request, object_id, model["model_sha256"])
+
+    def model_asset_id(self, object_id):
+        try:
+            asset_id = self.models[object_id]["model_asset_id"]
+        except KeyError as exc:
+            raise ValueError("unknown object_id") from exc
+        if asset_id is None:
+            raise RuntimeError("model archives have not been prepared")
+        return asset_id
+
+    def _load(self, object_id):
+        with self._lock:
+            if object_id not in self.models:
+                raise ValueError("unknown object_id")
+            if self._active is not None and self._active.object_id == object_id:
+                return self._active
+            if self._active is not None:
+                old = self._active
+                self._active = None
+                try:
+                    temporary = getattr(old, "_debug_dir", None)
+                    if temporary is not None:
+                        temporary.cleanup()
+                except Exception:
+                    LOG.debug("could not clean temporary files for %s", old.object_id, exc_info=True)
+                del old
+                gc.collect()
+                try:
+                    import torch
+                    torch.cuda.empty_cache()
+                except Exception:
+                    LOG.debug("could not release the previous model CUDA cache", exc_info=True)
+            model = self.models[object_id]
+            LOG.info("loading FoundationPose object_id=%s mesh=%s", object_id, model["path"])
+            self._active = self.runtime_factory(
+                model["path"], object_id=object_id, iterations=self.iterations, screening=self.screening)
+            if self._active.model_sha256 != model["model_sha256"]:
+                self._active = None
+                raise ValueError(f"mesh changed after registry initialization for {object_id}")
+            return self._active
+
+    def infer(self, request, debug_dir):
+        self.validate_request(request)
+        return self._load(request["object_id"]).infer(request, debug_dir)

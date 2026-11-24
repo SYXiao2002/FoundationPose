@@ -12,7 +12,7 @@ import signal
 from .wire import MAX_MESSAGE_BYTES, packb, unpackb
 
 from .protocol import validate_request
-from .runtime import FoundationRuntime
+from .runtime import FoundationRuntimeRegistry
 
 LOG = logging.getLogger("pose6d")
 
@@ -29,7 +29,11 @@ class PoseService:
 
         await websocket.send(packb({"type": "hello", "version": 1, "ready": True,
                                     "object_id": self.runtime.object_id,
-                                    "model_sha256": self.runtime.model_sha256}))
+                                    "model_sha256": self.runtime.model_sha256,
+                                    "default_object_id": getattr(self.runtime, "default_object_id", self.runtime.object_id),
+                                    "models": self.runtime.model_manifest()
+                                    if hasattr(self.runtime, "model_manifest") else {
+                                        self.runtime.object_id: {"model_sha256": self.runtime.model_sha256}}}))
         loop = asyncio.get_running_loop()
         receive = asyncio.create_task(websocket.recv())
         pending, current, deadline = None, None, None
@@ -56,7 +60,10 @@ class PoseService:
                             await websocket.send(packb(self.error(current, "canceled", "result discarded; GPU remains busy until completion")))
                             pending, current, deadline = None, None, None
                             continue
-                        validate_request(request, self.runtime.object_id, self.runtime.model_sha256)
+                        if hasattr(self.runtime, "validate_request"):
+                            self.runtime.validate_request(request)
+                        else:
+                            validate_request(request, self.runtime.object_id, self.runtime.model_sha256)
                         if hasattr(self.runtime, "replay"):
                             replay = await asyncio.to_thread(self.runtime.replay, request)
                             if replay is not None:
@@ -109,19 +116,21 @@ async def main_async(args):
         fcntl.flock(lock.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
         loop = asyncio.get_running_loop()
         store = HistoryStore(root)
-        runtime = await loop.run_in_executor(executor, lambda: FoundationRuntime(
-            args.mesh, iterations=args.iterations,
-            screening={"min_valid_pixels": args.min_valid_pixels,
-                       "min_iou": args.min_iou, "max_median_m": args.max_median_m}))
+        model_specs = parse_model_specs(args.model, args.mesh, args.object_id)
         reference = Path(__file__).resolve().parent.parent
-        provenance = {"mesh_name": Path(args.mesh).name,
+        provenance = {"mesh_name": Path(args.mesh).name if args.mesh else None,
                       "code": {str(p.relative_to(reference)): digest_file(p)
                                for p in [reference / "estimater.py", reference / "learning/training/predict_score.py"]},
                       "weights": {str(p.relative_to(reference)): digest_file(p)
                                   for p in (reference / "weights").rglob("*.pth")}}
-        asset_id = await asyncio.to_thread(store.snapshot_model, runtime.mesh, runtime.model_sha256, provenance)
-        recorded = RecordingRuntime(runtime, store, asset_id,
-                                    {"debug": 3, "iterations": args.iterations, "screening": runtime.screening, "provenance": provenance})
+        screening = {"min_valid_pixels": args.min_valid_pixels,
+                     "min_iou": args.min_iou, "max_median_m": args.max_median_m}
+        runtime = FoundationRuntimeRegistry(model_specs, iterations=args.iterations, screening=screening)
+        await asyncio.to_thread(runtime.prepare_archives, store, provenance)
+        await loop.run_in_executor(executor, runtime._load, runtime.default_object_id)
+        recorded = RecordingRuntime(runtime, store, None,
+                                    {"debug": 3, "iterations": args.iterations,
+                                     "screening": screening, "provenance": provenance})
         service = PoseService(recorded, executor, args.timeout)
         app = create_app(store, service=service)
         runner = web.AppRunner(app)
@@ -140,7 +149,10 @@ async def main_async(args):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--mesh", required=True)
+    parser.add_argument("--mesh", help="single-model compatibility option")
+    parser.add_argument("--object-id", default="eu_plug", help="object ID paired with --mesh")
+    parser.add_argument("--model", action="append", default=[], metavar="ID=PATH",
+                        help="register a model; may be repeated")
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", type=int, default=8092)
     parser.add_argument("--history-root", default=os.environ.get("POSE6D_HISTORY_ROOT", "/data/pose_history"))
@@ -153,8 +165,28 @@ def main():
     args = parser.parse_args()
     if args.timeout <= 0 or args.iterations < 1 or args.min_valid_pixels < 1:
         parser.error("timeout, iterations and min-valid-pixels must be positive")
+    try:
+        parse_model_specs(args.model, args.mesh, args.object_id)
+    except ValueError as exc:
+        parser.error(str(exc))
     logging.basicConfig(level=logging.INFO)
     asyncio.run(main_async(args))
+
+
+def parse_model_specs(specifications, mesh, object_id):
+    models = {}
+    for specification in specifications:
+        model_id, separator, path = specification.partition("=")
+        if not separator or not model_id or not path or model_id in models:
+            raise ValueError("--model must be unique ID=PATH entries")
+        models[model_id] = path
+    if mesh:
+        if models:
+            raise ValueError("use either --mesh or repeated --model arguments")
+        models[object_id] = mesh
+    if not models:
+        raise ValueError("provide --mesh or at least one --model ID=PATH")
+    return models
 
 
 if __name__ == "__main__":
