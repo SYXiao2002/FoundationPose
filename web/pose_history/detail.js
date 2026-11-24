@@ -12,6 +12,7 @@
     const meta = document.createElement('p'); meta.className = 'history-meta';
     meta.textContent = `${data.status} · ${data.camera_frame || '未知相机'} · ${data.instance_id || data.mask_source || '未知实例'} · ID ${id}`;
     container.append(meta);
+    container.append(window.createHistoryReviewControl(data));
     const candidates = document.getElementById('history-score-candidates');
     const candidateStatus = document.getElementById('score-candidates-status');
     if (data.archive_status === 'complete') {

@@ -224,8 +224,8 @@ def test_http_filters_assets_detail_and_artifact_bounds(store, request_data):
             # Existing browser caches must not mix old CSS/JS with the new page.
             import hashlib
             from pose_history.http import ASSET_FILES, ROOT
-            for html, names in [(page, ['history.css', 'detail.js', 'viewer.css', 'viewer.js']),
-                                (await (await client.get(root + '/')).text(), ['history.css', 'history.js'])]:
+            for html, names in [(page, ['history.css', 'review.js', 'detail.js', 'viewer.css', 'viewer.js']),
+                                (await (await client.get(root + '/')).text(), ['history.css', 'review.js', 'history.js'])]:
                 for name in names:
                     version = hashlib.sha256((ROOT / ASSET_FILES[name]).read_bytes()).hexdigest()[:16]
                     assert f'/assets/{name}?v={version}"' in html
@@ -234,6 +234,49 @@ def test_http_filters_assets_detail_and_artifact_bounds(store, request_data):
             assert (await client.get(root + '/assets/unknown')).status == 404
             assert (await client.get('/healthz')).status == 200
     asyncio.run(exercise())
+
+
+def test_manual_review_is_saved_to_a_per_record_file_and_survives_restart(store, request_data):
+    record, _ = finish(store, request_data)
+    review_file = store.reviews / f'{record["history_id"]}.json'
+    assert not review_file.exists()
+
+    async def exercise():
+        async with TestClient(TestServer(create_app(store))) as client:
+            root = '/6d_pose_history/api/records/' + record['history_id']
+            listing = await (await client.get('/6d_pose_history/api/records')).json()
+            assert listing['records'][0]['review_status'] == 'unreviewed'
+            assert listing['records'][0]['review_updated_at_ns'] is None
+
+            response = await client.post(root + '/review', json={'status': 'correct'})
+            assert response.status == 200
+            saved = await response.json()
+            assert saved['review_status'] == 'correct'
+            assert saved['review_updated_at_ns'].isdigit()
+            assert json.loads(review_file.read_text()) == {
+                'history_id': record['history_id'], 'review_status': 'correct',
+                'review_updated_at_ns': saved['review_updated_at_ns'],
+            }
+            detail = await (await client.get(root)).json()
+            assert detail['review_status'] == 'correct'
+
+            listing = await (await client.get('/6d_pose_history/api/records')).json()
+            assert listing['records'][0]['review_status'] == 'correct'
+            incorrect = await (await client.post(root + '/review', json={'status': 'incorrect'})).json()
+            assert incorrect['review_status'] == 'incorrect'
+            cleared = await (await client.post(root + '/review', json={'status': 'unreviewed'})).json()
+            assert cleared['review_status'] == 'unreviewed'
+            assert cleared['review_updated_at_ns'] is None
+            assert json.loads(review_file.read_text())['review_status'] == 'unreviewed'
+            await client.post(root + '/review', json={'status': 'correct'})
+            assert (await client.post(root + '/review', json={'status': 'unsure'})).status == 400
+            assert (await client.post(root + '/review', json={'status': []})).status == 400
+            assert (await client.post('/6d_pose_history/api/records/999/review',
+                                      json={'status': 'incorrect'})).status == 404
+
+    asyncio.run(exercise())
+    restarted = HistoryStore(store.root, recover=False)
+    assert restarted.get(record['history_id'])['review_status'] == 'correct'
 
 
 def test_client_disconnect_keeps_worker_and_archive_alive(store, request_data):

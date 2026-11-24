@@ -18,7 +18,8 @@ ROOT = Path(__file__).resolve().parent.parent
 PREFIX = "/6d_pose_history"
 LOG = logging.getLogger(__name__)
 ASSET_FILES = {"history.js": "web/pose_history/history.js", "history.css": "web/pose_history/style.css",
-               "detail.js": "web/pose_history/detail.js", "viewer.js": "web/multi_pose_viewer/viewer.js",
+               "detail.js": "web/pose_history/detail.js", "review.js": "web/pose_history/review.js",
+               "viewer.js": "web/multi_pose_viewer/viewer.js",
                "viewer.css": "web/multi_pose_viewer/style.css"}
 
 
@@ -81,13 +82,25 @@ def create_app(store, *, service=None):
     async def detail(request):
         record = await record_for(request)
         if record["archive_status"] == "complete":
+            review_fields = {key: record[key] for key in ("review_status", "review_updated_at_ns", "review_error")
+                             if key in record}
             def read():
                 path = store.artifact(record, "manifest.json")
                 manifest = json.loads(path.read_text())
                 manifest["result"] = json.loads(store.artifact(record, "result.json").read_text())
+                manifest.update(review_fields)
                 return manifest
             record = await work(read)
         return web.json_response(record)
+
+    async def review(request):
+        try:
+            payload = await request.json()
+        except (ValueError, web.HTTPBadRequest) as exc:
+            raise ValueError("request body must be JSON") from exc
+        if not isinstance(payload, dict):
+            raise ValueError("request body must be a JSON object")
+        return web.json_response(await work(store.set_review, request.match_info["id"], payload.get("status")))
 
     async def artifact(request):
         record = await record_for(request)
@@ -147,7 +160,8 @@ def create_app(store, *, service=None):
         source = source.replace('id="show-model" type="checkbox"', 'id="show-model" type="checkbox" checked')
         source = source.replace("<head>", '<head><script>window.POSE_VIEWER_BASE=' + json.dumps(
             f'{PREFIX}/api/records/{request.match_info["id"]}/viewer') + ';</script>'
-            + f'<link rel="stylesheet" href="{PREFIX}/assets/history.css"><script defer src="{PREFIX}/assets/detail.js"></script>')
+            + f'<link rel="stylesheet" href="{PREFIX}/assets/history.css"><script defer src="{PREFIX}/assets/review.js"></script>'
+              f'<script defer src="{PREFIX}/assets/detail.js"></script>')
         source = source.replace('第一帧', '归档记录').replace('eu-plug 初始阈值 · 筛查结果需人工复核', '当次归档筛查结果')
         source = source.replace('<header class="topbar">', '<header class="topbar"><a href="/6d_pose_history/">← 历史</a>')
         source = source.replace('<body>', '<body class="history-detail">')
@@ -168,6 +182,7 @@ def create_app(store, *, service=None):
     app.router.add_get(PREFIX + "/assets/{asset}", assets)
     app.router.add_get(PREFIX + "/api/records", records)
     app.router.add_get(PREFIX + "/api/records/{id:\\d+}", detail)
+    app.router.add_post(PREFIX + "/api/records/{id:\\d+}/review", review)
     app.router.add_get(PREFIX + "/api/records/{id:\\d+}/preview/{preview:rgb|score|score-top30}", artifact)
     app.router.add_get(PREFIX + "/api/records/{id:\\d+}/files/{artifact}", artifact)
     app.router.add_get(PREFIX + "/api/records/{id:\\d+}/viewer/{kind}", viewer)

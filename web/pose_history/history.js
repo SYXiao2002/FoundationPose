@@ -24,17 +24,19 @@ function preview(record, kind, caption, available) {
   figure.append(frame); return figure;
 }
 function render(record) {
-  const card = document.createElement('a'); card.className = 'history-record'; card.href = record.history_path;
+  const card = document.createElement('article'); card.className = 'history-record';
+  const link = document.createElement('a'); link.className = 'history-record-link'; link.href = record.history_path;
   const head = element('div', '', 'history-record-head');
   const time = element('time', timeText(record.history_id)); time.title = `UTC ${new Date(Number(BigInt(record.history_id) / 1000000n)).toISOString()} · ID ${record.history_id}`;
   head.append(time, element('strong', record.object_id), element('span', labels[record.status] || record.status, `history-badge ${record.status}`));
   if (record.score != null) head.append(element('span', `Score ${record.score.toFixed(3)}`));
-  card.append(head, element('div', `${record.instance_id || record.mask_source || '未知实例'} · ${record.image_size.join(' × ')} · ID ${record.history_id}`, 'history-meta'));
-  if (record.archive_status === 'failed') card.append(element('p', '归档失败，部分产物不可用'));
+  link.append(head, element('div', `${record.instance_id || record.mask_source || '未知实例'} · ${record.image_size.join(' × ')} · ID ${record.history_id}`, 'history-meta'));
+  if (record.archive_status === 'failed') link.append(element('p', '归档失败，部分产物不可用'));
   const images = element('div', '', 'history-previews');
   images.append(preview(record, 'rgb', '原始 RGB', record.archive_status === 'complete'),
     preview(record, 'score', '最高分候选 · RGB / Depth 对比', record.preview_status === 'complete'));
-  card.append(images); return card;
+  link.append(images);
+  card.append(link, window.createHistoryReviewControl(record)); return card;
 }
 async function load() {
   const current = ++generation; clearTimeout(pollTimer); $('more').disabled = true; $('refresh').disabled = true;

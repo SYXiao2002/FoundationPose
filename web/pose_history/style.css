@@ -14,8 +14,9 @@
 .history-filters label { display: grid; gap: 4px; font-size: 12px; }
 .history-filters input { max-width: 220px; }
 .history-records { display: grid; gap: 18px; }
-.history-record { display: block; padding: 18px; border: 1px solid #dce3dc; border-radius: 10px; background: white; text-decoration: none; color: inherit !important; }
-.history-record:hover { border-color: #287a52; box-shadow: 0 3px 16px #287a5210; }
+.history-record { display: flex; flex-direction: column; gap: 14px; padding: 18px; border: 1px solid #dce3dc; border-radius: 10px; background: white; }
+.history-record:hover, .history-record:focus-within { border-color: #287a52; box-shadow: 0 3px 16px #287a5210; }
+.history-record-link { display: block; text-decoration: none; color: inherit !important; }
 .history-record-head { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
 .history-record-head time { font-size: 17px; font-weight: 650; }
 .history-badge { font-size: 12px; background: #e8f2eb; border-radius: 4px; padding: 3px 9px; }
@@ -34,6 +35,17 @@
 .history-images a { color: #287a52; }
 .history-images pre { font-size: 11px; white-space: pre-wrap; }
 .history-images .history-notice { color: #9b3d29; }
+.review-control { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin: 10px 0; color: #34423a; }
+.review-heading { font-size: 13px; font-weight: 650; }
+.review-switch { display: inline-flex; padding: 3px; border: 1px solid #cbd5cd; border-radius: 999px; background: #f3f5f2; }
+.review-switch button { border: 0; border-radius: 999px; padding: 6px 13px; background: transparent; color: #58655d; font: inherit; font-size: 12px; line-height: 1.3; cursor: pointer; }
+.review-switch button:hover { background: #e8ede8; }
+.review-switch button:focus-visible { outline: 2px solid #287a52; outline-offset: 2px; }
+.review-switch button.selected { background: white; color: #34423a; box-shadow: 0 1px 4px #17231c20; font-weight: 700; }
+.review-control[data-status="correct"] .review-switch button.selected { background: #dff2e4; color: #17673a; }
+.review-control[data-status="incorrect"] .review-switch button.selected { background: #fbe3df; color: #a22d22; }
+.review-feedback { min-width: 1px; color: #69736c; font-size: 11px; }
+.review-feedback:empty { display: none; }
 .history-detail .workspace { grid-template-columns: 320px minmax(0, 1fr) clamp(300px, 30vw, 420px); }
 .history-score-candidates { min-width: 0; min-height: 0; overflow: auto; padding: 16px 12px; border-left: 1px solid #dce3dc; background: white; }
 .score-candidates-heading { margin-bottom: 10px; }

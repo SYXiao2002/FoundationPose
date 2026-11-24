@@ -79,6 +79,8 @@ class HistoryStore:
         self.root = Path(root).expanduser().resolve()
         self.root.mkdir(parents=True, exist_ok=True)
         self.error = None
+        self.reviews = self.root / "reviews"
+        self.reviews.mkdir(exist_ok=True)
         probe = self.root / (".write-check-" + uuid.uuid4().hex)
         probe.write_bytes(b"ok")
         probe.unlink()
@@ -117,12 +119,29 @@ class HistoryStore:
         finally:
             conn.close()
 
-    @staticmethod
-    def public(row):
+    def public(self, row):
         data = dict(row)
         data.update(json.loads(data.pop("metadata")))
         data["history_time_ns"] = str(data["history_time_ns"])
         data["history_id"] = data["history_time_ns"]
+        data["review_status"] = "unreviewed"
+        data["review_updated_at_ns"] = None
+        review_path = self.reviews / f'{data["history_id"]}.json'
+        if review_path.is_file():
+            try:
+                review = json.loads(review_path.read_text())
+            except (OSError, ValueError):
+                data["review_error"] = "人工判断文件不可读取，可重新选择后保存"
+            else:
+                updated_at = review.get("review_updated_at_ns") if isinstance(review, dict) else None
+                valid_review = (isinstance(review, dict) and review.get("history_id") == data["history_id"]
+                                and review.get("review_status") in {"unreviewed", "correct", "incorrect"}
+                                and (updated_at is None or str(updated_at).isdigit()))
+                if valid_review:
+                    data["review_status"] = review["review_status"]
+                    data["review_updated_at_ns"] = str(updated_at) if updated_at is not None else None
+                else:
+                    data["review_error"] = "人工判断文件格式无效，可重新选择后保存"
         data["history_path"] = f'/6d_pose_history/{data["history_id"]}/'
         return data
 
@@ -134,6 +153,28 @@ class HistoryStore:
         if row is None:
             raise FileNotFoundError("history record does not exist")
         return self.public(row)
+
+    def set_review(self, history_id, status):
+        if not str(history_id).isdigit() or not 0 < int(history_id) < 2**63:
+            raise ValueError("invalid history ID")
+        if not isinstance(status, str) or status not in {"unreviewed", "correct", "incorrect"}:
+            raise ValueError("review status must be unreviewed, correct, or incorrect")
+        record = self.get(history_id)
+        reviewed_at = time.time_ns() if status != "unreviewed" else None
+        review = {"history_id": record["history_id"], "review_status": status,
+                  "review_updated_at_ns": str(reviewed_at) if reviewed_at is not None else None}
+        path = self.reviews / f'{record["history_id"]}.json'
+        temporary = path.with_name(f".{path.name}.{uuid.uuid4().hex}.tmp")
+        try:
+            with temporary.open("xb") as stream:
+                stream.write(json_bytes(review))
+                stream.flush()
+                os.fsync(stream.fileno())
+            os.replace(temporary, path)
+            sync_dir(path.parent)
+        finally:
+            temporary.unlink(missing_ok=True)
+        return self.get(history_id)
 
     def lookup(self, request):
         with self.connect() as conn:
