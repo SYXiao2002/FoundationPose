@@ -26,6 +26,7 @@ class FoundationRuntime:
 
         path = Path(mesh_path)
         self.object_id = object_id
+        self.algorithm = "foundationpose"
         self.model_sha256 = hashlib.sha256(path.read_bytes()).hexdigest()
         self.iterations = iterations
         self.screening = screening or {}
@@ -93,23 +94,40 @@ class FoundationRuntime:
                 "model_sha256": self.model_sha256, "T_camera_object": pose.tolist(),
                 "timings": {"registration_ms": registration_ms, "inference_ms": (time.perf_counter() - started) * 1000,
                             "peak_gpu_allocated_bytes": torch.cuda.max_memory_allocated()},
-                "score": score, "best_candidate_id": int(self.estimator.best_id.detach().cpu().item()), "screening": result}
+                "algorithm": self.algorithm, "score_type": "foundationpose_best_score",
+                "score": score, "best_candidate_id": int(self.estimator.best_id.detach().cpu().item()),
+                "score_preview_available": True, "screening": result}
 
     def validate_request(self, request):
         return validate_request(request, self.object_id, self.model_sha256)
 
 
 class FoundationRuntimeRegistry:
-    """Select one registered mesh at a time while keeping one FoundationPose model on GPU."""
+    """Select one algorithm and registered mesh at a time on the GPU."""
 
-    def __init__(self, models, *, iterations=5, screening=None, runtime_factory=FoundationRuntime):
+    SUPPORTED_ALGORITHMS = ("foundationpose", "wapr")
+
+    def __init__(self, models, *, iterations=5, screening=None, runtime_factory=FoundationRuntime,
+                 runtime_factories=None, algorithms=("foundationpose",), default_algorithm="foundationpose",
+                 wapr_backend="torch"):
         if not models:
-            raise ValueError("at least one FoundationPose model must be configured")
+            raise ValueError("at least one pose model must be configured")
+        if runtime_factories is not None and runtime_factory is not FoundationRuntime:
+            raise ValueError("use either runtime_factory or runtime_factories")
         self.iterations = iterations
         self.screening = screening or {}
         self.runtime_factory = runtime_factory
+        self.runtime_factories = dict(runtime_factories or {})
+        self.algorithms = tuple(dict.fromkeys(algorithms))
+        if (not self.algorithms or set(self.algorithms) - set(self.SUPPORTED_ALGORITHMS)
+                or default_algorithm not in self.algorithms):
+            raise ValueError("pose algorithms must be supported and include the default algorithm")
+        self.default_algorithm = default_algorithm
+        self.wapr_backend = wapr_backend
         self.models = {}
         self._active = None
+        self._active_algorithm = None
+        self._active_object_id = None
         self._lock = threading.RLock()
         for object_id, path in models.items():
             if not isinstance(object_id, str) or not object_id or len(object_id) > 128:
@@ -147,6 +165,9 @@ class FoundationRuntimeRegistry:
 
         if not isinstance(request, dict):
             raise ValueError("expected register request object")
+        algorithm = request.setdefault("algorithm", self.default_algorithm)
+        if algorithm not in self.algorithms:
+            raise ValueError("pose algorithm is unavailable")
         object_id = request.get("object_id")
         model = self.models.get(object_id)
         if model is None:
@@ -162,21 +183,46 @@ class FoundationRuntimeRegistry:
             raise RuntimeError("model archives have not been prepared")
         return asset_id
 
-    def _load(self, object_id):
+    def _factory_for(self, algorithm):
+        factory = self.runtime_factories.get(algorithm)
+        if factory is not None:
+            return factory
+        if algorithm == "foundationpose":
+            return self.runtime_factory
+        if algorithm == "wapr":
+            from .runtime_wapr import WAPRRuntime
+            return WAPRRuntime
+        raise ValueError("pose algorithm is unavailable")
+
+    def _load(self, algorithm, object_id=None):
+        # Preserve the original private helper shape for existing callers/tests.
+        if object_id is None:
+            object_id, algorithm = algorithm, self.default_algorithm
         with self._lock:
+            if algorithm not in self.algorithms:
+                raise ValueError("pose algorithm is unavailable")
             if object_id not in self.models:
                 raise ValueError("unknown object_id")
-            if self._active is not None and self._active.object_id == object_id:
+            if (self._active is not None and self._active_algorithm == algorithm
+                    and self._active_object_id == object_id):
                 return self._active
             if self._active is not None:
                 old = self._active
                 self._active = None
-                try:
-                    temporary = getattr(old, "_debug_dir", None)
-                    if temporary is not None:
+                self._active_algorithm = None
+                self._active_object_id = None
+                temporary = getattr(old, "_debug_dir", None)
+                if temporary is not None:
+                    try:
                         temporary.cleanup()
-                except Exception:
-                    LOG.debug("could not clean temporary files for %s", old.object_id, exc_info=True)
+                    except Exception:
+                        LOG.debug("could not clean temporary files for %s", old.object_id, exc_info=True)
+                close = getattr(old, "close", None)
+                if callable(close):
+                    try:
+                        close()
+                    except Exception:
+                        LOG.debug("could not release runtime resources for %s", old.object_id, exc_info=True)
                 del old
                 gc.collect()
                 try:
@@ -185,14 +231,22 @@ class FoundationRuntimeRegistry:
                 except Exception:
                     LOG.debug("could not release the previous model CUDA cache", exc_info=True)
             model = self.models[object_id]
-            LOG.info("loading FoundationPose object_id=%s mesh=%s", object_id, model["path"])
-            self._active = self.runtime_factory(
-                model["path"], object_id=object_id, iterations=self.iterations, screening=self.screening)
+            LOG.info("loading pose algorithm=%s object_id=%s mesh=%s", algorithm, object_id, model["path"])
+            factory = self._factory_for(algorithm)
+            kwargs = {"object_id": object_id, "screening": self.screening}
+            if algorithm == "foundationpose":
+                kwargs["iterations"] = self.iterations
+            else:
+                kwargs["backend"] = self.wapr_backend
+            self._active = factory(
+                model["path"], **kwargs)
             if self._active.model_sha256 != model["model_sha256"]:
                 self._active = None
                 raise ValueError(f"mesh changed after registry initialization for {object_id}")
+            self._active_algorithm = algorithm
+            self._active_object_id = object_id
             return self._active
 
     def infer(self, request, debug_dir):
         self.validate_request(request)
-        return self._load(request["object_id"]).infer(request, debug_dir)
+        return self._load(request["algorithm"], request["object_id"]).infer(request, debug_dir)

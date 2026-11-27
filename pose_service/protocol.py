@@ -14,6 +14,9 @@ def validate_request(request, model_id, model_sha256):
             raise ValueError(f"invalid {key}")
     if request.get("object_id") != model_id or request.get("model_sha256") != model_sha256:
         raise ValueError("unknown object or mismatched model hash")
+    algorithm = request.setdefault("algorithm", "foundationpose")
+    if algorithm not in ("foundationpose", "wapr"):
+        raise ValueError("unsupported pose algorithm")
     rgb, depth, mask = (request.get(k) for k in ("rgb", "depth_m", "mask"))
     if not all(isinstance(v, np.ndarray) for v in (rgb, depth, mask)):
         raise ValueError("images must be arrays")

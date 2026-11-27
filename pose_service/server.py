@@ -28,8 +28,11 @@ class PoseService:
         from websockets.exceptions import ConnectionClosed
 
         await websocket.send(packb({"type": "hello", "version": 1, "ready": True,
+                                    "service": "pose6d",
                                     "object_id": self.runtime.object_id,
                                     "model_sha256": self.runtime.model_sha256,
+                                    "algorithms": list(getattr(self.runtime, "algorithms", ("foundationpose",))),
+                                    "default_algorithm": getattr(self.runtime, "default_algorithm", "foundationpose"),
                                     "default_object_id": getattr(self.runtime, "default_object_id", self.runtime.object_id),
                                     "models": self.runtime.model_manifest()
                                     if hasattr(self.runtime, "model_manifest") else {
@@ -117,20 +120,54 @@ async def main_async(args):
         loop = asyncio.get_running_loop()
         store = HistoryStore(root)
         model_specs = parse_model_specs(args.model, args.mesh, args.object_id)
+        algorithms = parse_algorithms(args.algorithms)
+        if "wapr" in algorithms:
+            from wapr.download_assets import check_and_fetch_pack
+
+            await asyncio.to_thread(check_and_fetch_pack, "wapr_sapr_wbps")
         reference = Path(__file__).resolve().parent.parent
         provenance = {"mesh_name": Path(args.mesh).name if args.mesh else None,
+                      "algorithms": list(algorithms),
                       "code": {str(p.relative_to(reference)): digest_file(p)
-                               for p in [reference / "estimater.py", reference / "learning/training/predict_score.py"]},
+                               for p in [reference / "Utils.py", reference / "estimater.py",
+                                         reference / "learning/training/predict_score.py",
+                                         reference / "pose_service/runtime.py", reference / "pose_service/runtime_wapr.py",
+                                         reference / "pose_service/protocol.py", reference / "pose_service/screening.py"]},
                       "weights": {str(p.relative_to(reference)): digest_file(p)
                                   for p in (reference / "weights").rglob("*.pth")}}
+        if "wapr" in algorithms:
+            import wapr
+            from wapr.resources import weights_dir
+
+            wapr_root = Path(wapr.__file__).resolve().parent
+            wapr_files = [path for path in wapr_root.rglob("*") if path.is_file()
+                          and path.suffix in {".py", ".cpp", ".cu", ".h", ".hpp", ".cuh", ".cmake"}]
+            wapr_weights = Path(weights_dir())
+            provenance["wapr"] = {
+                "backend": args.wapr_backend,
+                "code": {str(p.relative_to(wapr_root.parent)): digest_file(p) for p in wapr_files if p.is_file()},
+                "weights": {p.name: digest_file(p) for p in sorted((*wapr_weights.glob("*.pth"),
+                                                                      *wapr_weights.glob("*.engine")))},
+            }
         screening = {"min_valid_pixels": args.min_valid_pixels,
                      "min_iou": args.min_iou, "max_median_m": args.max_median_m}
-        runtime = FoundationRuntimeRegistry(model_specs, iterations=args.iterations, screening=screening)
+        runtime = FoundationRuntimeRegistry(model_specs, iterations=args.iterations, screening=screening,
+                                            algorithms=algorithms, default_algorithm=args.default_algorithm,
+                                            wapr_backend=args.wapr_backend)
         await asyncio.to_thread(runtime.prepare_archives, store, provenance)
-        await loop.run_in_executor(executor, runtime._load, runtime.default_object_id)
+        await loop.run_in_executor(executor, runtime._load, runtime.default_algorithm,
+                                   runtime.default_object_id)
+        # Load WAPR once before opening the socket so missing dependencies,
+        # weights, or incompatible engines fail at service startup. The
+        # registry releases it when restoring the configured default runtime.
+        if "wapr" in algorithms and runtime.default_algorithm != "wapr":
+            await loop.run_in_executor(executor, runtime._load, "wapr", runtime.default_object_id)
+            await loop.run_in_executor(executor, runtime._load, runtime.default_algorithm,
+                                       runtime.default_object_id)
         recorded = RecordingRuntime(runtime, store, None,
                                     {"debug": 3, "iterations": args.iterations,
-                                     "screening": screening, "provenance": provenance})
+                                     "screening": screening, "provenance": provenance,
+                                     "algorithms": list(algorithms), "wapr_backend": args.wapr_backend})
         service = PoseService(recorded, executor, args.timeout)
         app = create_app(store, service=service)
         runner = web.AppRunner(app)
@@ -159,6 +196,10 @@ def main():
     parser.add_argument("--http-port", type=int, default=int(os.environ.get("POSE6D_HISTORY_HTTP_PORT", "8095")))
     parser.add_argument("--timeout", type=float, default=60)
     parser.add_argument("--iterations", type=int, default=5)
+    parser.add_argument("--algorithms", default="foundationpose",
+                        help="comma-separated enabled algorithms: foundationpose,wapr")
+    parser.add_argument("--default-algorithm", choices=["foundationpose", "wapr"], default="foundationpose")
+    parser.add_argument("--wapr-backend", choices=["torch", "trt"], default=os.environ.get("WAPR_BACKEND", "torch"))
     parser.add_argument("--min-valid-pixels", type=int, default=100)
     parser.add_argument("--min-iou", type=float, default=None)
     parser.add_argument("--max-median-m", type=float, default=None)
@@ -167,6 +208,9 @@ def main():
         parser.error("timeout, iterations and min-valid-pixels must be positive")
     try:
         parse_model_specs(args.model, args.mesh, args.object_id)
+        algorithms = parse_algorithms(args.algorithms)
+        if args.default_algorithm not in algorithms:
+            raise ValueError("default algorithm must be enabled")
     except ValueError as exc:
         parser.error(str(exc))
     logging.basicConfig(level=logging.INFO)
@@ -187,6 +231,15 @@ def parse_model_specs(specifications, mesh, object_id):
     if not models:
         raise ValueError("provide --mesh or at least one --model ID=PATH")
     return models
+
+
+def parse_algorithms(value):
+    if not isinstance(value, str):
+        raise ValueError("--algorithms must be a comma-separated string")
+    algorithms = tuple(dict.fromkeys(part.strip() for part in value.split(",") if part.strip()))
+    if not algorithms or set(algorithms) - {"foundationpose", "wapr"}:
+        raise ValueError("--algorithms supports foundationpose and wapr")
+    return algorithms
 
 
 if __name__ == "__main__":
