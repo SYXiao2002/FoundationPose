@@ -73,7 +73,7 @@ const base = process.argv[2] || 'http://127.0.0.1:8765';
         assert.ok(Math.abs(panel.y - viewer.y) < 1);
       } else { assert.ok(panel.y >= viewer.y + viewer.height - 1); }
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
-      assert.ok(await page.locator('#score-candidates-image').evaluate(img => img.naturalHeight <= 3145));
+      assert.ok(await page.locator('#score-candidates-image').evaluate(img => img.naturalHeight <= 1045));
       assert.equal(await page.locator('#history-images img[alt="最高分候选"]').evaluate(img => img.naturalHeight), 100);
       await page.locator('#history-score-candidates').scrollIntoViewIfNeeded();
       await page.screenshot({ path: `/tmp/history-cache-fixed-${width}.png` });
