@@ -1,5 +1,6 @@
 # Independent CUDA service. FoundationPose owns the service, history API and UI;
 # weights and the object mesh are mounted read-only at runtime.
+# syntax=docker/dockerfile:1
 ARG POSE6D_BASE_IMAGE=nvcr.io/nvidian/bundlesdf@sha256:534a24c4fb89c89ba3aefbbaef97dce9b693656e27f46bf55ebb85e45c2842dd
 ARG POSE6D_RUNTIME_IMAGE=realman-pose6d-runtime:local
 FROM ${POSE6D_BASE_IMAGE} AS pose6d_runtime_base
@@ -9,7 +10,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 \
 WORKDIR /opt/pose6d/reference
 RUN apt-get update && apt-get install -y --no-install-recommends \
     git cmake build-essential libeigen3-dev libboost-system-dev libboost-program-options-dev \
-    libgl1 libglib2.0-0 && rm -rf /var/lib/apt/lists/*
+    libgl1 libegl1 libglib2.0-0 && rm -rf /var/lib/apt/lists/*
 COPY docker/pose6d-requirements.txt /tmp/pose6d-requirements.txt
 RUN python3 -m pip install --no-cache-dir -r /tmp/pose6d-requirements.txt
 # Docker builds do not expose a GPU for PyTorch to autodetect target architectures.
@@ -35,7 +36,7 @@ LABEL io.realman.pose6d.runtime-fingerprint=${POSE6D_RUNTIME_FINGERPRINT}
 FROM ${POSE6D_RUNTIME_IMAGE} AS pose6d_server
 WORKDIR /opt/pose6d/reference
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 \
-    PYTHONPATH=/opt/pose6d/reference \
+    PYTHONPATH=/opt/pose6d/reference:/opt/pose6d/wapr \
     XDG_CACHE_HOME=/tmp/cache MPLCONFIGDIR=/tmp/matplotlib \
     TORCH_CUDA_ARCH_LIST="8.6;8.9" FORCE_CUDA=1 MAX_JOBS=2
 COPY Utils.py datareader.py estimater.py score_vis_layout.py /opt/pose6d/reference/
@@ -53,6 +54,9 @@ RUN cv2_dir="$(python3 -c 'import importlib.util; print(next(iter(importlib.util
 COPY pose_service /opt/pose6d/reference/pose_service
 COPY pose_history /opt/pose6d/reference/pose_history
 COPY web /opt/pose6d/reference/web
+# The WAPR package is an additional build context so its complete source tree
+# is versioned independently and the CUDA/PyTorch layers above stay reusable.
+COPY --from=wapr_source /wapr /opt/pose6d/wapr/wapr
 EXPOSE 8092 8095
 ENTRYPOINT ["python3", "-m", "pose_service.server"]
 CMD ["--host", "0.0.0.0", "--mesh", "/models/eu_plug/TexturedMeshSimplified.obj"]
