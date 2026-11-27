@@ -81,6 +81,17 @@ def test_debug_level_is_recorded_from_runtime_parameters(store, request_data):
     assert record["parameters"]["debug"] == 3
 
 
+def test_history_manifest_preserves_algorithm_score_semantics(store, request_data):
+    record, _ = store.begin(request_data, model_asset(store), {"algorithm": "wapr"})
+    path = store.save_inputs(record, request_data)
+    Image.new("RGB", (640, 100), color=(16, 24, 32)).save(path / "debug/vis_score.png")
+    result = response(request_data)
+    result["score_type"] = "wapr_score_6d"
+    store.publish(record, result)
+    manifest = json.loads((store.record_dir(store.get(record["history_id"])) / "manifest.json").read_text())
+    assert manifest["score_type"] == "wapr_score_6d"
+
+
 @pytest.mark.parametrize("count", [1, 2, 30, 35])
 def test_score_candidates_preview_keeps_complete_sorted_rows_and_caps_at_thirty(tmp_path, count):
     image = np.arange(count * 105 * 409 * 3, dtype=np.uint8).reshape(count * 105, 409, 3)
@@ -100,6 +111,17 @@ def test_score_candidates_preview_rejects_incomplete_first_row(tmp_path):
         score_candidates_preview(source)
 
 
+def test_score_candidates_preview_can_limit_history_detail_to_ten_rows(tmp_path):
+    count = 30
+    image = np.arange(count * 105 * 409 * 3, dtype=np.uint8).reshape(count * 105, 409, 3)
+    source = tmp_path / "vis_score.png"
+    Image.fromarray(image).save(source)
+    encoded = score_candidates_preview(source, top_k=10)
+    with Image.open(BytesIO(encoded)) as preview:
+        assert preview.size == (409, 1045)
+        np.testing.assert_array_equal(np.asarray(preview), image[:1045])
+
+
 def test_top30_http_preview_supports_existing_archives_without_rewriting_them(store, request_data):
     record, image = finish(store, request_data)
     root = store.record_dir(record)
@@ -114,6 +136,11 @@ def test_top30_http_preview_supports_existing_archives_without_rewriting_them(st
             with Image.open(BytesIO(await result.read())) as preview:
                 assert preview.size == (409, 205)
                 np.testing.assert_array_equal(np.asarray(preview), image[:205])
+            result = await client.get(url + 'score-top10')
+            assert result.status == 200 and result.content_type == 'image/png'
+            with Image.open(BytesIO(await result.read())) as preview:
+                # This fixture has only two rows; history detail caps at ten.
+                assert preview.size == (409, 205)
             # The established highest-score preview retains exactly one row.
             result = await client.get(url + 'score')
             with Image.open(BytesIO(await result.read())) as preview:

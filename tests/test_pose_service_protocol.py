@@ -1,8 +1,9 @@
 import numpy as np
 import pytest
+import weakref
 from pose_service.runtime import FoundationRuntimeRegistry
 from pose_service.protocol import validate_request
-from pose_service.server import parse_model_specs
+from pose_service.server import parse_algorithms, parse_model_specs
 from pose_service.screening import screen
 
 
@@ -31,6 +32,57 @@ def test_validate_request_rejects_weak_or_mismatched_data():
     request["mask"][0, 0] = 1
     with pytest.raises(ValueError, match="mismatched"):
         validate_request(request, "eu_plug", "other")
+    request["algorithm"] = "wapr"
+    validate_request(request, "eu_plug", "hash")
+    assert request["algorithm"] == "wapr"
+    request["algorithm"] = "not-a-backend"
+    with pytest.raises(ValueError, match="algorithm"):
+        validate_request(request, "eu_plug", "hash")
+
+
+def test_registry_switches_algorithms_without_holding_both_runtime_instances(tmp_path):
+    mesh = tmp_path / "mesh.obj"
+    mesh.write_text("mesh")
+    created = []
+    closed = []
+
+    class Runtime:
+        def __init__(self, path, *, object_id, algorithm, **_kwargs):
+            self.object_id = object_id
+            self.algorithm = algorithm
+            self.model_sha256 = __import__("hashlib").sha256(path.read_bytes()).hexdigest()
+            created.append(weakref.ref(self))
+
+        def close(self):
+            closed.append(self.algorithm)
+
+        def infer(self, request, _debug_dir):
+            return {"algorithm": self.algorithm, "request_id": request["request_id"]}
+
+    registry = FoundationRuntimeRegistry({"plug": mesh}, algorithms=("foundationpose", "wapr"))
+    # Explicit factories make this a CPU-only test of the selector and eviction path.
+    registry.runtime_factories = {
+        "foundationpose": lambda path, **kwargs: Runtime(path, algorithm="foundationpose", **kwargs),
+        "wapr": lambda path, **kwargs: Runtime(path, algorithm="wapr", **kwargs),
+    }
+    request = {"type": "register", "version": 1, "request_id": "r", "observation_id": "o",
+               "object_id": "plug", "model_sha256": registry.models["plug"]["model_sha256"],
+               "algorithm": "foundationpose", "rgb": np.zeros((2, 2, 3), np.uint8),
+               "depth_m": np.ones((2, 2), np.float32), "mask": np.ones((2, 2), np.uint8), "K": np.eye(3)}
+    assert registry.infer(request, None)["algorithm"] == "foundationpose"
+    assert registry.infer({**request, "algorithm": "wapr"}, None)["algorithm"] == "wapr"
+    assert len(created) == 2
+    assert created[0]() is None and created[1]() is registry._active
+    assert closed == ["foundationpose"]
+    assert registry._active.algorithm == "wapr"
+
+
+def test_algorithm_parser_rejects_empty_or_unknown_backends():
+    assert parse_algorithms("foundationpose, wapr,foundationpose") == ("foundationpose", "wapr")
+    with pytest.raises(ValueError, match="supports"):
+        parse_algorithms("foundationpose,other")
+    with pytest.raises(ValueError, match="supports"):
+        parse_algorithms(" , ")
 
 
 def test_model_registry_validates_ids_and_switches_runtime_by_requested_mesh(tmp_path):
