@@ -21,7 +21,8 @@ class ArchiveCorruptError(RuntimeError):
 
 
 LOG = logging.getLogger(__name__)
-META_KEYS = ("capture_timestamp_ns", "capture_clock", "camera_frame", "instance_id", "mask_source", "source")
+META_KEYS = ("capture_timestamp_ns", "capture_clock", "camera_frame", "instance_id", "mask_source", "source",
+             "algorithm")
 ARTIFACTS = {
     "RGB.png": "RGB.png", "depth_m.npy": "depth_m.npy", "mask.png": "mask.png",
     "cam_K.txt": "cam_K.txt", "pose.txt": "pose.txt", "result.json": "result.json",
@@ -48,6 +49,7 @@ def input_digest(request):
     digest = hashlib.sha256()
     for name in ("object_id", "model_sha256", "observation_id"):
         digest.update(json_bytes([name, request[name]]))
+    digest.update(json_bytes(["algorithm", request.get("algorithm", "foundationpose")]))
     for name in ("rgb", "depth_m", "mask", "K"):
         dtype = {"rgb": "u1", "depth_m": "<f4", "mask": "u1", "K": "<f8"}[name]
         array = np.asarray(request[name], dtype=dtype, order="C")
@@ -292,7 +294,7 @@ class HistoryStore:
         manifest = dict(record)
         manifest.update(fields, finished_at_ns=str(time.time_ns()), elapsed_ms=elapsed_ms,
                         depth_unit="m", pose_unit="m", coordinates="RGB optical camera; original OBJ",
-                        score_type="raw scorer logit with pairwise selection offset")
+                        score_type=result.get("score_type", "foundationpose_best_score"))
         manifest["files"] = {str(p.relative_to(path)): digest_file(p) for p in path.rglob("*") if p.is_file()}
         manifest["bytes"] = sum(p.stat().st_size for p in path.rglob("*") if p.is_file())
         (path / "manifest.json").write_bytes(json_bytes(manifest))

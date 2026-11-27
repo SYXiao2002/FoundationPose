@@ -13,6 +13,8 @@ class RecordingRuntime:
         self.object_id = getattr(runtime, "object_id", None)
         self.model_sha256 = getattr(runtime, "model_sha256", None)
         self.default_object_id = getattr(runtime, "default_object_id", self.object_id)
+        self.algorithms = getattr(runtime, "algorithms", ("foundationpose",))
+        self.default_algorithm = getattr(runtime, "default_algorithm", "foundationpose")
 
     def model_manifest(self):
         if hasattr(self.runtime, "model_manifest"):
@@ -32,7 +34,11 @@ class RecordingRuntime:
         started = time.perf_counter()
         asset_id = (self.runtime.model_asset_id(request["object_id"])
                     if hasattr(self.runtime, "model_asset_id") else self.model_asset_id)
-        parameters = {**self.parameters, "object_id": request["object_id"]}
+        algorithm = request.get("algorithm", self.default_algorithm)
+        parameters = {**self.parameters, "object_id": request["object_id"], "algorithm": algorithm}
+        if algorithm == "wapr":
+            parameters.pop("debug", None)
+            parameters.pop("iterations", None)
         record, created = self.store.begin(request, asset_id, parameters)
         if not created:
             return self.store.replay(request)

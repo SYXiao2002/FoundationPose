@@ -12,11 +12,13 @@ def score_preview(source: Path, target: Path):
         image.crop((0, 0, image.width, SCORE_ROW_HEIGHT)).save(target)
 
 
-def score_candidates_preview(source: Path) -> bytes:
-    """Read up to 30 complete, already sorted rows without changing an archive."""
+def score_candidates_preview(source: Path, *, top_k=30) -> bytes:
+    """Read up to top_k complete, already sorted rows without changing an archive."""
+    if type(top_k) is not int or not 1 <= top_k <= 30:
+        raise ValueError("top_k must be between 1 and 30")
     with Image.open(source) as image:
         stride = SCORE_ROW_HEIGHT + SCORE_ROW_MARGIN
-        count = min(30, (image.height + SCORE_ROW_MARGIN) // stride)
+        count = min(top_k, (image.height + SCORE_ROW_MARGIN) // stride)
         if count < 1:
             raise ValueError("scorer image is shorter than one row")
         height = count * stride - SCORE_ROW_MARGIN

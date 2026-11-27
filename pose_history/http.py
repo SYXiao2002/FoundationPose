@@ -107,9 +107,10 @@ def create_app(store, *, service=None):
         if record["archive_status"] == "writing":
             return web.json_response({"message": "record is still being generated"}, status=409)
         name = request.match_info.get("artifact", request.match_info.get("preview"))
-        if name == "score-top30":
+        if name in ("score-top10", "score-top30"):
             def read_candidates():
-                return score_candidates_preview(store.artifact(record, "vis_score.png"))
+                top_k = 10 if name == "score-top10" else 30
+                return score_candidates_preview(store.artifact(record, "vis_score.png"), top_k=top_k)
             payload = await work(read_candidates)
             return web.Response(body=payload, content_type="image/png",
                                 headers={"Cache-Control": "private, max-age=3600",
@@ -166,7 +167,7 @@ def create_app(store, *, service=None):
         source = source.replace('<header class="topbar">', '<header class="topbar"><a href="/6d_pose_history/">← 历史</a>')
         source = source.replace('<body>', '<body class="history-detail">')
         source = source.replace('</main>', '''<aside id="history-score-candidates" class="history-score-candidates" aria-labelledby="score-candidates-title">
-          <div class="score-candidates-heading"><h2 id="score-candidates-title">vis_score · 前 30 候选</h2>
+          <div class="score-candidates-heading"><h2 id="score-candidates-title">vis_score · 前 10 候选</h2>
           <p>按评分从高到低排列 · 图内标注候选 ID 与分数</p></div>
           <p id="score-candidates-status" role="status">等待评分候选图</p>
         </aside></main>''', 1)
@@ -183,7 +184,7 @@ def create_app(store, *, service=None):
     app.router.add_get(PREFIX + "/api/records", records)
     app.router.add_get(PREFIX + "/api/records/{id:\\d+}", detail)
     app.router.add_post(PREFIX + "/api/records/{id:\\d+}/review", review)
-    app.router.add_get(PREFIX + "/api/records/{id:\\d+}/preview/{preview:rgb|score|score-top30}", artifact)
+    app.router.add_get(PREFIX + "/api/records/{id:\\d+}/preview/{preview:rgb|score|score-top10|score-top30}", artifact)
     app.router.add_get(PREFIX + "/api/records/{id:\\d+}/files/{artifact}", artifact)
     app.router.add_get(PREFIX + "/api/records/{id:\\d+}/viewer/{kind}", viewer)
     app.router.add_get(PREFIX + "/{id:\\d+}/", page)

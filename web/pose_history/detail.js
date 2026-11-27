@@ -17,11 +17,11 @@
     const candidateStatus = document.getElementById('score-candidates-status');
     if (data.archive_status === 'complete') {
       const link = document.createElement('a');
-      link.href = `${root}/preview/score-top30`; link.target = '_blank'; link.rel = 'noopener';
-      link.title = '打开前三十候选原图';
+      link.href = `${root}/preview/score-top10`; link.target = '_blank'; link.rel = 'noopener';
+      link.title = '打开前十候选原图';
       const img = document.createElement('img'); img.id = 'score-candidates-image';
-      img.alt = 'vis_score 按评分降序排列的前 30 个候选，含候选 ID、分数及 RGB / Depth 对比';
-      img.onload = () => { candidateStatus.textContent = '最多显示 30 个候选 · 点击图片查看原图'; };
+      img.alt = 'vis_score 按评分降序排列的前 10 个候选，含候选 ID、分数及 RGB / Depth 对比';
+      img.onload = () => { candidateStatus.textContent = '最多显示 10 个候选 · 点击图片查看原图'; };
       img.onerror = () => { link.hidden = true; candidateStatus.textContent = '本次记录的评分候选图暂不可用'; };
       link.append(img); candidates.append(link);
       img.src = link.href;
