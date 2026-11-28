@@ -225,6 +225,60 @@ def test_failed_inference_and_failed_archive_have_distinct_states(store, request
         recorded.infer({**request_data, 'request_id': 'r3'})
 
 
+def test_batch_inference_archives_each_instance_with_its_pose_and_score_preview(store, request_data, tmp_path):
+    batch = {"type": "batch_register", "version": 1, "request_id": "batch-history",
+             "observation_id": request_data["observation_id"], "object_id": request_data["object_id"],
+             "model_sha256": request_data["model_sha256"], "rgb": request_data["rgb"],
+             "depth_m": request_data["depth_m"], "K": request_data["K"],
+             "capture_timestamp_ns": request_data["capture_timestamp_ns"],
+             "capture_clock": "ros", "camera_frame": "camera",
+             "instances": [{"instance_id": "sam-1", "mask": request_data["mask"]},
+                           {"instance_id": "sam-2", "mask": np.fliplr(request_data["mask"]).copy()}]}
+
+    class Runtime:
+        object_id, model_sha256 = "plug", "hash"
+
+        def validate_batch_request(self, value):
+            assert value["type"] == "batch_register"
+
+        def infer_batch(self, value, debug_dir):
+            results = []
+            for index, instance in enumerate(value["instances"]):
+                preview = tmp_path / f"candidate-{index}.png"
+                Image.new("RGB", (640, 100), color=(index, 24, 32)).save(preview)
+                pose = np.eye(4)
+                pose[0, 3] = index * .1
+                results.append({"instance_id": instance["instance_id"], "status": "ok",
+                                "pose_camera_object": pose.tolist(), "score": .4 + index * .1,
+                                "screening": {"status": "pass_screening", "metrics": {"overlap_pixels": 4}},
+                                "_history_score_preview_path": str(preview)})
+            return {"type": "batch_result", "request_id": value["request_id"],
+                    "observation_id": value["observation_id"], "algorithm": "wapr",
+                    "results": results, "timings": {"registration_ms": 20.}}
+
+    recorded = RecordingRuntime(Runtime(), store, model_asset(store))
+    result = recorded.infer_batch(batch)
+    assert result["instance_count"] == 2
+    assert all(item["archive_status"] == "complete" for item in result["results"])
+    assert all("_history_score_preview_path" not in item for item in result["results"])
+
+    records = store.list_records(limit=10)["records"]
+    assert len(records) == 2
+    by_instance = {record["instance_id"]: record for record in records}
+    for index, instance_id in enumerate(("sam-1", "sam-2")):
+        record = by_instance[instance_id]
+        assert record["parameters"]["batch_request_id"] == "batch-history"
+        assert record["parameters"]["batch_index"] == index
+        archived = json.loads(store.artifact(record, "result.json").read_text())
+        assert archived["score_type"] == "wapr_score_6d"
+        assert archived["score"] == pytest.approx(.4 + index * .1)
+        assert store.artifact(record, "vis_score.png").is_file()
+        view = HistoryViewer(store, record).info()
+        assert len(view["instances"]) == 1
+        assert view["instances"][0]["label"] == instance_id
+        assert view["instances"][0]["pose"][0][3] == pytest.approx(index * .1)
+
+
 def test_http_filters_assets_detail_and_artifact_bounds(store, request_data):
     record, _ = finish(store, request_data)
     async def exercise():
