@@ -174,6 +174,19 @@ class FoundationRuntimeRegistry:
             raise ValueError("unknown object_id")
         return validate_request(request, object_id, model["model_sha256"])
 
+    def validate_batch_request(self, request):
+        from .protocol import validate_batch_request
+
+        if not isinstance(request, dict):
+            raise ValueError("expected batch_register request object")
+        if "wapr" not in self.algorithms:
+            raise ValueError("batch inference requires the wapr algorithm")
+        object_id = request.get("object_id")
+        model = self.models.get(object_id)
+        if model is None:
+            raise ValueError("unknown object_id")
+        return validate_batch_request(request, object_id, model["model_sha256"])
+
     def model_asset_id(self, object_id):
         try:
             asset_id = self.models[object_id]["model_asset_id"]
@@ -250,3 +263,10 @@ class FoundationRuntimeRegistry:
     def infer(self, request, debug_dir):
         self.validate_request(request)
         return self._load(request["algorithm"], request["object_id"]).infer(request, debug_dir)
+
+    def infer_batch(self, request, debug_dir):
+        self.validate_batch_request(request)
+        runtime = self._load("wapr", request["object_id"])
+        if not hasattr(runtime, "infer_batch"):
+            raise ValueError("active runtime does not support batch inference")
+        return runtime.infer_batch(request, debug_dir)

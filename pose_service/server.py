@@ -63,11 +63,18 @@ class PoseService:
                             await websocket.send(packb(self.error(current, "canceled", "result discarded; GPU remains busy until completion")))
                             pending, current, deadline = None, None, None
                             continue
-                        if hasattr(self.runtime, "validate_request"):
-                            self.runtime.validate_request(request)
+                        is_batch = isinstance(request, dict) and request.get("type") == "batch_register"
+                        if is_batch:
+                            if hasattr(self.runtime, "validate_batch_request"):
+                                self.runtime.validate_batch_request(request)
+                            else:
+                                raise ValueError("batch inference is not supported")
                         else:
-                            validate_request(request, self.runtime.object_id, self.runtime.model_sha256)
-                        if hasattr(self.runtime, "replay"):
+                            if hasattr(self.runtime, "validate_request"):
+                                self.runtime.validate_request(request)
+                            else:
+                                validate_request(request, self.runtime.object_id, self.runtime.model_sha256)
+                        if not is_batch and hasattr(self.runtime, "replay"):
                             replay = await asyncio.to_thread(self.runtime.replay, request)
                             if replay is not None:
                                 await websocket.send(packb(replay))
@@ -75,7 +82,10 @@ class PoseService:
                         if pending is not None or self.busy:
                             raise ValueError("inference busy")
                         self.busy = True
-                        pending = loop.run_in_executor(self.executor, self.runtime.infer, request)
+                        if is_batch:
+                            pending = loop.run_in_executor(self.executor, self.runtime.infer_batch, request)
+                        else:
+                            pending = loop.run_in_executor(self.executor, self.runtime.infer, request)
                         pending.add_done_callback(self._worker_done)
                         current, deadline = request, loop.time() + self.timeout
                     except (ValueError, TypeError, KeyError, OSError) as exc:
