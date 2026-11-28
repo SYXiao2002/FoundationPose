@@ -163,3 +163,109 @@ class WAPRRuntime:
                 "peak_gpu_allocated_bytes": torch.cuda.max_memory_allocated(),
             },
         }
+
+    def infer_batch(self, request, _debug_dir):
+        """Batch-infer multiple instances of the same mesh in one WAPR call.
+
+        Uses ``estimate_many_categories_many_instances`` so registration and
+        scoring happen on batched GPU tensors.  Instances are processed in
+        chunks of ``_BATCH_CHUNK`` to avoid GPU OOM on large scenes.
+        Returns per-instance results with aggregate timing.  The request
+        carries a shared RGB/depth/K and an ``instances`` list where each
+        item has ``instance_id`` and ``mask``.
+        """
+        from Utils import nvdiffrast_render
+        from .wapr_score_vis import write_wapr_score_image
+
+        _BATCH_CHUNK = 30
+
+        instances_payload = request["instances"]
+        rgb = np.array(request["rgb"], copy=True, order="C")
+        depth = np.array(request["depth_m"], dtype=np.float32, copy=True, order="C")
+        K = np.asarray(request["K"], dtype=np.float64)
+        torch = self.torch
+
+        started = time.perf_counter()
+        torch.cuda.reset_peak_memory_stats()
+
+        all_results = []
+        registration_ms_total = 0.0
+        for chunk_start in range(0, len(instances_payload), _BATCH_CHUNK):
+            chunk = instances_payload[chunk_start:chunk_start + _BATCH_CHUNK]
+            wapr_instances = []
+            for item in chunk:
+                wapr_instances.append({
+                    "mesh": self.pose_mesh,
+                    "diameter_m": self.diameter_m,
+                    "mask": np.ascontiguousarray(item["mask"]),
+                })
+            chunk_started = time.perf_counter()
+            chunk_results = self.estimator.estimate_many_categories_many_instances(
+                rgb, depth, K, wapr_instances,
+                score_top_k=10,
+            )
+            torch.cuda.synchronize()
+            registration_ms_total += (time.perf_counter() - chunk_started) * 1000
+            all_results.extend(chunk_results)
+
+        output = []
+        for index, (item, result) in enumerate(zip(instances_payload, all_results)):
+            if result is None:
+                output.append({
+                    "instance_id": item["instance_id"],
+                    "status": "failed",
+                    "reason": "WAPR returned no result for this instance",
+                })
+                continue
+
+            pose = rigid(result["pose_4x4"])
+            score = float(result["score_6d"])
+            if not np.isfinite(score):
+                output.append({"instance_id": item["instance_id"], "status": "failed",
+                               "reason": "WAPR returned a non-finite score"})
+                continue
+            mask = np.ascontiguousarray(item["mask"])
+            try:
+                _, rendered, _ = nvdiffrast_render(
+                    K=np.asarray(K, dtype=np.float32), H=depth.shape[0], W=depth.shape[1],
+                    ob_in_cams=torch.as_tensor(pose[None], dtype=torch.float32, device="cuda"),
+                    glctx=self.context, mesh_tensors=self.raw_mesh_tensors,
+                )
+                rendered = rendered[0].detach().cpu().numpy()
+                screening = screen(mask != 0, depth, rendered, **self.screening)
+            except Exception as exc:
+                screening = {"status": "invalid", "warning": f"screening failed: {exc}", "metrics": {}}
+
+            item_output = {
+                "instance_id": item["instance_id"],
+                "status": "ok",
+                "pose_camera_object": pose.tolist(),
+                "score": score,
+                "algorithm": "wapr",
+                "screening": screening,
+            }
+            try:
+                preview_path = Path(_debug_dir) / f"instance-{index}" / "vis_score.png"
+                write_wapr_score_image(result["score_candidates"], score, preview_path, top_k=10)
+                item_output["_history_score_preview_path"] = str(preview_path)
+            except (KeyError, OSError, ValueError):
+                pass
+            output.append(item_output)
+
+        peak = torch.cuda.max_memory_allocated()
+        return {
+            "type": "batch_result",
+            "version": 1,
+            "request_id": request["request_id"],
+            "observation_id": request.get("observation_id"),
+            "algorithm": "wapr",
+            "score_type": "wapr_score_6d",
+            "results": output,
+            "instance_count": len(instances_payload),
+            "timings": {
+                "registration_ms": registration_ms_total,
+                "inference_ms": (time.perf_counter() - started) * 1000,
+                "peak_gpu_allocated_bytes": peak,
+                "chunk_size": _BATCH_CHUNK,
+            },
+        }
